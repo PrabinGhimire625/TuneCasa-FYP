@@ -8,10 +8,10 @@ export const register = async (req, res) => {
   try {
     const { username, email, password, role } = req.body;
 
-    const imageFile=req.files.image[0];
+    // const imageFile=req.files.image[0];
     //console.log(imageFile)
 
-    const imageUpload = await cloudinary.uploader.upload(imageFile.path, { resource_type: "image" });
+    // const imageUpload = await cloudinary.uploader.upload(imageFile.path, { resource_type: "image" });
 
     if (!username || !email || !password || !role) {
       return res.status(400).json({ message: "All fields are required" });
@@ -23,7 +23,7 @@ export const register = async (req, res) => {
     }
     const hanshPassword = await bcrypt.hash(password, 10);
 
-    const newUser = new User({ username, email, password: hanshPassword , image:imageUpload.secure_url,role });
+    const newUser = new User({ username, email, password: hanshPassword,role });
     await newUser.save();
     res
       .status(200)

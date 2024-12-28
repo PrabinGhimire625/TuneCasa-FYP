@@ -1,6 +1,8 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { assets } from '../../../assets/frontend-assets/assets'
+import {useSelector, useDispatch} from "react-redux"
+import { STATUS } from "../../../globals/components/enumStatus/Status";
 
 const Form = ({ type, onSubmit }) => {
   const [userData, setUserData] = useState({
@@ -9,7 +11,14 @@ const Form = ({ type, onSubmit }) => {
     password: "",
     image: "",
   });
-  const [previewImage, setPreviewImage] = useState("");
+  
+ // const [previewImage, setPreviewImage] = useState("");
+  const [errorMessage, setErrorMessage]=useState("");
+  const {resetStatus,status}=useSelector((state)=>state.auth);
+  const dispatch=useDispatch();
+  const navigate=useNavigate();
+  console.log(status)
+
 
   const handleChange = (e) => {
     const { name, files, value } = e.target;
@@ -33,17 +42,36 @@ const Form = ({ type, onSubmit }) => {
     onSubmit(userData);
   };
 
-  return (
-    <div className="flex justify-center items-center min-h-screen bg-black">
-      <div className="max-w-md w-full bg-white shadow-lg rounded-lg p-8">
-        <div className="text-center">
-        <img
-  src={assets.tunecasaLogo}
-  className="w-20 h-20 mx-auto mb-4 rounded-full object-cover"
-  alt="Logo"
-/>
+  useEffect(() => {
+    if (status === STATUS.SUCCESS) {
+      dispatch(resetStatus());
+      navigate("/");
+    } else if (status === STATUS.ERROR) {
+      setErrorMessage("Please enter your correct email and password");
+    } else {
+      setErrorMessage(""); // Clear error message for other states
+    }
+  }, [status, dispatch]);
+  
 
-          <h1 className="text-3xl font-bold mb-6 text-gray-800">
+
+  const errorMessageStyle = {
+    color: "red",
+    marginLeft: "50px",
+    marginTop: "10px"
+  };
+
+  return (
+    <div className="flex justify-center items-center min-h-screen bg-stone-900">
+      <div className="max-w-md w-full bg-white shadow-lg rounded-lg p-5">
+        <div className="text-center">
+          <img
+          src={assets.tunecasaLogo}
+          className="w-20 h-20 mx-auto mb-2 rounded-full object-cover"
+          alt="Logo"
+          />
+
+          <h1 className="text-3xl font-bold mb-4 text-gray-800">
             {type === "register" ? "Sign Up" : "Log in"}
           </h1>
         </div>
@@ -59,7 +87,7 @@ const Form = ({ type, onSubmit }) => {
                 <path d="M272.1 107.7c38.8-.6 76.3 14 104.4 40.8l77.7-77.7C405 24.6 339.7-.8 272.1 0 169.2 0 75.1 58 28.9 150l90.4 70.1c21.5-64.5 81.8-112.4 152.8-112.4z" fill="#ea4335" />
               </svg>
             </div>
-            <span className="ml-4">
+            <span className="ml-4" >
               {type==="register" ? (<span>Sign Up</span>) : (<span>Login</span>)} with Google</span>
           </button>
           {/* <button className="w-full max-w-xs font-bold shadow-sm rounded-lg py-3 bg-indigo-100 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out focus:outline-none hover:shadow focus:shadow-sm focus:shadow-outline mt-5">
@@ -73,11 +101,11 @@ const Form = ({ type, onSubmit }) => {
         </div>
 
         {/* Or sign up with email */}
-        <div className="my-8 border-b text-center">
-          <div className="leading-none px-2 inline-block text-sm text-gray-600 tracking-wide font-bold bg-white transform translate-y-1/2">Or {type==="register" ? (<span>sign up</span>):(<span>login</span>)} with e-mail</div>
+        <div className="my-2 border-b text-center">
+          <div className="leading-none px-2 inline-block text-sm text-black tracking-wide font-bold bg-white transform translate-y-1/2">Or {type==="register" ? (<span>sign up</span>):(<span>login</span>)} with e-mail</div>
         </div>
 
-        {type === "register" && (
+           {/* {type === "register" && (
           <div className="flex justify-center items-center">
             <label className="cursor-pointer">
               <img
@@ -94,7 +122,7 @@ const Form = ({ type, onSubmit }) => {
               />
             </label>
           </div>
-        )}
+        )} */}
         
         <form className="flex flex-col gap-4 mt-5" onSubmit={handleSubmit}>
           {type === "register" && (
@@ -127,10 +155,22 @@ const Form = ({ type, onSubmit }) => {
             {type === "register" ? "Sign Up" : "Log in"}
           </button>
         </form>
+
+
+
+
+
         <p className="mt-3 text-center text-sm text-gray-500 underline">
-          <Link to="/signin">Forgot password?</Link>
+         {
+          type==='login' && (
+            <Link to="#">Forgot password?</Link>
+          ) 
+         }
         </p>
-        <p className="mt-4 text-center text-base text-gray-500">
+
+
+
+        <p className="mt-4 text-center text-base text-black">
           {type === "register" ? (
             <>
               Already have an account?{" "}
@@ -153,6 +193,14 @@ const Form = ({ type, onSubmit }) => {
             </>
           )}
         </p>
+
+          { 
+    type === 'login' && errorMessage && (
+      <p className="error-message " style={errorMessageStyle}>{errorMessage}</p>
+    )
+  }
+
+
       </div>
     </div>
   );
