@@ -1,5 +1,6 @@
 import React from 'react'
 import { assets } from '../../assets/artist-assets/assets'
+import {Link} from "react-router-dom"
 
 const Navbar = () => {
   return (
@@ -7,13 +8,13 @@ const Navbar = () => {
       <header className="shadow-md font-[sans-serif] tracking-wide relative z-50">
     <section className="md:flex lg:items-center relative py-3 lg:px-10 px-4 border-gray-200 border-b bg-white lg:min-h-[80px] max-lg:min-h-[60px]">
         <a href="#" className="mr-10 max-sm:w-full max-sm:mb-3 shrink-0">
-        <div className="w-[100px] h-[100px] rounded-full overflow-hidden">
-  <img 
-    src={assets.tunecasaLogo} 
-    alt="logo" 
-    className="w-full h-full object-cover" 
-  />
-</div>
+        <div className="w-[50px] h-[50px] rounded-full overflow-hidden">
+            <img 
+                src={assets.tunecasaLogo} 
+                alt="logo" 
+                className="w-full h-full object-cover" 
+            />
+        </div>
 
 
         </a>
@@ -35,11 +36,11 @@ const Navbar = () => {
             <div className="ml-auto max-lg:mt-4">
                 <ul className="flex items-center">
                     <li className="mr-4">
-                        <a href="/login">
+                        <Link to="/form">
                             <button className="max-sm:hidden flex items-center justify-center text-[15px] max-lg:py-3 px-4 font-medium text-white bg-blue-700 cursor-pointer rounded-md h-8">
                                 Login
                             </button>
-                        </a>
+                        </Link>
                     </li>
                     <li>
                         <a href="/profile">
