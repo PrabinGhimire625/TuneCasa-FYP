@@ -132,6 +132,7 @@ const Form = ({ type, onSubmit }) => {
               type="text"
               placeholder="Username"
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
+              required
             />
           )}
           <input
@@ -140,6 +141,7 @@ const Form = ({ type, onSubmit }) => {
             name="email"
             placeholder="Email"
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
+            required
           />
           <input
             onChange={handleChange}
@@ -147,6 +149,7 @@ const Form = ({ type, onSubmit }) => {
             name="password"
             placeholder="Password"
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
+            required
           />
           <button
             type="submit"

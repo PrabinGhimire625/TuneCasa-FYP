@@ -13,12 +13,12 @@ const Sidebar = () => {
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
-      <div className="hidden md:flex flex-col w-64 bg-gray-800 min-h-screen">
-        <div className="flex items-center justify-center h-16 bg-gray-900">
+      <div className="hidden md:flex flex-col w-64 bg-stone-950 min-h-screen">
+        <div className="flex items-center justify-center h-16 bg-stone-950">
           <span className="text-white font-bold uppercase">Sidebar</span>
         </div>
         <div className="flex flex-col flex-1 overflow-y-auto">
-          <nav className="flex-1 px-2 py-4 bg-gray-800">
+          <nav className="flex-1 px-2 py-4 bg-stone-950">
             {/* Dashboard Link */}
             <Link to="/" className="flex items-center px-4 py-2 text-gray-100 hover:bg-gray-700">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">

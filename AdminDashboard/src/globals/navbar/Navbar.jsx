@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { setToken, userProfile } from '../../store/authSlice';
+import tunecasaLogo from "../../assets/tunecasaLogo.png"
 
 
 const Navbar = () => {
@@ -36,14 +37,17 @@ const Navbar = () => {
         setIsloggedIn(false);
         navigate("/login");
       }
-
-
     return (
         <>
             <header className="shadow-md font-[sans-serif] tracking-wide relative z-50">
-                <section className="md:flex lg:items-center relative py-3 lg:px-10 px-4 border-gray-200 border-b bg-white lg:min-h-[80px] max-lg:min-h-[60px]">
+                <section className="md:flex lg:items-center relative py-3 lg:px-10 px-4  bg-black lg:min-h-[80px] max-lg:min-h-[60px]">
                     <a href="javascript:void(0)" className="mr-10 max-sm:w-full max-sm:mb-3 shrink-0">
-                        <img src="https://readymadeui.com/readymadeui.svg" alt="logo" className="w-[160px]" />
+                    <img 
+                    src={tunecasaLogo} 
+                    alt="logo" 
+                    className="w-full h-full object-cover" 
+                    style={{ width: '70px', height: '70px' }} 
+                />
                     </a>
                     <div className="flex flex-wrap w-full items-center">
                         <div className="relative w-full lg:w-96">

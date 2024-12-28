@@ -7,12 +7,15 @@ import Tables from './pages/sidebar/Tables/Table'
 import Users from './pages/sidebar/Tables/users/Users'
 import Login from './pages/form/auth/Login'
 import Profile from './pages/form/auth/Profile'
+import Navbar from './globals/navbar/Navbar'
 
 function App() {
 
   return (
    <Provider store={store}>
+
     <BrowserRouter>
+    <Navbar/>
     <Routes>
       <Route path='/' element={<Landing/>}/>
       <Route path='/login' element={<Login/>}/>
