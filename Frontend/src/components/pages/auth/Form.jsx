@@ -163,7 +163,7 @@ const Form = ({ type, onSubmit }) => {
         <p className="mt-3 text-center text-sm text-gray-500 underline">
          {
           type==='login' && (
-            <Link to="#">Forgot password?</Link>
+            <Link to="/forgetPassword">Forgot password?</Link>
           ) 
          }
         </p>

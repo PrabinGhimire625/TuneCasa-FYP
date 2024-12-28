@@ -11,6 +11,9 @@ import Profile from "./components/pages/auth/profile/Profile"
 import EditProfile from "./components/pages/auth/profile/editProfile/EditProfile"
 import store from "./store/store"
 import { Provider } from "react-redux"
+import ForgetPassword from "./components/pages/auth/forgetPassword/ForgetPassword"
+import VerifyOtp from "./components/pages/auth/forgetPassword/VerifyOtp"
+import ResetPassword from "./components/pages/auth/forgetPassword/ResetPassword"
 
 
 function App() {
@@ -26,7 +29,9 @@ function App() {
             <Route path="/login" element={<Login/>}/>
             <Route path="/profile" element={<Profile/>}/>
             <Route path="/editProfile/:id" element={<EditProfile/>}/>
-            <Route path="/profile" element={<Profile/>}/>
+            <Route path="/forgetPassword" element={<ForgetPassword/>}/>
+            <Route path="/verifyOtp" element={<VerifyOtp/>}/>
+            <Route path="/resetPassword" element={<ResetPassword/>}/>
             <Route path="/navbar" element={<Navbar/>}/>
             <Route path="/sidebar" element={<Sidebar/>}/>
             <Route path="/album/:id" element={<DisplaySingleAlbum/>}/>
