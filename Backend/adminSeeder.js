@@ -10,7 +10,7 @@ const adminSeeder = async () => {
             // Create the admin if no existing record is found
             await User.create({
                 username: "prabin",
-                email: "prabinghimire625@gmail.com",
+                email: "prabin@gmail.com",
                 password: bcrypt.hashSync("prabin", 10),
                 role: "admin"
             });

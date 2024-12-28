@@ -44,21 +44,25 @@ export const {setUserData,setStatus,resetStatus,setToken,setProfile,setUpdateUse
 export default authSlice.reducer
 
 //signup
-export function register(data){
-    return async function registerUserThunk(dispatch){
+//signup
+export function register(data) {
+    return async function registerUserThunk(dispatch) {
         dispatch(setStatus(STATUS.LOADING));
-        try{
-            const response=await API.post("/api/user/register",data);
-            if(response.status===200){
+        try {
+            const response = await API.post("/api/user/register", data);
+            console.log(response);
+            if (response.status === 200) {
+                dispatch(setUserData(response.data.data)); // Store user data after registration
                 dispatch(setStatus(STATUS.SUCCESS));
-            }else{
+            } else {
                 dispatch(setStatus(STATUS.ERROR));
             }
-        }catch(err){
+        } catch (err) {
             dispatch(setStatus(STATUS.ERROR));
         }
     }
 }
+
 
 //login
 export function login(data){

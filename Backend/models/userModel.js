@@ -18,6 +18,16 @@ const userSchema = new mongoose.Schema({
     enum: ["user", "admin", "artist"], 
         default: "user", 
     },
+    otp : {
+        type : Number,
+        select : false
+    },
+    isOtpVerified : {
+        type : Boolean,
+        default : false,
+        select : false
+    }
+
 });
 
 // Custom password validation with a pre-save hook

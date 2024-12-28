@@ -1,6 +1,6 @@
 import {Router} from "express";
 import errorHandler from "../services/catchAsyncError.js";
-import { deleteUser, fetchAllUser, fetchSingleUser, login, profile, register, updateUser } from "../controllers/userController.js";
+import { deleteUser, fetchAllUser, fetchSingleUser, forgetPassword, login, profile, register, resetPassword, updateUser, verifyOtp } from "../controllers/userController.js";
 import { isAuthenticated, restrictTo } from "../middleware/authMiddleware.js";
 import upload from "../middleware/multer.js";
 const router=Router();
@@ -22,7 +22,11 @@ router.route("/register").post((req, res, next) => {
 router.route("/login").post(login)
 router.route("/profile").get(isAuthenticated,profile)
 router.route("/").get(errorHandler(fetchAllUser))
-router.route("/:id").get(errorHandler(fetchSingleUser))
+router.route("/forgetPassword").post(forgetPassword)
+router.route("/verifyOtp").post(verifyOtp)
+router.route("/resetPassword").post(resetPassword)
+
+
 // .delete(errorHandler(deleteUser))
 
 // .patch(upload.fields([{ name: 'image', maxCount: 1 }]), errorHandler(updateUser)); 

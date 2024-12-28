@@ -1,36 +1,36 @@
 import React, { useEffect } from 'react'
 import Form from '../Form'
-import {useDispatch, useSelector} from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { register, resetStatus } from '../../../../store/authSlice';
 import { STATUS } from '../../../../globals/components/enumStatus/Status';
 import { useNavigate } from 'react-router-dom';
+
 const Register = () => {
-  const dispatch =useDispatch();
-  const {status}=useSelector((state)=>state.auth);
-  console.log(status)
-  const navigate=useNavigate();
+  const dispatch = useDispatch();
+  const { status } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
 
-  //handle register
-  const handleRegister=(data)=>{
-   console.log(data);
-    dispatch(register(data));
-  }
+  // Handle register
+  const handleRegister = (data) => {
+    dispatch(register(data)); // Dispatch the register action
+  };
 
-  useEffect(()=>{
-    if(status===STATUS.SUCCESS){
-      console.log( status)
-      alert("User is successfully register")
-      dispatch(resetStatus());
-      navigate("/login")
+  useEffect(() => {
+    if (status === STATUS.SUCCESS) {
+      alert("User successfully registered!");
+      dispatch(resetStatus()); // Reset status after registration
+      navigate("/login"); // Navigate to login page
+    } else if (status === STATUS.ERROR) {
+      alert("An error occurred during registration.");
+      dispatch(resetStatus()); // Reset status after error
     }
-  },[status,navigate,dispatch])
-
+  }, [status, dispatch, navigate]);
 
   return (
-  <>
-    <Form type='register' onSubmit={handleRegister}/>
-  </>
-  )
+    <>
+      <Form type="register" onSubmit={handleRegister} />
+    </>
+  );
 }
 
-export default Register
+export default Register;
