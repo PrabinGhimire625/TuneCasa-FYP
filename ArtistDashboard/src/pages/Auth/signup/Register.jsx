@@ -17,7 +17,7 @@ const Register = () => {
 
   useEffect(() => {
     if (status === STATUS.SUCCESS) {
-      alert("User successfully registered!");
+      alert("Artist registration is pending approval. You will get the response soon in the email");
       dispatch(resetStatus()); // Reset status after registration
       navigate("/login"); // Navigate to login page
     } else if (status === STATUS.ERROR) {

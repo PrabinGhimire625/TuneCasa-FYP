@@ -11,7 +11,6 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import {Provider} from "react-redux"
 import store from "./store/store"
 import EditAlbum from "./pages/EditForm/EditAlbum";
-import Form from "./pages/Auth/Form";
 import Login from "./pages/Auth/login/Login"
 import Register from "./pages/Auth/signup/Register"
 
@@ -27,7 +26,6 @@ function App() {
             <Navbar/>
             <div className="pt-8 pl-5 sm:pt-12 sm:pl-12">
               <Routes>
-                <Route path="/form" element={<Form />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/add-song" element={<AddSong />} />

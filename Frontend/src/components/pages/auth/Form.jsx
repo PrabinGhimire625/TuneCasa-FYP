@@ -44,7 +44,7 @@ const Form = ({ type, onSubmit }) => {
 
   useEffect(() => {
     if (status === STATUS.SUCCESS) {
-      dispatch(resetStatus());
+      // dispatch(resetStatus());
       navigate("/");
     } else if (status === STATUS.ERROR) {
       setErrorMessage("Please enter your correct email and password");
@@ -53,7 +53,6 @@ const Form = ({ type, onSubmit }) => {
     }
   }, [status, dispatch]);
   
-
 
   const errorMessageStyle = {
     color: "red",

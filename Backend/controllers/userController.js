@@ -1,19 +1,14 @@
 import User from "../models/userModel.js";
+import Artist from "../models/artistModel.js";
 import {v2 as cloudinary} from "cloudinary";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import sendEmail from "../services/sendEmail.js";
+import { sendEmailToAdmin,sendEmailToArtist } from '../services/SendAdminEmail.js';
 
-//register
+//user registration
 export const register = async (req, res) => {
-  try {
     const { username, email, password, role } = req.body;
-
-    // const imageFile=req.files.image[0];
-    //console.log(imageFile)
-
-    // const imageUpload = await cloudinary.uploader.upload(imageFile.path, { resource_type: "image" });
-
     if (!username || !email || !password || !role) {
       return res.status(400).json({ message: "All fields are required" });
     }
@@ -22,22 +17,17 @@ export const register = async (req, res) => {
     if (user) {
       return res.status(409).json({ message: "User already exists" });
     }
-    const hanshPassword = await bcrypt.hash(password, 10);
+    const hashPassword = await bcrypt.hash(password, 10);
 
-    const newUser = new User({ username, email, password: hanshPassword,role });
+    const newUser = new User({ username, email, password: hashPassword,role });
     await newUser.save();
     res
       .status(200)
       .json({ message: `${role} registered successfully`, data: newUser });
-  } catch (error) {
-    if (error.name === "ValidationError") {
-      return res.status(400).json({ message: error.message });
-    }
-    res.status(500).json({ message: "Server error", error: error.message });
-  }
+  
 };
 
-//login
+//user login
 export const login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -69,8 +59,7 @@ export const login = async (req, res) => {
   }
 };
 
-
-//Profile
+//user Profile
 export const profile = async (req, res) => {
   const id = req.user.id; 
   try {
@@ -88,12 +77,6 @@ export const profile = async (req, res) => {
     res.status(500).json({ message: "Internal server error", errorMessage: err.message });
   }
 };
-
-//edit profile
-// export const editProfile=async(req,res)=>{
-//   const {username,password,image}=req.body
-
-// }
 
 //fetch all user
 export const fetchAllUser=async(req,res)=>{
@@ -140,7 +123,6 @@ export const deleteUser=async(req,res)=>{
 // }
 
 export const updateUser = async (req, res) => {
-  try {
     const { username } = req.body;
     const userId = req.params.id;
     const imageFile = req.files?.image?.[0]; 
@@ -169,15 +151,11 @@ export const updateUser = async (req, res) => {
     }
 
     res.status(200).json({ message: "User updated successfully", data: updatedUser });
-  } catch (error) {
-    res.status(500).json({ message: "Server error", error: error.message });
-  }
 };
 
 
 //forget password
 export const forgetPassword=async(req,res)=>{
-  try {
     const { email } = req.body;
     console.log("Request Body:", req.body);
 
@@ -207,15 +185,11 @@ export const forgetPassword=async(req,res)=>{
     });
 
     res.status(200).json({ message: "OTP sent successfully", data: email });
-  } catch (err) {
-    console.error("Error in forgotPassword:", err); // Log the error
-    res.status(500).json({ error: "Internal server error" });
-  }
 }
 
 //verify otp
 export const verifyOtp=async(req, res)=>{
-  try {
+
     const { email, otp } = req.body;
     
 
@@ -240,9 +214,6 @@ export const verifyOtp=async(req, res)=>{
     await userExists[0].save();
 
     res.status(200).json({ message: "OTP verified successfully" });
-  } catch (err) {
-    res.status(500).json({ error: "Internal server error" });
-  }
 }
 
 //reset password
@@ -281,3 +252,111 @@ export const resetPassword=async(req,res)=>{
   })
 }
 
+//artist registration
+export const registerArtist = async (req, res) => {
+  const { username, email, password, bio } = req.body;
+      const hashPassword = await bcrypt.hash(password, 10);
+      const newUser = new User({username,email,password: hashPassword,role: 'artist'});
+      await newUser.save();
+
+      const newArtist = new Artist({userId: newUser._id,bio,status: 'pending' });
+      await newArtist.save();
+
+      const populatedArtist = await Artist.findById(newArtist._id).populate('userId', 'username email');
+      sendEmailToAdmin(populatedArtist);
+
+      res.status(200).json({ message: 'Artist registration is pending approval.' });
+};
+
+//artist login
+export const artistLogin = async (req, res) => {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    const artist = await Artist.findOne({ userId: user._id });
+
+    if (!artist) {
+      return res.status(404).json({ message: 'Artist profile not found' });
+    }
+
+    // Check if the artist is approved
+    if (artist.status !== 'approved') {
+      return res.status(403).json({ message: 'Your registration has not been approved yet.' });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Invalid email or password' });
+    }
+
+    // Generate a JWT token
+    const token = jwt.sign({ artistId: artist._id, userId: user._id },process.env.JWT_SECRET,{ expiresIn: '1h' });
+
+    res.status(200).json({message: 'Login successful',token,artist: {username: user.username,email: user.email,bio: artist.bio,},});
+};
+
+
+//admin update artist status
+// export const updateArtistStatus = async (req, res) => { 
+//   const { artistId, status } = req.body; 
+
+//   // Validate status
+//   if (!['approved', 'rejected'].includes(status)) {
+//       return res.status(400).json({ message: 'Invalid status. It must be either "approved" or "rejected".' });
+//   }
+
+//   const artist = await Artist.findById(artistId);
+//   if (!artist) {
+//     return res.status(404).json({ message: 'Artist not found' });
+//   }
+
+//   artist.status = status;
+//   await artist.save();
+
+//   await sendEmailToArtist(artist, status);
+
+//   res.status(200).json({ message: 'Artist status updated successfully.' });
+// };
+
+// Approve artist
+export const approveArtist = async (req, res) => {
+  const { artistId } = req.params;
+    const artist = await Artist.findById(artistId);
+    if (!artist) {
+      return res.status(404).json({ message: 'Artist not found' });
+    }
+
+    // Update artist status to approved
+    artist.status = 'approved';
+    await artist.save();
+
+    sendEmailToAdmin(artist);
+
+    // Send email to artist with approval message
+    sendEmailToArtist(artist, 'approved');
+    res.status(200).json({ message: 'Artist has been approved successfully and notifications sent.' });
+};
+
+// Reject artist
+export const rejectArtist = async (req, res) => {
+  const { artistId } = req.params;
+    const artist = await Artist.findById(artistId);
+    if (!artist) {
+      return res.status(404).json({ message: 'Artist not found' });
+    }
+
+    // Update artist status to rejected
+    artist.status = 'rejected';
+    await artist.save();
+
+    sendEmailToAdmin(artist);
+
+    // Send email to artist with rejection message
+    sendEmailToArtist(artist, 'rejected');
+    res.status(200).json({ message: 'Artist has been rejected successfully and notifications sent.' });
+  
+};

@@ -60,11 +60,11 @@ export function login(data){
 }
 
 //user profile
-export function userProfile(){
+export function ArtistProfile(){
     return async function userProfileThunk(dispatch) {
         dispatch(setStatus(STATUS.LOADING));
         try{
-            const response=await APIAuthenticated.get("/api/user/profile");
+            const response=await APIAuthenticated.get("/api/artist/profile");
             console.log(response);
             if(response.status===200){
                 const {data}=response.data;

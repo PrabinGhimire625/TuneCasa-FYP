@@ -36,7 +36,7 @@ const Navbar = () => {
             <div className="ml-auto max-lg:mt-4">
                 <ul className="flex items-center">
                     <li className="mr-4">
-                        <Link to="/form">
+                        <Link to="/login">
                             <button className="max-sm:hidden flex items-center justify-center text-[15px] max-lg:py-3 px-4 font-medium text-white bg-blue-700 cursor-pointer rounded-md h-8">
                                 Login
                             </button>

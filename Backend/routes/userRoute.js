@@ -1,34 +1,34 @@
 import {Router} from "express";
 import errorHandler from "../services/catchAsyncError.js";
-import { deleteUser, fetchAllUser, fetchSingleUser, forgetPassword, login, profile, register, resetPassword, updateUser, verifyOtp } from "../controllers/userController.js";
-import { isAuthenticated, restrictTo } from "../middleware/authMiddleware.js";
-import upload from "../middleware/multer.js";
+import { approveArtist, artistLogin, fetchAllUser, forgetPassword, login, profile, register, registerArtist, rejectArtist, resetPassword, verifyOtp } from "../controllers/userController.js";
+import { isAuthenticated } from "../middleware/authMiddleware.js";
 const router=Router();
 
-// User register
-router.route("/register").post((req, res, next) => {
+//user routes
+router.route("/user/register").post((req, res, next) => {  //user register
     req.body.role = "user"; 
     next();
-}, register);
+}, errorHandler(register));
+
+router.route("/user/login").post(errorHandler(login))
+router.route("/user/profile").get(isAuthenticated,errorHandler(profile))
+router.route("/user").get(errorHandler(fetchAllUser))
+router.route("/user/forgetPassword").post(errorHandler(forgetPassword))
+router.route("/user/verifyOtp").post(errorHandler(verifyOtp))
+router.route("/user/resetPassword").post(errorHandler(resetPassword))
+
+//artist route
+router.route("/artist/register").post((req, res, next) => {
+    req.body.role = "artist"; 
+    next();
+}, errorHandler(registerArtist));
+router.route("/artist/login").post(errorHandler(artistLogin))
 
 
-//artist register
-// router.route("/artist/register").post(upload.fields([{name:'image',maxCount:1}]),(req, res, next) => {
-//     req.body.role = "artist"; 
-//     next();
-// }, register);
+//admin route
+router.route("/admin/approve-artist/:artistId").get(errorHandler(approveArtist))
+router.route("/admin/reject-artist/:artistId").get(errorHandler(rejectArtist))
 
 
-router.route("/login").post(login)
-router.route("/profile").get(isAuthenticated,profile)
-router.route("/").get(errorHandler(fetchAllUser))
-router.route("/forgetPassword").post(forgetPassword)
-router.route("/verifyOtp").post(verifyOtp)
-router.route("/resetPassword").post(resetPassword)
-
-
-// .delete(errorHandler(deleteUser))
-
-// .patch(upload.fields([{ name: 'image', maxCount: 1 }]), errorHandler(updateUser)); 
 
 export default router

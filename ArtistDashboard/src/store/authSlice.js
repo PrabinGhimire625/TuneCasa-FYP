@@ -49,7 +49,7 @@ export function register(data) {
     return async function registerUserThunk(dispatch) {
         dispatch(setStatus(STATUS.LOADING));
         try {
-            const response = await API.post("/api/user/register", data);
+            const response = await API.post("/api/artist/register", data);
             console.log(response);
             if (response.status === 200) {
                 dispatch(setUserData(response.data.data)); // Store user data after registration
@@ -69,7 +69,7 @@ export function login(data){
     return async function loginThunk(dispatch) {
         dispatch(setStatus(STATUS.LOADING));
         try{
-            const response=await API.post("/api/user/login",data);
+            const response=await API.post("/api/artist/login",data);
             if(response.status===200){
                 const {token,data}=response.data;
                 console.log(token)

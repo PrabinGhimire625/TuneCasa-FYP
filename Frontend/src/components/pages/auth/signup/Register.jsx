@@ -18,11 +18,11 @@ const Register = () => {
   useEffect(() => {
     if (status === STATUS.SUCCESS) {
       alert("User successfully registered!");
-      dispatch(resetStatus()); // Reset status after registration
-      navigate("/login"); // Navigate to login page
+      dispatch(resetStatus()); 
+      navigate("/login"); 
     } else if (status === STATUS.ERROR) {
       alert("An error occurred during registration.");
-      dispatch(resetStatus()); // Reset status after error
+      dispatch(resetStatus()); 
     }
   }, [status, dispatch, navigate]);
 

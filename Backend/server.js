@@ -23,7 +23,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 //import routes
-app.use("/api/user",userRouter)
+app.use("/api",userRouter)
 app.use("/api/song",songRouter)
 app.use("/api/album",albumRouter)
 

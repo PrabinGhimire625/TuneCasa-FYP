@@ -10,6 +10,7 @@ const Form = ({ type, onSubmit }) => {
     email: "",
     password: "",
     image: "",
+    bio:""
   });
   
  // const [previewImage, setPreviewImage] = useState("");
@@ -44,7 +45,7 @@ const Form = ({ type, onSubmit }) => {
 
   useEffect(() => {
     if (status === STATUS.SUCCESS) {
-      dispatch(resetStatus());
+      //dispatch(resetStatus());
       navigate("/");
     } else if (status === STATUS.ERROR) {
       setErrorMessage("Please enter your correct email and password");
@@ -151,6 +152,17 @@ const Form = ({ type, onSubmit }) => {
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
             required
           />
+          {type==='register'&&(
+             <textarea
+            onChange={handleChange}
+            type="bio"
+            name="bio"
+            placeholder="bio"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
+            
+          />
+          )}
+          
           <button
             type="submit"
             className="w-full py-3 bg-indigo-500 text-white rounded-lg font-semibold hover:bg-indigo-600 transition-all"
