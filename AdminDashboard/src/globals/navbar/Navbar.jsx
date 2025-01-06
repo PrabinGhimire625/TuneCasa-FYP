@@ -55,13 +55,15 @@ const Navbar = () => {
                                 placeholder="Search something..."
                                 className="w-full bg-stone-800 focus:bg-transparent px-6 rounded h-11 text-white text-sm transition-all"
                             />
-                           
                         </div>
 
                         <div className="ml-auto max-lg:mt-4">
                             <ul className="flex items-center">
                                 {/* Notification Item */}
-                                <li className="relative">
+                               {
+                                isLoggedIn && (
+                                    <>
+                                     <li className="relative">
                                     <Link to="/arti"
                                         type="button"
                                         className="flex items-center justify-center w-8 h-8 rounded-full bg-black text-white text-sm font-medium"
@@ -70,16 +72,19 @@ const Navbar = () => {
                                     </Link>
                                     {/* Optional Notification Badge */}
                                     <span className="absolute top-0 right-0 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold leading-none text-white bg-red-600 rounded-full">
-                                        3
+                                        1
                                     </span>
                                 </li>
+                                    </>
+                                )
+                               }
                                 
                                 {/* Login or Logout Section */}
                                 {
                                     !isLoggedIn ? (
                                         <>
                                             <Link to="/login">
-                                                <button className="max-sm:hidden flex items-center justify-center text-sm max-lg:py-3 px-4 font-medium text-white bg-blue-700 hover:bg-blue-800 cursor-pointer rounded-md h-8 ml-4">
+                                                <button className="max-sm:hidden flex items-center justify-center text-sm max-lg:py-3 px-4 font-medium text-black bg-white hover:bg-blue-800 cursor-pointer rounded-md h-8 ml-4">
                                                     Login
                                                 </button>
                                             </Link>

@@ -68,8 +68,15 @@ const Navbar = () => {
                     !isLoggedIn ? (
                         <>
                             <li className="mr-4">
+                                <Link to="/register">
+                                    <button className="max-sm:hidden flex items-center justify-center text-[15px] max-lg:py-3 px-4 font-medium text-black bg-white cursor-pointer rounded-md h-8">
+                                        Signup
+                                    </button>
+                                </Link>
+                            </li>
+                            <li className="mr-4">
                                 <Link to="/login">
-                                    <button className="max-sm:hidden flex items-center justify-center text-[15px] max-lg:py-3 px-4 font-medium text-white bg-blue-700 cursor-pointer rounded-md h-8">
+                                    <button className="max-sm:hidden flex items-center justify-center text-[15px] max-lg:py-3 px-4 font-medium text-black bg-white cursor-pointer rounded-md h-8">
                                         Login
                                     </button>
                                 </Link>
@@ -88,7 +95,7 @@ const Navbar = () => {
                         <li>
                             <a href="/profile">
                                 <button className="relative flex items-center justify-center h-8 w-8 rounded-full bg-gray-800 text-white text-sm font-bold">
-                                    P
+                                    B
                                 </button>
                             </a>
                         </li>

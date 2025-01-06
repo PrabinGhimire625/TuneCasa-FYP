@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { login, resetStatus } from '../../../store/authSlice';
 import { STATUS } from '../../../globals/enumStatus/Status';
 import tunecasaLogo from '../../../assets/tunecasaLogo.png';
+import {Link} from "react-router-dom"
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -38,7 +39,7 @@ const Login = () => {
     if (status === STATUS.SUCCESS) {
       setMessage("Login successful! Redirecting...");
       dispatch(resetStatus()); // Reset the status
-      setTimeout(() => navigate("/"), 2000); // Navigate after 2 seconds
+      alert("Admin successfully login")
     } else if (status === STATUS.ERROR) {
       setMessage("Your email or password is incorrect!");
     } else {
@@ -54,7 +55,7 @@ const Login = () => {
 
   return (
     <div className="flex  justify-center  h-screen bg-stone-900">
-      <div className="w-full max-w-md p-6 mt-16 bg-white rounded-lg shadow dark:border dark:bg-gray-800 dark:border-gray-700 h-[470px]">
+      <div className="w-full max-w-md p-6 mt-16 bg-white rounded-lg shadow dark:border dark:bg-gray-800 dark:border-gray-700 h-[500px]">
         <div className="text-center mb-6">
           <img
             src={tunecasaLogo}
@@ -63,7 +64,7 @@ const Login = () => {
           />
         </div>
         <h1 className="text-xl font-bold text-center leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-          Admin Login
+          Login
         </h1>
         <form onSubmit={handleSubmit} className="space-y-4 mt-6">
           <div>
@@ -79,7 +80,7 @@ const Login = () => {
               id="email"
               onChange={handleChange}
               className="w-full bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              placeholder="admin@gmail.com"
+              placeholder="enter your email"
               required
             />
           </div>
@@ -106,6 +107,10 @@ const Login = () => {
           >
             Sign in
           </button>
+          <p className="mt-3 text-center text-sm text-gray-500 underline">
+          <Link to="/forgetPassword">Forgot password?</Link>
+        </p>
+
         </form>
 
         {/* Show the message dynamically */}

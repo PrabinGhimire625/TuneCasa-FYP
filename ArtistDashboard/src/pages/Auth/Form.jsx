@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
-import { assets } from '../../assets/artist-assets/assets'
-import {useSelector, useDispatch} from "react-redux"
+import { Link, useNavigate } from "react-router-dom";
+import { assets } from '../../assets/artist-assets/assets';
+import { useSelector, useDispatch } from "react-redux";
 import { STATUS } from "../../globals/components/Status";
 
 const Form = ({ type, onSubmit }) => {
@@ -10,21 +10,18 @@ const Form = ({ type, onSubmit }) => {
     email: "",
     password: "",
     image: "",
-    bio:""
+    bio: ""
   });
-  
-  const [errorMessage, setErrorMessage]=useState("");
-  const {resetStatus,status}=useSelector((state)=>state.auth);
-  const dispatch=useDispatch();
-  const navigate=useNavigate();
-  console.log(status)
-
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const { resetStatus, status } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, files, value } = e.target;
     if (name === "image") {
       const file = files[0];
-      setPreviewImage(URL.createObjectURL(file)); 
       setUserData({
         ...userData,
         [name]: file,
@@ -44,15 +41,18 @@ const Form = ({ type, onSubmit }) => {
 
   useEffect(() => {
     if (status === STATUS.SUCCESS) {
-      //dispatch(resetStatus());
       navigate("/");
     } else if (status === STATUS.ERROR) {
       setErrorMessage("Please enter your correct email and password");
     } else {
-      setErrorMessage(""); 
+      setErrorMessage("");
     }
   }, [status, dispatch]);
-  
+
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
+  };
+
   const errorMessageStyle = {
     color: "red",
     marginLeft: "50px",
@@ -64,17 +64,15 @@ const Form = ({ type, onSubmit }) => {
       <div className="max-w-md w-full mt-[-110px] bg-white shadow-lg rounded-lg p-5">
         <div className="text-center">
           <img
-          src={assets.tunecasaLogo}
-          className="w-20 h-20 mx-auto mb-2 rounded-full object-cover"
-          alt="Logo"
+            src={assets.tunecasaLogo}
+            className="w-20 h-20 mx-auto mb-2 rounded-full object-cover"
+            alt="Logo"
           />
-
           <h1 className="text-3xl font-bold mb-4 text-gray-800">
             {type === "register" ? "Sign Up" : "Log in"}
           </h1>
         </div>
 
-        {/* signup wth email part */}
         <div className="flex flex-col items-center">
           <button className="w-full max-w-xs font-bold shadow-sm rounded-lg py-3 bg-indigo-100 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out focus:outline-none hover:shadow focus:shadow-sm focus:shadow-outline">
             <div className="bg-white p-2 rounded-full">
@@ -85,16 +83,18 @@ const Form = ({ type, onSubmit }) => {
                 <path d="M272.1 107.7c38.8-.6 76.3 14 104.4 40.8l77.7-77.7C405 24.6 339.7-.8 272.1 0 169.2 0 75.1 58 28.9 150l90.4 70.1c21.5-64.5 81.8-112.4 152.8-112.4z" fill="#ea4335" />
               </svg>
             </div>
-            <span className="ml-4" >
-              {type==="register" ? (<span>Sign Up</span>) : (<span>Login</span>)} with Google</span>
+            <span className="ml-4">
+              {type === "register" ? "Sign Up" : "Login"} with Google
+            </span>
           </button>
         </div>
 
-        {/* Or sign up with email */}
         <div className="my-2 border-b text-center">
-          <div className="leading-none px-2 inline-block text-sm text-black tracking-wide font-bold bg-white transform translate-y-1/2">Or {type==="register" ? (<span>sign up</span>):(<span>login</span>)} with e-mail</div>
+          <div className="leading-none px-2 inline-block text-sm text-black tracking-wide font-bold bg-white transform translate-y-1/2">
+            Or {type === "register" ? "sign up" : "login"} with e-mail
+          </div>
         </div>
-        
+
         <form className="flex flex-col gap-4 mt-5" onSubmit={handleSubmit}>
           {type === "register" && (
             <input
@@ -114,25 +114,30 @@ const Form = ({ type, onSubmit }) => {
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
             required
           />
-          <input
-            onChange={handleChange}
-            type="password"
-            name="password"
-            placeholder="Password"
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
-            required
-          />
-          {type==='register'&&(
-             <textarea
-            onChange={handleChange}
-            type="bio"
-            name="bio"
-            placeholder="bio"
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
-            
-          />
+          <div className="relative">
+            <input
+              onChange={handleChange}
+              type={passwordVisible ? "text" : "password"}
+              name="password"
+              placeholder="Password"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
+              required
+            />
+            <span
+              onClick={togglePasswordVisibility}
+              className="absolute top-3 right-3 cursor-pointer text-gray-400"
+            >
+              {passwordVisible ? "show" : "hide"}
+            </span>
+          </div>
+          {type === "register" && (
+            <textarea
+              onChange={handleChange}
+              name="bio"
+              placeholder="Bio"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
+            />
           )}
-          
           <button
             type="submit"
             className="w-full py-3 bg-indigo-500 text-white rounded-lg font-semibold hover:bg-indigo-600 transition-all"
@@ -142,42 +147,20 @@ const Form = ({ type, onSubmit }) => {
         </form>
 
         <p className="mt-3 text-center text-sm text-gray-500 underline">
-         {
-          type==='login' && (
-            <Link to="/forgetPassword">Forgot password?</Link>
-          ) 
-         }
+          {type === "login" && <Link to="/forgetPassword">Forgot password?</Link>}
         </p>
 
         <p className="mt-4 text-center text-base text-black">
           {type === "register" ? (
-            <>
-              Already have an account?{" "}
-              <Link
-                className="text-blue-600 hover:underline"
-                to="/login"
-              >
-                Sign in here
-              </Link>
-            </>
+            <>Already have an account? <Link className="text-blue-600 hover:underline" to="/login">Sign in here</Link></>
           ) : (
-            <>
-              Not a member?{" "}
-              <Link
-                className="text-blue-600 hover:underline"
-                to="/register"
-              >
-                Register now
-              </Link>
-            </>
+            <>Not a member? <Link className="text-blue-600 hover:underline" to="/register">Register now</Link></>
           )}
         </p>
 
-          { 
-    type === 'login' && errorMessage && (
-      <p className="error-message " style={errorMessageStyle}>{errorMessage}</p>
-    )
-  }
+        {type === "login" && errorMessage && (
+          <p className="error-message" style={errorMessageStyle}>{errorMessage}</p>
+        )}
       </div>
     </div>
   );
