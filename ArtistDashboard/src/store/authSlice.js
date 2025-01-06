@@ -44,7 +44,6 @@ export const {setUserData,setStatus,resetStatus,setToken,setProfile,setUpdateUse
 export default authSlice.reducer
 
 //signup
-//signup
 export function register(data) {
     return async function registerUserThunk(dispatch) {
         dispatch(setStatus(STATUS.LOADING));
@@ -52,7 +51,7 @@ export function register(data) {
             const response = await API.post("/api/artist/register", data);
             console.log(response);
             if (response.status === 200) {
-                dispatch(setUserData(response.data.data)); // Store user data after registration
+                dispatch(setUserData(response.data.data)); 
                 dispatch(setStatus(STATUS.SUCCESS));
             } else {
                 dispatch(setStatus(STATUS.ERROR));

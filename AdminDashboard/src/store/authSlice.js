@@ -40,11 +40,14 @@ export function login(data){
     return async function loginThunk(dispatch) {
         dispatch(setStatus(STATUS.LOADING));
         try{
-            const response=await API.post("/api/user/login",data);
+            const response=await API.post("/api/login",data);
             if(response.status===200){
                 const {token,data}=response.data;
                 console.log(data);
                 console.log(token);
+                if (data.role !== 'admin') {
+                    throw new Error('Only admins can log in.');
+                  }
                 dispatch(setStatus(STATUS.SUCCESS));
                 dispatch(setUserdata(data));
                 dispatch(setToken(token));
@@ -64,7 +67,7 @@ export function ArtistProfile(){
     return async function userProfileThunk(dispatch) {
         dispatch(setStatus(STATUS.LOADING));
         try{
-            const response=await APIAuthenticated.get("/api/artist/profile");
+            const response=await APIAuthenticated.get("/api/user/profile");
             console.log(response);
             if(response.status===200){
                 const {data}=response.data;

@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { userProfile } from '../../../store/authSlice';
+import { ArtistProfile } from '../../../store/authSlice';
 
 const Profile = () => {
     const dispatch=useDispatch();
     const {profile}=useSelector((state)=>state.auth)
     useEffect(()=>{
-        dispatch(userProfile());
+        dispatch(ArtistProfile());
     },[])
     console.log(profile)
 

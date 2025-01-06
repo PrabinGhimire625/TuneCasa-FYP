@@ -24,7 +24,7 @@ const Form = ({ type, onSubmit }) => {
     const { name, files, value } = e.target;
     if (name === "image") {
       const file = files[0];
-      setPreviewImage(URL.createObjectURL(file)); // Set preview URL
+      setPreviewImage(URL.createObjectURL(file)); 
       setUserData({
         ...userData,
         [name]: file,
@@ -49,7 +49,7 @@ const Form = ({ type, onSubmit }) => {
     } else if (status === STATUS.ERROR) {
       setErrorMessage("Please enter your correct email and password");
     } else {
-      setErrorMessage(""); // Clear error message for other states
+      setErrorMessage(""); 
     }
   }, [status, dispatch]);
   
@@ -62,7 +62,7 @@ const Form = ({ type, onSubmit }) => {
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-stone-900">
-      <div className="max-w-md w-full bg-white shadow-lg rounded-lg p-5">
+      <div className="max-w-md w-full mt-[-110px] bg-white shadow-lg rounded-lg p-5">
         <div className="text-center">
           <img
           src={assets.tunecasaLogo}
@@ -89,39 +89,12 @@ const Form = ({ type, onSubmit }) => {
             <span className="ml-4" >
               {type==="register" ? (<span>Sign Up</span>) : (<span>Login</span>)} with Google</span>
           </button>
-          {/* <button className="w-full max-w-xs font-bold shadow-sm rounded-lg py-3 bg-indigo-100 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out focus:outline-none hover:shadow focus:shadow-sm focus:shadow-outline mt-5">
-            <div className="bg-white p-1 rounded-full">
-              <svg className="w-6" viewBox="0 0 32 32">
-                <path fillRule="evenodd" d="M16 4C9.371 4 4 9.371 4 16c0 5.3 3.438 9.8 8.207 11.387.602.11.82-.258.82-.578 0-.286-.011-1.04-.015-2.04-3.34.723-4.043-1.609-4.043-1.609-.547-1.387-1.332-1.758-1.332-1.758-1.09-.742.082-.726.082-.726 1.203.086 1.836 1.234 1.836 1.234 1.07 1.836 2.808 1.305 3.492 1 .11-.777.422-1.305.762-1.605-2.664-.301-5.465-1.332-5.465-5.93 0-1.313.469-2.383 1.234-3.223-.121-.3-.535-1.523.117-3.175 0 0 1.008-.32 3.301 1.23A11.487 11.487 0 0116 9.805c1.02.004 2.047.136 3.004.402 2.293-1.55 3.297-1.23 3.297-1.23.656 1.652.246 2.875.12 3.175.77.84 1.231 1.91 1.231 3.223 0 4.61-2.804 5.621-5.476 5.922.43.367.812 1.101.812 2.219 0 1.605-.011 2.898-.011 3.293 0 .32.214.695.824.578C24.566 25.797 28 21.3 28 16c0-6.629-5.371-12-12-12z" />
-              </svg>
-            </div>
-            <span className="ml-4">Sign Up with GitHub</span>
-          </button> */}
         </div>
 
         {/* Or sign up with email */}
         <div className="my-2 border-b text-center">
           <div className="leading-none px-2 inline-block text-sm text-black tracking-wide font-bold bg-white transform translate-y-1/2">Or {type==="register" ? (<span>sign up</span>):(<span>login</span>)} with e-mail</div>
         </div>
-
-           {/* {type === "register" && (
-          <div className="flex justify-center items-center">
-            <label className="cursor-pointer">
-              <img
-                className="object-cover rounded-full shadow-lg bg-indigo-50 text-indigo-600 h-20 w-20 md:h-28 md:w-28"
-                src={previewImage || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQD116U9ZCk8bEaanCeB5rSCC2uqY5Ka_2_EA&s"} // Display placeholder if no image is selected
-                alt="fdsg"
-              />
-              <input
-                onChange={handleChange}
-                type="file"
-                accept="image/*"
-                name="image"
-                className="hidden"
-              />
-            </label>
-          </div>
-        )} */}
         
         <form className="flex flex-col gap-4 mt-5" onSubmit={handleSubmit}>
           {type === "register" && (

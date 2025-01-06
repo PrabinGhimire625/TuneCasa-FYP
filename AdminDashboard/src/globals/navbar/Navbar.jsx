@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { setToken, userProfile } from '../../store/authSlice';
+import { ArtistProfile, setToken } from '../../store/authSlice';
 import tunecasaLogo from "../../assets/tunecasaLogo.png"
-
 
 const Navbar = () => {
     const dispatch=useDispatch();
@@ -11,7 +10,7 @@ const Navbar = () => {
     const {token,status, profile}=useSelector((state)=>state.auth);
     console.log(token);
     console.log(status);
- 
+
 
     const [isLoggedIn, setIsloggedIn]=useState(false);
 
@@ -26,7 +25,7 @@ const Navbar = () => {
       }, [token,dispatch]);
 
   useEffect(()=>{
-        dispatch(userProfile());
+        dispatch(ArtistProfile());
     },[dispatch])
     console.log(profile)
     const firstLetter =   profile?.username?.slice(0, 1) || '';
@@ -54,53 +53,64 @@ const Navbar = () => {
                             <input
                                 type="text"
                                 placeholder="Search something..."
-                                className="w-full bg-gray-100 focus:bg-transparent px-6 rounded h-11 outline-[#333] text-sm transition-all"
+                                className="w-full bg-stone-800 focus:bg-transparent px-6 rounded h-11 text-white text-sm transition-all"
                             />
-                            <div className="absolute mt-1 w-full bg-white border border-gray-200 shadow-md z-50 hidden">
-                                <ul>
-                                    <li className="px-4 py-2 border-b border-gray-200">Search Result 1</li>
-                                    <li className="px-4 py-2 border-b border-gray-200">Search Result 2</li>
-                                    <li className="px-4 py-2">No results found</li>
-                                </ul>
-                            </div>
+                           
                         </div>
+
                         <div className="ml-auto max-lg:mt-4">
                             <ul className="flex items-center">
+                                {/* Notification Item */}
+                                <li className="relative">
+                                    <Link to="/arti"
+                                        type="button"
+                                        className="flex items-center justify-center w-8 h-8 rounded-full bg-black text-white text-sm font-medium"
+                                    >
+                                        🔔
+                                    </Link>
+                                    {/* Optional Notification Badge */}
+                                    <span className="absolute top-0 right-0 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold leading-none text-white bg-red-600 rounded-full">
+                                        3
+                                    </span>
+                                </li>
+                                
+                                {/* Login or Logout Section */}
                                 {
-                                    !isLoggedIn ?(
+                                    !isLoggedIn ? (
                                         <>
                                             <Link to="/login">
-                                                <button className="max-sm:hidden flex items-center justify-center text-[15px] max-lg:py-3 px-4 font-medium text-white bg-blue-700 cursor-pointer rounded-md h-8">
+                                                <button className="max-sm:hidden flex items-center justify-center text-sm max-lg:py-3 px-4 font-medium text-white bg-blue-700 hover:bg-blue-800 cursor-pointer rounded-md h-8 ml-4">
                                                     Login
                                                 </button>
                                             </Link>
                                         </>
-                                    ):(
+                                    ) : (
                                         <>
-                                        
-                                        <button onClick={handleLogout} className="max-sm:hidden flex items-center justify-center text-[15px] max-lg:py-3 px-4 font-medium text-white bg-red-700 cursor-pointer rounded-md h-8">
-                                                    Logout
-                                        </button>        
-                                        
-                                        <Link to="/profile">
-                                            <li className="max-sm:hidden flex text-[15px] max-lg:py-2 px-3 font-medium text-[#333] cursor-pointer">
-                                                <div className="relative ml-3">
-                                                    <div>
+                                            <button
+                                                onClick={handleLogout}
+                                                className="max-sm:hidden flex items-center justify-center text-sm max-lg:py-3 px-4 ml-10 font-medium text-white bg-red-700 hover:bg-red-800 cursor-pointer rounded-md h-8 ml-4"
+                                            >
+                                                Logout
+                                            </button>
+                                            <Link to="/profile">
+                                                <li className="max-sm:hidden flex items-center text-sm max-lg:py-2 px-3 font-medium text-gray-900 cursor-pointer ml-4">
+                                                    <div className="relative ml-3">
                                                         <button
                                                             type="button"
-                                                            className="relative flex items-center justify-center h-8 w-8 rounded-full bg-gray-800 text-white text-sm font-bold"
+                                                            className="relative flex items-center justify-center h-8 w-8 rounded-full bg-white text-black text-sm font-bold"
                                                         >
                                                             {firstLetter.toUpperCase()}
                                                         </button>
                                                     </div>
-                                                </div>
-                                            </li>
-                                        </Link>
+                                                </li>
+                                            </Link>
                                         </>
                                     )
                                 }
                             </ul>
                         </div>
+
+
                     </div>
                 </section>
             </header>

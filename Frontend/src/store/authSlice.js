@@ -69,7 +69,7 @@ export function login(data){
     return async function loginThunk(dispatch) {
         dispatch(setStatus(STATUS.LOADING));
         try{
-            const response=await API.post("/api/user/login",data);
+            const response=await API.post("/api/login",data);
             if(response.status===200){
                 const {token,data}=response.data;
                 console.log(token)

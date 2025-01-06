@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import React, { useState } from "react";
 
 const Sidebar = () => {
-  // State to toggle the display of login and register links
   const [showOptions, setShowOptions] = useState(false);
 
   // Function to toggle the state
@@ -20,7 +19,7 @@ const Sidebar = () => {
         <div className="flex flex-col flex-1 overflow-y-auto">
           <nav className="flex-1 px-2 py-4 bg-stone-950">
             {/* Dashboard Link */}
-            <Link to="/" className="flex items-center px-4 py-2 text-gray-100 hover:bg-gray-700">
+            <Link to="/" className="flex items-center text-[1.6rem] px-4 py-2 text-gray-100 hover:bg-gray-700">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
               </svg>
@@ -28,7 +27,7 @@ const Sidebar = () => {
             </Link>
 
             {/* Tables Link */}
-            <Link to="/tables" className="flex items-center px-4 py-2 mt-2 text-gray-100 hover:bg-gray-700">
+            <Link to="/tables" className="flex items-center text-[1.6rem] px-4 py-2 mt-2 text-gray-100 hover:bg-gray-700">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M3 14h18M4 6h16a1 1 0 011 1v10a1 1 0 01-1 1H4a1 1 0 01-1-1V7a1 1 0 011-1z" />
               </svg>
@@ -39,7 +38,7 @@ const Sidebar = () => {
             <div>
               <div
                 onClick={toggleOptions}
-                className="flex items-center px-4 py-2 mt-2 text-gray-100 hover:bg-gray-700 cursor-pointer">
+                className="flex items-center px-4 py-2 mt-2 text-[1.6rem] text-gray-100 hover:bg-gray-700 cursor-pointer">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 20h9M4 4h16v16H4V4zm6 9h4m-4-4h4m1 9H9m6-12v4H9v-4h6z" />
                 </svg>
@@ -66,7 +65,7 @@ const Sidebar = () => {
             </div>
 
             {/* Settings Link */}
-            <a href="#" className="flex items-center px-4 py-2 mt-2 text-gray-100 hover:bg-gray-700">
+            <a href="#" className="flex items-center px-4 py-2 text-[1.6rem] mt-2 text-gray-100 hover:bg-gray-700">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>

@@ -5,9 +5,8 @@ import { Link } from 'react-router-dom'
 const Sidebar = () => {
   return (
     <>
-      <div className='bg-[hsl(137,100%,11%)] min-h-screen pl-[4vw] pr-[4vw]'>
-        
-        {/* artist profile image */}
+      <div className='bg-black min-h-screen pl-[4vw] pr-[4vw]'>
+      
         <div className="flex justify-center  mt-10">
               <label className="cursor-pointer">
                 <img

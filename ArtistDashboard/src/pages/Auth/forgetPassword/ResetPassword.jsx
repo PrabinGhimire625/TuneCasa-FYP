@@ -11,7 +11,6 @@ const ResetPassword = () => {
   const handleSubmit = async (e) => {
     e.preventDefault(); 
 
-
     const resetData = {
       email,
       newPassword,
@@ -20,6 +19,7 @@ const ResetPassword = () => {
 
     try {
       const response = await axios.post("http://localhost:3000/api/user/resetPassword", resetData);
+      
       if (response.status === 200) {
         alert("Password reset successfully!");
         navigate("/login"); 

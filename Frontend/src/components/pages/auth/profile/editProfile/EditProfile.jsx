@@ -22,7 +22,7 @@ const EditProfile = () => {
     if (profile) {
       setUserData({
         username: profile.username || "",
-        image: null, // Keep null to handle file input changes
+        image: null, 
       });
     }
   }, [profile]);
@@ -48,9 +48,9 @@ const EditProfile = () => {
     <div className="h-screen bg-black">
       <div className="h-[90%] flex">
         <Sidebar />
-        <div className="flex items-start justify-center flex-1 bg-gray-500">
+        <div className="flex items-start justify-center flex-1 bg-stone-900">
           <form
-            className="flex items-start bg-black px-12 py-12 rounded-lg shadow-lg ml-10 relative"
+            className="flex items-start bg-stone-800 px-12 py-12 rounded-lg shadow-lg   mx-5 relative"
             onSubmit={handleSubmit}
           >
             {/* Profile Image Upload */}
@@ -89,13 +89,22 @@ const EditProfile = () => {
               />
             </div>
 
-            {/* Save Button */}
+             {/* Save Button */}
             <button
               type="submit"
-              className="absolute bottom-4 right-4 bg-indigo-600 hover:bg-indigo-800 text-white font-bold py-2 px-6 rounded-lg shadow-lg transition"
+              className="absolute bottom-16 right-4 bg-indigo-600 hover:bg-indigo-800 text-white font-bold py-2 px-6 rounded-lg shadow-lg transition"
             >
               Save
             </button>
+
+            {/* Delete Button */}
+            <button
+              type="button"
+              className="absolute bottom-4 right-4 bg-red-600 hover:bg-red-800 text-white font-bold py-2 px-6 rounded-lg shadow-lg transition"
+            >
+              Request to be a user
+            </button>
+            
           </form>
         </div>
       </div>

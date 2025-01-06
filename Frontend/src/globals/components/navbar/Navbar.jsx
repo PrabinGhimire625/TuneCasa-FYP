@@ -24,25 +24,22 @@ const Navbar = () => {
   }
 
 
-  const [dropdownOpen, setDropdownOpen] = useState(false); // for profile dropdown
-  const dropdownRef = useRef(null); // reference to the dropdown
-
+  const [dropdownOpen, setDropdownOpen] = useState(false); 
+  const dropdownRef = useRef(null); 
   // Function to handle click outside the dropdown
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-      setDropdownOpen(false); // close the dropdown
+      setDropdownOpen(false); 
     }
   };
 
   useEffect(() => {
-    // Add event listener when the dropdown is open
     if (dropdownOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     } else {
       document.removeEventListener('mousedown', handleClickOutside);
     }
 
-    // Cleanup event listener on unmount
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };

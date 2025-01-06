@@ -1,12 +1,41 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
 import { assets } from '../../assets/artist-assets/assets'
-import {Link} from "react-router-dom"
+import {setToken} from "../../store/authSlice"
+
 
 const Navbar = () => {
+    const {navigate}=useNavigate();
+    const dispatch=useDispatch();
+    const {token,status}=useSelector((state)=>state.auth);
+    console.log(token);
+    console.log(status);
+
+    const [isLoggedIn, setIsloggedIn]=useState(false);
+
+    useEffect(() => {
+        const localStorageToken = localStorage.getItem('token');
+        console.log(localStorageToken)
+        console.log(token)
+        if(localStorageToken){
+         dispatch(setToken(localStorageToken))
+        }
+        setIsloggedIn(!!localStorageToken || !!token);
+        }, [token,dispatch]
+    );
+
+       // handle logout
+       const handleLogout=()=>{
+        localStorage.removeItem('token')
+        setIsloggedIn(false);
+        navigate("/login");
+      }
+
   return (
     <>
       <header className="shadow-md font-[sans-serif] tracking-wide relative z-50">
-    <section className="md:flex lg:items-center relative py-3 lg:px-10 px-4 border-gray-200 border-b bg-white lg:min-h-[80px] max-lg:min-h-[60px]">
+    <section className="md:flex lg:items-center relative py-3 lg:px-10 px-4 border-gray-200 border-b bg-black lg:min-h-[80px] max-lg:min-h-[60px]">
         <a href="#" className="mr-10 max-sm:w-full max-sm:mb-3 shrink-0">
         <div className="w-[50px] h-[50px] rounded-full overflow-hidden">
             <img 
@@ -35,20 +64,39 @@ const Navbar = () => {
             </div>
             <div className="ml-auto max-lg:mt-4">
                 <ul className="flex items-center">
-                    <li className="mr-4">
-                        <Link to="/login">
-                            <button className="max-sm:hidden flex items-center justify-center text-[15px] max-lg:py-3 px-4 font-medium text-white bg-blue-700 cursor-pointer rounded-md h-8">
-                                Login
-                            </button>
-                        </Link>
-                    </li>
-                    <li>
-                        <a href="/profile">
-                            <button className="relative flex items-center justify-center h-8 w-8 rounded-full bg-gray-800 text-white text-sm font-bold">
-                                A
-                            </button>
-                        </a>
-                    </li>
+                {
+                    !isLoggedIn ? (
+                        <>
+                            <li className="mr-4">
+                                <Link to="/login">
+                                    <button className="max-sm:hidden flex items-center justify-center text-[15px] max-lg:py-3 px-4 font-medium text-white bg-blue-700 cursor-pointer rounded-md h-8">
+                                        Login
+                                    </button>
+                                </Link>
+                            </li>
+                        </>
+
+                    ):(
+                        <>
+                        <li className="mr-4">
+                            <Link to="#">
+                                <button onClick={handleLogout} className="max-sm:hidden flex items-center justify-center text-[15px] max-lg:py-3 px-4 font-medium text-white bg-red-700 cursor-pointer rounded-md h-8">
+                                    Logout
+                                </button>
+                            </Link>
+                        </li>
+                        <li>
+                            <a href="/profile">
+                                <button className="relative flex items-center justify-center h-8 w-8 rounded-full bg-gray-800 text-white text-sm font-bold">
+                                    P
+                                </button>
+                            </a>
+                        </li>
+                        
+                        </>
+
+                    )
+                }
                 </ul>
             </div>
         </div>

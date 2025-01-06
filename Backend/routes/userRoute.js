@@ -1,6 +1,6 @@
 import {Router} from "express";
 import errorHandler from "../services/catchAsyncError.js";
-import { approveArtist, artistLogin, fetchAllUser, forgetPassword, login, profile, register, registerArtist, rejectArtist, resetPassword, verifyOtp } from "../controllers/userController.js";
+import { approveArtist, artistLogin, fetchAllUser, fetchPendingArtists, forgetPassword, login, profile, register, registerArtist, rejectArtist, resetPassword, verifyOtp } from "../controllers/userController.js";
 import { isAuthenticated } from "../middleware/authMiddleware.js";
 const router=Router();
 
@@ -10,7 +10,7 @@ router.route("/user/register").post((req, res, next) => {  //user register
     next();
 }, errorHandler(register));
 
-router.route("/user/login").post(errorHandler(login))
+router.route("/login").post(errorHandler(login))
 router.route("/user/profile").get(isAuthenticated,errorHandler(profile))
 router.route("/user").get(errorHandler(fetchAllUser))
 router.route("/user/forgetPassword").post(errorHandler(forgetPassword))
@@ -23,6 +23,7 @@ router.route("/artist/register").post((req, res, next) => {
     next();
 }, errorHandler(registerArtist));
 router.route("/artist/login").post(errorHandler(artistLogin))
+router.route("/artist/pendingArtist").get(errorHandler(fetchPendingArtists))
 
 
 //admin route

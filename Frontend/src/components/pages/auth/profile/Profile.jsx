@@ -19,8 +19,8 @@ const Profile = () => {
       <div className="h-[90%] flex">
         <Sidebar />
 
-        <div className="flex items-start justify-center flex-1 bg-gray-500">
-          <div className="w-full flex items-start bg-black px-12 py-12 rounded-lg shadow-lg ml-10 mt-2 mr-5">
+        <div className="flex items-start justify-center flex-1 bg-stone-900">
+          <div className="w-full flex items-start bg-stone-800 px-12 py-12 rounded-lg shadow-lg ml-10 mt-2 mr-5">
             {/* Profile Image */}
             <div className="relative">
             <Link to={`/editProfile/${profile?._id}`}>

@@ -8,6 +8,8 @@ import Users from './pages/sidebar/Tables/users/Users'
 import Login from './pages/form/auth/Login'
 import Profile from './pages/form/auth/Profile'
 import Navbar from './globals/navbar/Navbar'
+import ForgetPassword from '../../ArtistDashboard/src/pages/Auth/forgetPassword/ForgetPassword'
+
 
 function App() {
 
@@ -20,7 +22,6 @@ function App() {
       <Route path='/' element={<Landing/>}/>
       <Route path='/login' element={<Login/>}/>
       <Route path='/profile' element={<Profile/>}/>
-
       <Route path='/tables' element={<Tables/>}/>
       <Route path='/users' element={<Users/>}/>
     </Routes>

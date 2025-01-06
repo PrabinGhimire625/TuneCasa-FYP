@@ -88,6 +88,7 @@ export const fetchAllUser=async(req,res)=>{
  }
 }
 
+
 //fetch single user
 export const fetchSingleUser=async(req, res)=>{
   const id=req.params.id;
@@ -299,6 +300,21 @@ export const artistLogin = async (req, res) => {
     res.status(200).json({message: 'Login successful',token,artist: {username: user.username,email: user.email,bio: artist.bio,},});
 };
 
+//fetch all pending artist
+export const fetchPendingArtists = async (req, res) => {
+  try {
+    const pendingArtists = await Artist.find({ status: "pending" }).populate("userId", "username email");
+
+    if (!pendingArtists.length) {
+      return res.status(404).json({ message: "No pending artists found" });
+    }
+
+    res.status(200).json({ success: true, data: pendingArtists });
+  } catch (error) {
+    console.error("Error fetching pending artists:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
 
 //admin update artist status
 // export const updateArtistStatus = async (req, res) => { 

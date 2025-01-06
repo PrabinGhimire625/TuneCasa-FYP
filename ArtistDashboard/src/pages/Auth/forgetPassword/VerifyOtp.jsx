@@ -22,7 +22,7 @@ const VerifyOtp = () => {
       }
     } catch (err) {
       console.log("Error:", err);
-      alert(err.response?.data?.message || "Error verifying OTP. Please try again.");
+      alert(err.response?.data?.message || "Error verifying OTP. Please try again."); 
     }
   };
 

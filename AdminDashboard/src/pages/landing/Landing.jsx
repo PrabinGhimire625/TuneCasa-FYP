@@ -1,7 +1,7 @@
 import React from 'react';
 import Sidebar from '../sidebar/Sidebar';
 import Navbar from '../../globals/navbar/Navbar';
-import Dashboard from '../dashboard/Dashboard';
+import ArtistRequest from "../../pages/artistRequest/ArtistRequest"
 const Landing = () => {
   return (
    <>
@@ -11,7 +11,7 @@ const Landing = () => {
           <div className="flex flex-col flex-1 overflow-y-auto min-h-screen">
 
               <div className="p-4">
-                <Dashboard/>
+                <ArtistRequest/>
               
               
               </div>
