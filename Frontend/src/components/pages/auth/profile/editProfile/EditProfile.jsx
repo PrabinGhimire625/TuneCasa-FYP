@@ -102,7 +102,7 @@ const EditProfile = () => {
               type="button"
               className="absolute bottom-4 right-4 bg-red-600 hover:bg-red-800 text-white font-bold py-2 px-6 rounded-lg shadow-lg transition"
             >
-              Request to be a user
+              Request to be a artist
             </button>
             
           </form>

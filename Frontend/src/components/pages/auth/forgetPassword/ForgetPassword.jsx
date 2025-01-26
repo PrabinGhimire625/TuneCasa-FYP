@@ -18,7 +18,7 @@ const ForgetPassword = () => {
       })
       .catch((err) => {
         console.error("Error:", err); 
-        alert("Failed to send reset link. Please try again later.");
+        alert("Email is not regster in the system");
       });
   };
 
