@@ -1,23 +1,35 @@
-import axios from "axios"
-//use axios and make instance and call whenever needed
-const API=axios.create({
-    baseURL:'http://localhost:3000/',
-    headers:{
-        'Content-Type': 'application/json', 
-        'Accept':'application/json',  
+import axios from "axios";
+
+// Base API instance
+const API = axios.create({
+    baseURL: 'http://localhost:3000/',
+    headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
     }
-})
+});
 
-
-//use this api if the token is needed
+// Authenticated API instance
 const APIAuthenticated = axios.create({
-    baseURL : 'http://localhost:3000/',
-    headers : {
-        'Content-Type' : 'application/json',
-        'Accept' : 'application/json',
-        'Authorization' : `${localStorage.getItem('token')}`  
+    baseURL: 'http://localhost:3000/',
+    headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
     }
-})
+});
 
+// Interceptor to update token dynamically before every request
+APIAuthenticated.interceptors.request.use(
+    (config) => {
+        const token = localStorage.getItem('token');  // Fetch the latest token
+        if (token) {
+            config.headers['Authorization'] = `${token}`;
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
 
-export {API, APIAuthenticated}
+export { API, APIAuthenticated };

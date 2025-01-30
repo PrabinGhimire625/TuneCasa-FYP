@@ -1,15 +1,17 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { userProfile } from "../../../../store/authSlice";
+import { userProfile } from "../../../store/authSlice"
 import { Link } from "react-router-dom";
-import Sidebar from "../../sidebar/Sidebar";
 
 const Profile = () => {
   const dispatch = useDispatch();
   const { profile, status } = useSelector((state) => state.auth);
+  console.log(profile);
+  console.log(status);
   
   useEffect(() => {
     const token = localStorage.getItem('token');
+    console.log(token)
     if (token) {
       dispatch(userProfile()); // Fetch user profile only if the token exists
     }
@@ -22,8 +24,6 @@ const Profile = () => {
   return (
     <div className="h-screen bg-black ">
       <div className="h-[90%] flex">
-        <Sidebar />
-
         <div className="flex items-start justify-center flex-1 bg-stone-900">
           <div className="w-full flex items-start bg-stone-800 px-12 py-12 rounded-lg shadow-lg ml-10 mt-2 mr-5">
             {/* Profile Image */}
@@ -47,7 +47,6 @@ const Profile = () => {
                   {profile?.username || "Guest"}
                 </h1>
               </Link>
-             
             </div>
           </div>
         </div>

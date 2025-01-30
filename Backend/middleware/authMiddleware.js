@@ -4,11 +4,11 @@ import jwt from "jsonwebtoken"
 //to verify the user from the token
 export const isAuthenticated=async(req, res, next)=>{
     const token=req.headers.authorization
-    console.log(token)
+    
     if(!token){
         return res.status(401).json({message : "Token is not found"})
     }
-    //decoded will contain the payload (like: Id, username)
+
     jwt.verify(token, process.env.JWT_SECRET, async(err,decoded)=>{
         if(err){
             return res.status(403).json({message :"Invalid token"})

@@ -69,7 +69,7 @@ export const profile = async (req, res) => {
         message: "Successfully fetched the user profile",
         data: profileData,
       });
-    } else {
+    } else {c
       res.status(404).json({ message: "Error fetching user profile", data: [] });
     }
   } catch (err) {
@@ -125,6 +125,7 @@ export const deleteUser=async(req,res)=>{
 
 export const updateUser = async (req, res) => {
     const { username } = req.body;
+    console.log(username);
     const userId = req.params.id;
     const imageFile = req.files?.image?.[0]; 
    
@@ -295,9 +296,9 @@ export const artistLogin = async (req, res) => {
     }
 
     // Generate a JWT token
-    const token = jwt.sign({ artistId: artist._id, userId: user._id },process.env.JWT_SECRET,{ expiresIn: '1h' });
+    const token = jwt.sign({ id: user.id },process.env.JWT_SECRET,{ expiresIn: '1h' });
 
-    res.status(200).json({message: 'Login successful',token,artist: {username: user.username,email: user.email,bio: artist.bio,},});
+    res.status(200).json({message: 'Login successful',token,data: {username: user.username,email: user.email, bio: artist.bio}});
 };
 
 //fetch all pending artist
@@ -376,3 +377,38 @@ export const rejectArtist = async (req, res) => {
     res.status(200).json({ message: 'Artist has been rejected successfully and notifications sent.' });
   
 };
+
+//artist profile
+export const artistProfile = async (req, res) => {
+  const id = req.user.id; // The user ID from the JWT token
+  try {
+    // Find the user associated with the artist profile
+    const user = await User.findById(id);
+    
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Find the artist profile by userId
+    const artist = await Artist.findOne({ userId: user._id });
+    
+    if (artist) {
+      res.status(200).json({
+        message: "Successfully fetched the artist profile",
+        data: {
+          username: user.username,
+          email: user.email,
+          bio: artist.bio
+        },
+      });
+    } else {
+      res.status(404).json({ message: "Artist profile not found", data: [] });
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Internal server error", errorMessage: err.message });
+  }
+};
+
+
+

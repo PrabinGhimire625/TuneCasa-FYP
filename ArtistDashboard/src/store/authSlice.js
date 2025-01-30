@@ -17,6 +17,7 @@ const authSlice=createSlice({
         },
         setStatus(state,action){
             state.status=action.payload
+            console.log(state.status)
         },
         resetStatus(state){
             state.status=STATUS.LOADING
@@ -30,7 +31,7 @@ const authSlice=createSlice({
         },
         setUpdateUserProfile(state,action){
             const index=state.data.findIndex(item=>item.id===action.payload.id);
-            if(index!==-1){
+            if(index!==-1){c
                 state.data[index]={
                     ...state.data[index],
                     ...action.payload.data
@@ -62,7 +63,6 @@ export function register(data) {
     }
 }
 
-
 //login
 export function login(data){
     return async function loginThunk(dispatch) {
@@ -71,7 +71,9 @@ export function login(data){
             const response=await API.post("/api/artist/login",data);
             if(response.status===200){
                 const {token,data}=response.data;
+                console.log(data)
                 console.log(token)
+                dispatch(setProfile(data));
                 dispatch(setStatus(STATUS.SUCCESS));
                 dispatch(setToken(token));
                 localStorage.setItem('token',token);
@@ -86,13 +88,14 @@ export function login(data){
 
 //user profile
 export function userProfile(){
-    return async function userprofileThunk(dispatch) {
+    return async function userProfileThunk(dispatch) {
         dispatch(setStatus(STATUS.LOADING));
         try{
             const response=await APIAuthenticated.get("/api/user/profile");
-            console.log(response)
+            console.log(response);
             if(response.status===200){
                 const {data}=response.data;
+                console.log(data);
                 dispatch(setProfile(data));
                 dispatch(setStatus(STATUS.SUCCESS));  
             }else{
@@ -106,29 +109,29 @@ export function userProfile(){
 
 
 //update user
-export function updateUserProfile({ id, userData }) {
-    return async function updateUserProfileThunk(dispatch) {
-      dispatch(setStatus(STATUS.LOADING));
-      try {
-        const response = await APIAuthenticated.patch(`/api/user/${id}`, userData, {
-          headers: {
-            "Content-Type": "multipart/form-data", 
-          },
-        });
+// export function updateUserProfile({ id, userData }) {
+//     return async function updateUserProfileThunk(dispatch) {
+//       dispatch(setStatus(STATUS.LOADING));
+//       try {
+//         const response = await APIAuthenticated.patch(`/api/user/profile/${id}`, userData, {
+//           headers: {
+//             "Content-Type": "multipart/form-data", 
+//           },
+//         });
   
-        if (response.status === 200) {
-          const { data } = response.data;
-          dispatch(setUpdateUserProfile({ id, data })); 
-          dispatch(setStatus(STATUS.SUCCESS));
-        } else {
-          dispatch(setStatus(STATUS.ERROR));
-          throw new Error("Update failed");
-        }
-      } catch (err) {
-        dispatch(setStatus(STATUS.ERROR));
-        console.error("Error updating profile:", err);
-        throw err;
-      }
-    };
-  }
+//         if (response.status === 200) {
+//           const { data } = response.data;
+//           dispatch(setUpdateUserProfile({ id, data })); 
+//           dispatch(setStatus(STATUS.SUCCESS));
+//         } else {
+//           dispatch(setStatus(STATUS.ERROR));
+//           throw new Error("Update failed");
+//         }
+//       } catch (err) {
+//         dispatch(setStatus(STATUS.ERROR));
+//         console.error("Error updating profile:", err);
+//         throw err;
+//       }
+//     };
+//   }
   

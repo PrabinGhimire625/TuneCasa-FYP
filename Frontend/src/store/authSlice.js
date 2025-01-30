@@ -63,7 +63,6 @@ export function register(data) {
     }
 }
 
-
 //login
 export function login(data){
     return async function loginThunk(dispatch) {
@@ -72,7 +71,9 @@ export function login(data){
             const response=await API.post("/api/login",data);
             if(response.status===200){
                 const {token,data}=response.data;
+                console.log(data);
                 console.log(token)
+                dispatch(setProfile(data));
                 dispatch(setStatus(STATUS.SUCCESS));
                 dispatch(setToken(token));
                 localStorage.setItem('token',token);
@@ -87,7 +88,7 @@ export function login(data){
 
 //user profile
 export function userProfile(){
-    return async function userprofileThunk(dispatch) {
+    return async function userProfileThunk(dispatch) {
         dispatch(setStatus(STATUS.LOADING));
         try{
             const response=await APIAuthenticated.get("/api/user/profile");
@@ -111,7 +112,7 @@ export function updateUserProfile({ id, userData }) {
     return async function updateUserProfileThunk(dispatch) {
       dispatch(setStatus(STATUS.LOADING));
       try {
-        const response = await APIAuthenticated.patch(`/api/user/${id}`, userData, {
+        const response = await APIAuthenticated.patch(`/api/user/profile/${id}`, userData, {
           headers: {
             "Content-Type": "multipart/form-data", 
           },
