@@ -17,6 +17,7 @@ import ForgetPassword from "./pages/Auth/forgetPassword/ForgetPassword";
 import VerifyOtp from "./pages/Auth/forgetPassword/VerifyOtp";
 import ResetPassword from "./pages/Auth/forgetPassword/ResetPassword";
 import Profile from "./pages/Auth/profile/Profile";
+import EditProfile from "./pages/Auth/profile/EditProfile";
 
 function App() {
   return (
@@ -32,7 +33,7 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/profile" element={<Profile />} />
-
+                <Route path="/editProfile/:id" element={<EditProfile/>}/>
                 <Route path="/forgetPassword" element={<ForgetPassword/>}/>
                 <Route path="/verifyOtp" element={<VerifyOtp/>}/>
                 <Route path="/resetPassword" element={<ResetPassword/>}/>

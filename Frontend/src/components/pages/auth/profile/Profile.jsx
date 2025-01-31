@@ -1,12 +1,14 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { userProfile } from "../../../../store/authSlice";
+import { resetStatus, userProfile } from "../../../../store/authSlice";
 import { Link } from "react-router-dom";
 import Sidebar from "../../sidebar/Sidebar";
+import { STATUS } from "../../../../globals/components/enumStatus/Status";
 
 const Profile = () => {
   const dispatch = useDispatch();
   const { profile, status } = useSelector((state) => state.auth);
+  console.log("Status is printing : " , status)
   
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -15,6 +17,7 @@ const Profile = () => {
     }
   }, [dispatch]);
 
+ 
   if (status === "loading") {
     return <div className="text-white">Loading...</div>;
   }

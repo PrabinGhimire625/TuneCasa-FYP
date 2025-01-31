@@ -2,12 +2,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import { assets } from '../../../assets/frontend-assets/assets';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { userProfile } from '../../../store/authSlice';
 
 const Navbar = () => {
   const navigate = useNavigate();
   const dispatch=useDispatch();
-  const {token}=useSelector((state)=>state.auth);
+  const {token, profile}=useSelector((state)=>state.auth);
   const [isLoggedIn, setIsLoggedIn]=useState(false);
+  console.log(profile)
 
   useEffect(() => {
     const localStorageToken = localStorage.getItem('token');
@@ -22,6 +24,14 @@ const Navbar = () => {
     setIsLoggedIn(false);
     navigate("/login");
   }
+
+ useEffect(() => {
+       const token = localStorage.getItem('token');
+       console.log(token)
+       if (token) {
+         dispatch((userProfile())); // Fetch user profile only if the token exists
+       }
+     }, [dispatch]);
 
 
   const [dropdownOpen, setDropdownOpen] = useState(false); 
@@ -76,7 +86,7 @@ const Navbar = () => {
                 className='bg-purple-500 text-black w-7 h-7 rounded-full flex items-center justify-center cursor-pointer mr-12'
                 onClick={() => setDropdownOpen(!dropdownOpen)}
               >
-                P
+                {profile.username ? profile.username.charAt(0).toUpperCase() : 'P'}
               </Link>
               {/* Dropdown Menu */}
               <ul

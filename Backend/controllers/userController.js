@@ -396,9 +396,11 @@ export const artistProfile = async (req, res) => {
       res.status(200).json({
         message: "Successfully fetched the artist profile",
         data: {
+          id:user._id,
           username: user.username,
           email: user.email,
-          bio: artist.bio
+          bio: artist.bio,
+          image:user.image
         },
       });
     } else {

@@ -2,17 +2,28 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { assets } from '../../assets/artist-assets/assets'
-import {setToken} from "../../store/authSlice"
+import {artistProfile, setToken} from "../../store/authSlice"
 
 
 const Navbar = () => {
     const {navigate}=useNavigate();
     const dispatch=useDispatch();
-    const {token,status}=useSelector((state)=>state.auth);
+    const {token,status,profile}=useSelector((state)=>state.auth);
     console.log(token);
     console.log(status);
+    console.log(profile)
+    
 
     const [isLoggedIn, setIsloggedIn]=useState(false);
+
+     useEffect(() => {
+       const token = localStorage.getItem('token');
+       console.log(token)
+       if (token) {
+         dispatch(artistProfile()); // Fetch user profile only if the token exists
+       }
+     }, [dispatch]);
+
 
     useEffect(() => {
         const localStorageToken = localStorage.getItem('token');
@@ -93,13 +104,12 @@ const Navbar = () => {
                             </Link>
                         </li>
                         <li>
-                            <a href="/profile">
-                                <button className="relative flex items-center justify-center h-8 w-8 rounded-full bg-gray-800 text-white text-sm font-bold">
-                                    B
-                                </button>
-                            </a>
-                        </li>
-                        
+                        <a href="/profile">
+                            <button className="relative flex items-center justify-center h-8 w-8 rounded-full bg-gray-800 text-white text-sm font-bold">
+                                {profile.username ? profile.username.charAt(0).toUpperCase() : 'P'}
+                            </button>
+                        </a>
+                        </li> 
                         </>
 
                     )

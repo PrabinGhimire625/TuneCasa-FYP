@@ -1,22 +1,28 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../../../sidebar/Sidebar";
 import { useDispatch, useSelector } from "react-redux";
-import { updateUserProfile, userProfile } from "../../../../../store/authSlice";
-import { useParams } from "react-router-dom";
+import { resetStatus, updateUserProfile, userProfile } from "../../../../../store/authSlice";
+import { useNavigate, useParams } from "react-router-dom";
+import { STATUS } from "../../../../../globals/components/enumStatus/Status";
 
 const EditProfile = () => {
   const { id } = useParams();
+  const navigate=useNavigate();
   const dispatch = useDispatch();
   const { profile, status } = useSelector((state) => state.auth);
+  console.log(status)
+  console.log(profile)
 
   const [userData, setUserData] = useState({
     username: "",
     image: null,
   });
-
+  
   useEffect(() => {
     dispatch(userProfile(id));
   }, [dispatch, id]);
+
+
 
   useEffect(() => {
     if (profile) {
@@ -35,14 +41,21 @@ const EditProfile = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
+    const formData = new FormData(); //FormData allows sending text and file in the same request.
     formData.append("username", userData.username);
     if (userData.image) formData.append("image", userData.image);
-
-    dispatch(updateUserProfile({ id, userData: formData }));
+  
+    dispatch(updateUserProfile({ id, userData: formData })).then(() => {
+      if (status === STATUS.SUCCESS) {
+        alert("User is updated successfully!");
+      } else {
+        alert("User is not updated successfully!");
+      }
+    });
   };
+  
 
   return (
     <div className="h-screen bg-black">
