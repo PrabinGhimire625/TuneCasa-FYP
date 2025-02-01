@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { STATUS } from "../globals/components/Status";
-import {API} from "../http/index"
+import {API, APIAuthenticated} from "../http/index"
 
 const albumSlice = createSlice({
     name: "album",
@@ -15,14 +15,18 @@ const albumSlice = createSlice({
         },
         setSingleAlbum(state, action) {
             state.singleAlbum = action.payload; 
+            console.log(  state.singleAlbum)
         },
         setStatus(state, action) {
             state.status = action.payload;
         },
-        setDeleteAlbum(state,action){
-            const index=state.albums.findIndex(album=>album._id=action.payload.albumId)
-            state.albums.splice(index,1)
+        setDeleteAlbum(state, action) {
+            const index = state.albums.findIndex(album => album._id === action.payload.albumId);  // Use '===' instead of '='
+            if (index !== -1) {
+                state.albums.splice(index, 1); // Remove the album from the list
+            }
         }
+        
     },
 });
 
@@ -34,7 +38,7 @@ export function addAlbum(albumData) {
     return async function addAlbumThunk(dispatch) {
         dispatch(setStatus(STATUS.LOADING));
         try {
-            const response = await API.post("/api/album", albumData, {
+            const response = await APIAuthenticated.post("/api/album", albumData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
@@ -58,7 +62,7 @@ export function listAllAlbum() {
     return async function listAllAlbumThunk(dispatch) {
         dispatch(setStatus(STATUS.LOADING));
         try {
-            const response = await API.get("/api/album");
+            const response = await APIAuthenticated.get("/api/album");
             if (response.status === 200) {
                 const { data } = response.data;
                 dispatch(setAlbumData(data));
@@ -82,6 +86,7 @@ export function listSingleAlbum(albumId) {
             console.log(response)
             if (response.status === 200) {
                 const { data } = response.data;
+                console.log(data)
                 dispatch(setSingleAlbum(data));
                 dispatch(setStatus(STATUS.SUCCESS));
             } else {
@@ -99,7 +104,7 @@ export function deleteAlbum(albumId) {
     return async function deleteAlbumThunk(dispatch) {
         dispatch(setStatus(STATUS.LOADING));
         try {
-            const response = await API.delete(`/api/album/${albumId}`);
+            const response = await APIAuthenticated.delete(`/api/album/${albumId}`);
             if (response.status === 200) {
                 dispatch(setDeleteAlbum({albumId}));
                 dispatch(setStatus(STATUS.SUCCESS));

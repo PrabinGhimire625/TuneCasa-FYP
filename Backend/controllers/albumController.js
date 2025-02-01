@@ -7,14 +7,17 @@ export const addAlbum = async (req, res) => {
     try{
         const { name, desc, bgColour } = req.body;
         const imageFile = req.file;
-        console.log(name,desc,bgColour)
-        console.log(imageFile)
         if (!name || !desc || !bgColour) {
             return res.status(404).json({ message: "Please provide name, description, and background color." });
         }
         if (!imageFile) {
             return res.status(403).json({ message: "Please upload an image for the album." });
         }
+           // Check if an album with the same name already exists
+           const existingAlbum = await albumModel.findOne({ name });
+           if (existingAlbum) {
+               return res.status(400).json({Message: "Album name must be unique." });
+           }
 
         // Upload image to Cloudinary
         const imageUpload = await cloudinary.uploader.upload(imageFile.path, { resource_type: "image" });

@@ -6,7 +6,7 @@ import {artistProfile, setToken} from "../../store/authSlice"
 
 
 const Navbar = () => {
-    const {navigate}=useNavigate();
+    const navigate=useNavigate();
     const dispatch=useDispatch();
     const {token,status,profile}=useSelector((state)=>state.auth);
     console.log(token);

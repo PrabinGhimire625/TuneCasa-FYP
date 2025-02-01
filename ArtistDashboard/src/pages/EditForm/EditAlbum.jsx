@@ -8,20 +8,22 @@ import { listSingleAlbum } from '../../store/albumSlice';
 const EditAlbum = () => {
   const {id}=useParams();
   console.log(id);
-  const {dispatch}=useDispatch();
-  const {singleAlbum} = useSelector((state)=>state.album);
+  const dispatch=useDispatch();
+  const {singleAlbum, status} = useSelector((state)=>state.album);
   console.log(singleAlbum);
+  console.log(status)
 
-  useEffect((id)=>{
-    if(id){
-      dispatch(listSingleAlbum(id))
+  useEffect(() => {
+    if (id) {
+      dispatch(listSingleAlbum(id));
     }
-  },[])
+  }, [id, dispatch]);
+  
 
   return (
     <>
       <form className='flex flex-col items-start gap-8 text-gray-600'>
-        <h1 className='text-2lx font-bold'>Edit the album details</h1>
+        <h1 className='text-white text-3xl font-bold '>Edit the album details</h1>
         <div className='flex gap-8'>
          
           {/* upload image */}

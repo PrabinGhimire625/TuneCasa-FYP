@@ -11,7 +11,7 @@ const ListAlbum = () => {
 
     useEffect(()=>{
       dispatch(listAllAlbum());
-    },[])
+    },[dispatch])
 
 
     const handleDeleteAlbum=(albumId)=>{
@@ -21,21 +21,21 @@ const ListAlbum = () => {
   
   return (
     <>
-      <div>
-        <p className='font-bold text-lg'>All Album List</p>
+      <div className='text-white'>
+        <p className='font-bold text-2xl text-white'>All Album List</p>
         <br />
         <div>
-          <div className='sm:grid hidden grid-cols-[0.5fr_1fr_2fr_1fr_0.5fr] items-center gap-2.5 p-3 border border-gray-300 text-sm mr-5 bg-gray-100'>
+          <div className='sm:grid hidden grid-cols-[0.5fr_1fr_2fr_1fr_0.5fr] items-center gap-2.5 p-3 border border-gray-300 text-sm mr-5 bg-gray-100 text-black'>
             <b>Image</b>
             <b>Name</b>
             <b>Description</b>
             <b>Background color</b>
-            <b>Action</b>
+         
           </div>
           {
             albums.map((item, index)=>{
               return(
-                <Link to={`/editAlbum/${item._id}`}>
+               
                   <div key={index} className='grid grid-cols-[1fr-1fr-1fr] sm:grid-cols-[0.5fr_1fr_2fr_1fr_0.5fr] items-center gap-2.5 p-3 border border-gray-300 text-sm mr-5 '>
                   <img className='w-12' src={item?.image} alt="" />
                   <p>{item.name}</p>
@@ -43,7 +43,7 @@ const ListAlbum = () => {
                   <p>{item.bgColour}</p>
                   <button onClick={() => handleDeleteAlbum(item._id)}>x</button>
                 </div>
-                </Link>
+          
               )
             })
           }
