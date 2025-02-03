@@ -74,11 +74,10 @@ export const deleteAlbum=async(req,res)=>{
 
 //update album
 export const updateAlbum = async (req, res) => {
-    try {
       const id = req.params.id; 
       const { name, desc, bgColour } = req.body; 
       const imageFile = req.files?.image?.[0]; 
-  
+
       // Prepare the update data object
       const updateData = {};
       if (name) updateData.name = name;
@@ -104,7 +103,4 @@ export const updateAlbum = async (req, res) => {
         return res.status(404).json({ message: "Album not found" });
       }
       res.status(200).json({ message: "Album updated successfully", data: updatedAlbum });
-    } catch (error) {
-      res.status(500).json({ message: "Server error", error: error.message });
-    }
 };

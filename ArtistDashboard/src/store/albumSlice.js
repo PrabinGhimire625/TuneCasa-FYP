@@ -85,7 +85,7 @@ export function listSingleAlbum(albumId) {
     return async function listSingleAlbumThunk(dispatch) {
         dispatch(setStatus(STATUS.LOADING));
         try {
-            const response = await API.get(`/api/album/${albumId}`);
+            const response = await APIAuthenticated.get(`/api/album/${albumId}`);
             console.log(response)
             if (response.status === 200) {
                 const { data } = response.data;
@@ -102,7 +102,7 @@ export function listSingleAlbum(albumId) {
     };
 }
 
-//Fetch a single album
+//delete album
 export function deleteAlbum(albumId) {
     return async function deleteAlbumThunk(dispatch) {
         dispatch(setStatus(STATUS.LOADING));
@@ -120,3 +120,6 @@ export function deleteAlbum(albumId) {
         }
     };
 }
+
+
+//update the album

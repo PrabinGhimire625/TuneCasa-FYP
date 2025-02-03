@@ -8,11 +8,11 @@ const router=Router();
 
 router.route("/").post(isAuthenticated, upload.single('image'),errorHandler(addAlbum))
 
-.get(errorHandler(getAllAlbum))
+.get(isAuthenticated, errorHandler(getAllAlbum))
 
 router.route("/:id").get(isAuthenticated, errorHandler(fetchSingleAlbum))
-.delete(errorHandler(deleteAlbum))
-.patch(upload.single('image'),updateAlbum)
+.delete(errorHandler(isAuthenticated, deleteAlbum))
+.patch(isAuthenticated, upload.fields([{ name: 'image', maxCount: 1 }]),errorHandler(updateAlbum))
 
 
 export default router

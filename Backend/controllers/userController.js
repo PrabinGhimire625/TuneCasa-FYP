@@ -123,6 +123,7 @@ export const deleteUser=async(req,res)=>{
 //   }
 // }
 
+//update the user profile
 export const updateUser = async (req, res) => {
     const { username } = req.body;
     console.log(username);
