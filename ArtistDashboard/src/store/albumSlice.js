@@ -43,10 +43,12 @@ export function addAlbum(albumData) {
                     "Content-Type": "multipart/form-data",
                 },
             });
-            console.log(response)
+
+            console.log("The response from add album is", response);
 
             if (response.status === 200) {
                 dispatch(setStatus(STATUS.SUCCESS));
+                dispatch(listAllAlbum());  // Fetch all the album after add album
             } else {
                 dispatch(setStatus(STATUS.ERROR));
             }
@@ -56,6 +58,7 @@ export function addAlbum(albumData) {
         }
     };
 }
+
 
 //List all albums
 export function listAllAlbum() {
