@@ -18,8 +18,8 @@ export const isAuthenticated=async(req, res, next)=>{
                 if(!userData){
                     return res.status(404).json({message:"No user with that token"}) 
                 }
-               req.user=userData  // Attach userData to req.user
-               next() 
+               req.user=userData;  // Attach userData to req.user
+                next()
             }catch(err){
                 console.log(err)
                 res.status(500).json({message : "Something went wrong"})
@@ -30,16 +30,15 @@ export const isAuthenticated=async(req, res, next)=>{
 
 //restrction based on the user/admin
 //... is used in function to represent an indefinite number of arguments as an array. 
-export const restrictTo = (...roles)=>{
-    return (req,res,next)=>{
-       const userRole = req.user.role
-       if(!roles.includes(userRole)){
-        res.status(403).json({
-            message : "you don't have permission for this.forbidden"
-        })
-       }else{
-        next()
-       }
-    }
-}
-
+// export const restrictTo = (...roles)=>{
+//     return (req,res,next)=>{
+//        const userRole = req.user.role
+//        if(!roles.includes(userRole)){
+//         res.status(403).json({
+//             message : "you don't have permission for this.forbidden"
+//         })
+//        }else{
+//         next()
+//        }
+//     }
+// }

@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { listSingleAlbum } from '../../store/albumSlice';
+import { listSingleAlbum, updateAlbum } from '../../store/albumSlice';
 import { STATUS } from '../../globals/components/Status';
 
 const EditAlbum = () => {
   const { id } = useParams();
+  console.log(id)
   const dispatch = useDispatch();
   const { singleAlbum, status } = useSelector((state) => state.album);
   const [albumData, setAlbumData] = useState({
@@ -44,33 +45,25 @@ const EditAlbum = () => {
 };
 
 
-  // //handle submit
-  // const handleSubmit =async (e)=>{
-  //   e.preventDefault();
-  //   dispatch(updateAlbum(albumData, id))
-  //   .then(() => {
-  //     if (status === STATUS.SUCCESS) {
-  //       alert("Successfully updated the album");
-  //     } else {
-  //       alert("Failed to update album");
-  //     }
-  //   });
-
-  // }
-
-
+//when click to the save button the handlesubmit button trigger
   const handleSubmit=async(e)=>{
     e.preventDefault();
+    dispatch(updateAlbum({id, albumData}))
+    .then(() => {
+          if (status === STATUS.SUCCESS) {
+            alert("Successfully updated the album");
+          } else {
+            alert("Failed to update album");
+          }
+        });
     
   }
-
-
 
   return (
     <div className="h-screen bg-black">
       <div className="h-[90%] flex">
         <div className="flex items-start justify-center flex-1 bg-stone-900">
-          <form
+          <form onSubmit={handleSubmit}
             className="flex flex-col items-start bg-stone-800 px-12 py-12 rounded-lg shadow-lg mt-2 mx-5 relative w-full md:w-[600px]"
          >
             {/* Profile Image Upload */}

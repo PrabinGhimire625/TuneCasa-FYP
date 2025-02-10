@@ -20,6 +20,16 @@ const albumSlice = createSlice({
         setStatus(state, action) {
             state.status = action.payload;
         },
+        setUpdateAlbum(state, action){
+            const index=state.albums.findIndex(item=>item.id===action.payload.id);
+            if(index!==-1){
+                state.albums[index]={
+                    ...state.albums[index],
+                    ...action.payload.album
+                }
+            }
+        }
+        ,
         setDeleteAlbum(state, action) {
             const index = state.albums.findIndex(album => album._id === action.payload.albumId);  // Use '===' instead of '='
             if (index !== -1) {
@@ -30,7 +40,7 @@ const albumSlice = createSlice({
     },
 });
 
-export const { setAlbumData, setSingleAlbum, setStatus,setDeleteAlbum } = albumSlice.actions;
+export const { setAlbumData, setSingleAlbum, setStatus,setDeleteAlbum,setUpdateAlbum } = albumSlice.actions;
 export default albumSlice.reducer;
 
 // Add a new album
@@ -122,4 +132,26 @@ export function deleteAlbum(albumId) {
 }
 
 
-//update the album
+//update album
+export function updateAlbum({ id, albumData }) {
+    return async function updateAlbumThunk(dispatch) {
+        dispatch(setStatus(STATUS.LOADING));  
+
+        try {
+            const response = await APIAuthenticated.patch(`/api/album/${id}`, albumData, {
+                headers: {
+                    "Content-Type": "multipart/form-data", 
+                },
+            });
+            if (response.status === 200) {
+                const { data } = response.data;
+                dispatch(setUpdateAlbum({ id, data })); 
+                dispatch(setStatus(STATUS.SUCCESS));
+            } else {
+                dispatch(setStatus(STATUS.ERROR));
+            }
+        } catch (err) {
+            dispatch(setStatus(STATUS.ERROR));
+        }
+    };
+}

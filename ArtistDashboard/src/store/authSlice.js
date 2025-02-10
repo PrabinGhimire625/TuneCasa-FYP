@@ -31,7 +31,7 @@ const authSlice=createSlice({
         },
         setUpdateUserProfile(state,action){
             const index=state.data.findIndex(item=>item.id===action.payload.id);
-            if(index!==-1){c
+            if(index!==-1){
                 state.data[index]={
                     ...state.data[index],
                     ...action.payload.data
