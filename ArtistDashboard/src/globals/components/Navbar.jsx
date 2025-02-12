@@ -9,16 +9,10 @@ const Navbar = () => {
     const navigate=useNavigate();
     const dispatch=useDispatch();
     const {token,status,profile}=useSelector((state)=>state.auth);
-    console.log(token);
-    console.log(status);
-    console.log(profile)
-    
-
     const [isLoggedIn, setIsloggedIn]=useState(false);
 
      useEffect(() => {
        const token = localStorage.getItem('token');
-       console.log(token)
        if (token) {
          dispatch(artistProfile()); // Fetch user profile only if the token exists
        }
@@ -27,8 +21,6 @@ const Navbar = () => {
 
     useEffect(() => {
         const localStorageToken = localStorage.getItem('token');
-        console.log(localStorageToken)
-        console.log(token)
         if(localStorageToken){
          dispatch(setToken(localStorageToken))
         }

@@ -7,8 +7,6 @@ const ListAlbum = () => {
     const dispatch=useDispatch();
     const {albums}=useSelector((state)=>state.album);
 
-    
-
     useEffect(()=>{
       dispatch(listAllAlbum());
     },[dispatch])

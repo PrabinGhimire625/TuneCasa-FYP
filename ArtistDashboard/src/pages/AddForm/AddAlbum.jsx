@@ -35,7 +35,6 @@ const AddAlbum = () => {
   } else {
       alert('Failed to add the album!');
   }
-    
   }
 
   console.log(albumData)

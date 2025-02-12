@@ -1,6 +1,7 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css'; // Import CSS for styling
 import AddSong from "./pages/AddForm/AddSong";
 import AddAlbum from "./pages/AddForm/AddAlbum";
 import ListAlbum from "./pages/Tables/ListAlbum";
@@ -18,6 +19,7 @@ import VerifyOtp from "./pages/Auth/forgetPassword/VerifyOtp";
 import ResetPassword from "./pages/Auth/forgetPassword/ResetPassword";
 import Profile from "./pages/Auth/profile/Profile";
 import EditProfile from "./pages/Auth/profile/EditProfile";
+import EditSong from "./pages/EditForm/EditSong";
 
 function App() {
   return (
@@ -43,6 +45,7 @@ function App() {
                 <Route path="/list-album" element={<ListAlbum />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/editAlbum/:id" element={<EditAlbum />} />
+                <Route path="/editSong/:id" element={<EditSong />} />
               </Routes>
             </div>
           </div>

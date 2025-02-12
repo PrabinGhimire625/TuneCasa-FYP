@@ -24,7 +24,6 @@ const authSlice=createSlice({
         },
         setToken(state,action){
             state.token=action.payload;
-            console.log(state.token);
         },
         setProfile(state,action){
             state.profile=action.payload
@@ -93,10 +92,8 @@ export function artistProfile(){
         dispatch(setStatus(STATUS.LOADING));
         try{
             const response=await APIAuthenticated.get("/api/artist/profile");
-            console.log(response);
             if(response.status===200){
                 const {data}=response.data;
-                console.log(data);
                 dispatch(setProfile(data));
                 dispatch(setStatus(STATUS.SUCCESS));  
             }else{
