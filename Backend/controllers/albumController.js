@@ -62,6 +62,26 @@ export const fetchSingleAlbum=async(req,res)=>{
     res.status(200).json({message:"Successfully fetch the single album",data:singleAlbum});
 }
 
+
+//fetch album by name
+export const fetchSingleAlbumByName = async (req, res) => {
+    try {
+        const name = req.params.name; 
+        const singleAlbum = await albumModel.findOne({ name }); 
+
+        if (!singleAlbum) {
+            return res.status(404).json({ message: "Album not found" });
+        }
+
+        res.status(200).json({ message: "Successfully fetched the album", data: singleAlbum });
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+};
+
+
+
+
 //delete album
 export const deleteAlbum=async(req,res)=>{
     const id=req.params.id;

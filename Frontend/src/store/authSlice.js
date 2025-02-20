@@ -9,7 +9,8 @@ const authSlice=createSlice({
         data:[],
         status : STATUS.LOADING,
         token:"",
-        profile:""
+        profile:"",
+        artist:[]
     },
     reducers:{
         setUserData(state,action){
@@ -28,6 +29,9 @@ const authSlice=createSlice({
         setProfile(state,action){
             state.profile=action.payload
         },
+        setArtistData(state, action){
+            state.artist=action.payload
+        },
         setUpdateUserProfile(state,action){
             const index=state.data.findIndex(item=>item.id===action.payload.id);
             if(index!==-1){
@@ -40,17 +44,15 @@ const authSlice=createSlice({
     }
 })
 
-export const {setUserData,setStatus,resetStatus,setToken,setProfile,setUpdateUserProfile}=authSlice.actions
+export const {setUserData,setArtistData,setStatus,resetStatus,setToken,setProfile,setUpdateUserProfile}=authSlice.actions
 export default authSlice.reducer
 
-//signup
 //signup
 export function register(data) {
     return async function registerUserThunk(dispatch) {
         dispatch(setStatus(STATUS.LOADING));
         try {
             const response = await API.post("/api/user/register", data);
-            console.log(response);
             if (response.status === 200) {
                 dispatch(setUserData(response.data.data)); // Store user data after registration
                 dispatch(setStatus(STATUS.SUCCESS));
@@ -71,8 +73,6 @@ export function login(data){
             const response=await API.post("/api/login",data);
             if(response.status===200){
                 const {token,data}=response.data;
-                console.log(data);
-                console.log(token)
                 dispatch(setProfile(data));
                 dispatch(setStatus(STATUS.SUCCESS));
                 dispatch(setToken(token));
@@ -92,7 +92,6 @@ export function userProfile(){
         dispatch(setStatus(STATUS.LOADING));
         try{
             const response=await APIAuthenticated.get("/api/user/profile");
-            console.log(response)
             if(response.status===200){
                 const {data}=response.data;
                 dispatch(setProfile(data));
@@ -132,5 +131,27 @@ export function updateUserProfile({ id, userData }) {
         throw err;
       }
     };
-  }
+}
+  
+
+// // Fetch all artists
+// export function fetchAllArtists() {
+//     return async function fetchAllArtistsThunk(dispatch) {
+//       dispatch(setStatus(STATUS.LOADING));
+//       try {
+//         const response = await API.get("/api/artist");
+//         console.log(response);
+//         if (response.status === 200) {
+//           const { data } = response.data;
+//           dispatch(setArtistData(data));
+//           dispatch(setStatus(STATUS.SUCCESS));
+
+//         } else {
+//           dispatch(setStatus(STATUS.ERROR));
+//         }
+//       } catch (err) {
+//         dispatch(setStatus(STATUS.ERROR));
+//       }
+//     };
+//   }
   

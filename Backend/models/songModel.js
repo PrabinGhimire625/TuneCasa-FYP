@@ -6,7 +6,8 @@ const songSchema = new mongoose.Schema({
   album: { type: String, required: true },
   image: { type: String, required: true },
   file: { type: String, required: true },
-  duration: { type: String, required: true }
+  duration: { type: String, required: true },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "Artist", required: true },
 });
 
 //check and create if "song" model is not created

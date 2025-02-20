@@ -4,11 +4,11 @@ import { Link } from 'react-router-dom'
 
 const Sidebar = () => {
   return (
-    <div className="bg-black text-white w-1/4 h-screen p-6">
+    <div className="bg-black text-white w-1/5 h-screen p-6">
       <nav>
 
         <Link
-          to="/home"
+          to="/"
           className="flex items-center space-x-3 py-3 px-4 rounded-lg bg-[#121212] hover:bg-[#121212] text-2xl mb-2"
         >
           <img className='w-6' src={assets.home_icon} alt="" />

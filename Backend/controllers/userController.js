@@ -415,3 +415,22 @@ export const artistProfile = async (req, res) => {
 
 
 
+// Fetch all artist
+export const fetchAllArtists = async (req, res) => {
+  try {
+    const artists = await User.find({ role: "artist" }).select("username image");  // Assuming image is stored in the user model
+    
+    if (!artists || artists.length === 0) {
+      return res.status(404).json({ message: "No artists found" });
+    }
+    
+    // Send the artist details (name and image)
+    res.status(200).json({ message: "Artists fetched successfully", data: artists });
+  } catch (error) {
+    console.error("Error fetching artists:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+
+

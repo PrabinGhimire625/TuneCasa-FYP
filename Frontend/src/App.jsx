@@ -1,9 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
-import Display from "./components/display/Display"
 import Sidebar from "./components/pages/sidebar/Sidebar"
 import Navbar from "./globals/components/navbar/Navbar"
 import SingleAlbum from "./components/pages/singleAlbum/SingleAlbum"
-import DisplaySingleAlbum from "./components/pages/singleAlbum/DisplaySingleAlbum"
 import Form from "./components/pages/auth/Form"
 import Login from "./components/pages/auth/login/Login"
 import Register from "./components/pages/auth/signup/Register"
@@ -14,7 +12,9 @@ import { Provider } from "react-redux"
 import ForgetPassword from "./components/pages/auth/forgetPassword/ForgetPassword"
 import VerifyOtp from "./components/pages/auth/forgetPassword/VerifyOtp"
 import ResetPassword from "./components/pages/auth/forgetPassword/ResetPassword"
-
+import Player from "./components/pages/player/Player"
+import DisplayHome from "./components/display/DisplayHome"
+import ArtistDetails from "./components/pages/artist/ArtistDetails"
 
 function App() {
   return (
@@ -22,24 +22,30 @@ function App() {
       <Provider store={store}>
         <BrowserRouter>
         <Navbar/>
-          <Routes>
-            <Route path="/" element={<Display/>}/>
-            <Route path="/form" element={<Form/>}/>
-            <Route path="/register" element={<Register/>}/>
-            <Route path="/login" element={<Login/>}/>
-            <Route path="/profile" element={<Profile/>}/>
-            <Route path="/editProfile/:id" element={<EditProfile/>}/>
-            <Route path="/forgetPassword" element={<ForgetPassword/>}/>
-            <Route path="/verifyOtp" element={<VerifyOtp/>}/>
-            <Route path="/resetPassword" element={<ResetPassword/>}/>
-            <Route path="/navbar" element={<Navbar/>}/>
-            <Route path="/sidebar" element={<Sidebar/>}/>
-            <Route path="/album/:id" element={<DisplaySingleAlbum/>}/>
-          </Routes>
+        <div className="flex items-start min-h-screen">
+          <Sidebar/>
+          <div className="flex-1 h-screen overflow-y-scroll bg-stone-900">
+            <Routes>
+              <Route path="/" element={<DisplayHome/>}/>
+              <Route path="/form" element={<Form/>}/>
+              <Route path="/register" element={<Register/>}/>
+              <Route path="/login" element={<Login/>}/>
+              <Route path="/profile" element={<Profile/>}/>
+              <Route path="/editProfile/:id" element={<EditProfile/>}/>
+              <Route path="/forgetPassword" element={<ForgetPassword/>}/>
+              <Route path="/verifyOtp" element={<VerifyOtp/>}/>
+              <Route path="/resetPassword" element={<ResetPassword/>}/>
+              <Route path="/navbar" element={<Navbar/>}/>
+              <Route path="/sidebar" element={<Sidebar/>}/>
+              <Route path="/album/:name" element={<SingleAlbum/>}/>
+              <Route path="/artistDetails" element={<ArtistDetails/>}/>
+            </Routes>
+          </div>
+        </div>
+        <Player/>
+        <audio preload="auto"></audio>
       </BrowserRouter>
-
       </Provider>
-
     </>
   )
 }

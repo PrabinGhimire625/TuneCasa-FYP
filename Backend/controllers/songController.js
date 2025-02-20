@@ -1,32 +1,46 @@
 import {v2 as cloudinary} from "cloudinary"
 import songModel from "../models/songModel.js";
+import albumModel from "../models/albumModel.js"
+import Artist from "../models/artistModel.js"
+import User from "../models/userModel.js";
 
 //add songs
 export const addSong = async (req, res) => {
-        const { name, desc, album } = req.body;
-        const audioFile = req.files.audio[0];
-        const imageFile = req.files.image[0];
+  const { name, desc, album } = req.body;
+  const audioFile = req.files.audio[0];
+  const imageFile = req.files.image[0];
+  const userId=req.user.id;
+  try {
+    const artist = await User.findById(userId);
+    if (!artist) {
+      return res.status(400).json({ message: "Invalid artistId, artist not found" });
+    }
 
-        // Upload audio as "video" resource type
-        const audioUpload = await cloudinary.uploader.upload(audioFile.path, { resource_type: "video" });
-        const imageUpload = await cloudinary.uploader.upload(imageFile.path, { resource_type: "image" });
+    // Upload audio and image to Cloudinary
+    const audioUpload = await cloudinary.uploader.upload(audioFile.path, { resource_type: "video" });
+    const imageUpload = await cloudinary.uploader.upload(imageFile.path, { resource_type: "image" });
 
-        // Format duration in minutes and seconds
-        const duration = `${Math.floor(audioUpload.duration / 60)}:${Math.floor(audioUpload.duration % 60)}`;
+    // Format the song duration in minutes and seconds
+    const duration = `${Math.floor(audioUpload.duration / 60)}:${Math.floor(audioUpload.duration % 60)}`;
 
-        // Prepare song data
-        const songData = {
-            name, 
-            desc,
-            album,
-            image: imageUpload.secure_url,
-            file: audioUpload.secure_url,
-            duration
-        };
+    // Prepare the song data 
+    const songData = {
+      name,
+      desc,
+      album,
+      userId, 
+      image: imageUpload.secure_url,
+      file: audioUpload.secure_url,
+      duration
+    };
 
-        const song = await songModel.create(songData);
-        res.status(200).json({ message: "Song is successfully added!", data: song });
-}
+    const song = await songModel.create(songData);
+    res.status(200).json({ message: "Song is successfully added!", data: song });
+  } catch (error) {
+    console.error("Error adding song:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
 
 //get all the song
 export const getAllSong=async(req,res)=>{
@@ -88,3 +102,34 @@ export const updateSong = async (req, res) => {
 
     res.status(200).json({ message: "Song updated successfully", data: updatedSong });
 };
+
+// Fetch songs by album name
+export const fetchSongsByAlbum = async (req, res) => {
+    // Extract the album name from the URL parameters
+    const { album } = req.params;
+  
+    try {
+      // Query songs that match the album name
+      const songs = await songModel.find({ album });
+  
+      // If no songs are found, return a 404 response
+      if (!songs || songs.length === 0) {
+        return res.status(404).json({
+          message: "No songs found for this album",
+        });
+      }
+  
+      // Return the found songs
+      res.status(200).json({
+        message: "Successfully fetched songs for the album",
+        data: songs,
+      });
+    } catch (error) {
+      console.error("Error fetching songs by album:", error);
+      res.status(500).json({
+        message: "Server error while fetching songs",
+        error: error.message,
+      });
+    }
+  };
+  

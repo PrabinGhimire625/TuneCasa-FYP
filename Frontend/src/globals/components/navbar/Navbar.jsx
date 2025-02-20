@@ -9,12 +9,10 @@ const Navbar = () => {
   const dispatch=useDispatch();
   const {token, profile}=useSelector((state)=>state.auth);
   const [isLoggedIn, setIsLoggedIn]=useState(false);
-  console.log(profile)
+
 
   useEffect(() => {
     const localStorageToken = localStorage.getItem('token');
-    console.log('localStorageToken:', localStorageToken);
-    console.log('token:', token);
     setIsLoggedIn(!!localStorageToken || !!token);
   }, [token]);
   
@@ -27,7 +25,6 @@ const Navbar = () => {
 
  useEffect(() => {
        const token = localStorage.getItem('token');
-       console.log(token)
        if (token) {
          dispatch((userProfile())); // Fetch user profile only if the token exists
        }
