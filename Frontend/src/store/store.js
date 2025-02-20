@@ -4,6 +4,7 @@ import songSlice from "./songSlice"
 import albumSlice from "./albumSlice"
 import playerSlice from "./playerSlice"
 import artistSlice from "./artistSlice"
+import playlistSlice from "./playlistSlice"
 
 const store=configureStore({
     reducer : {
@@ -11,7 +12,9 @@ const store=configureStore({
         song:songSlice,
         album:albumSlice,
         player:playerSlice,
-        artist:artistSlice
+        artist:artistSlice,
+        playlist:playlistSlice
+        
     }
 })
 

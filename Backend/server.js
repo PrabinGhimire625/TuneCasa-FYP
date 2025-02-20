@@ -4,6 +4,7 @@ import dotenv from "dotenv"
 import songRouter from "./routes/songRoute.js";
 import albumRouter from "./routes/albumRoute.js"
 import userRouter from "./routes/userRoute.js"
+import playlistRouter from "./routes/playlistRoute.js"
 import connectDB from "./config/mongoDb.js";
 import connectCloudinary from "./config/cloudinary.js";
 import adminSeeder from "./adminSeeder.js";
@@ -26,6 +27,7 @@ app.use(cors());
 app.use("/api",userRouter)
 app.use("/api/song",songRouter)
 app.use("/api/album",albumRouter)
+app.use("/api/playlist",playlistRouter)
 
 app.listen(port,()=>{
     console.log(`Server is running on the PORT ${port}`)

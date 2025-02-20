@@ -117,7 +117,7 @@ export function listSingleSong(id){
     return async function listSingleSongThunk(dispatch) {
         dispatch(setStatus(STATUS.LOADING));
         try{
-        const response=await APIAuthenticated.get(`/api/song/${id}`);
+        const response=await APIAuthenticated.get(`/api/song/singleSong/${id}`);
         if(response.status===200){
             const {data} =response.data;
             dispatch(setSingleSong(data));
@@ -185,3 +185,4 @@ export function getArtistSong(id){
         }
     }
 }
+

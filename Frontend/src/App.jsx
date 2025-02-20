@@ -15,6 +15,8 @@ import ResetPassword from "./components/pages/auth/forgetPassword/ResetPassword"
 import Player from "./components/pages/player/Player"
 import DisplayHome from "./components/display/DisplayHome"
 import ArtistDetails from "./components/pages/artist/ArtistDetails"
+import SingleSong from "./components/pages/singleSong/SingleSong"
+import AddSongPlaylist from "./components/pages/playlist/AddSongPlaylist"
 
 
 function App() {
@@ -39,7 +41,10 @@ function App() {
               <Route path="/navbar" element={<Navbar/>}/>
               <Route path="/sidebar" element={<Sidebar/>}/>
               <Route path="/album/:name" element={<SingleAlbum/>}/>
+              <Route path="/singleSong/:id" element={<SingleSong/>}/>
               <Route path="/artistDetails/:id" element={<ArtistDetails/>}/>
+              <Route path="/addSongPlaylist" element={<AddSongPlaylist/>}/>
+
             </Routes>
           </div>
         </div>

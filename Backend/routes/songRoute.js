@@ -13,6 +13,8 @@ router.route("/:album").get( errorHandler(fetchSongsByAlbum))
 router.route("/artist/:userId").get( errorHandler(fetchArtistSongs))
 
 
+router.route("/singleSong/:id").get(isAuthenticated, errorHandler((fetchSingleSong)))
+
 router.route("/:id").get(isAuthenticated, errorHandler((fetchSingleSong)))
 .delete(isAuthenticated, errorHandler(deleteSong))
 .patch(isAuthenticated, upload.fields([{ name: 'image', maxCount: 1 }]),errorHandler(updateSong))

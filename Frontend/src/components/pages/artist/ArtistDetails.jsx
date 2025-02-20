@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getArtistSong } from '../../../store/songSlice';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import Player from '../player/Player';
 import DisplayArtist from "./DisplayArtist";
 import { fetchSingleUser } from '../../../store/authSlice';
@@ -88,7 +88,7 @@ const ArtistDetails = () => {
               key={item._id}
               className="grid grid-cols-3 sm:grid-cols-4 gap-2 p-2 items-center text-[#a7a7a7] hover:bg-[#ffffff2b] cursor-pointer"
               onClick={() => handleSelectSong(item)}
-            >
+             >
               <div className="flex items-center">
                 <b className="mr-4 text-[#a7a7a7]">{index + 1}</b>
                 <div className="relative w-10 h-10 bg-gray-500 rounded-md overflow-hidden">
@@ -123,27 +123,27 @@ const ArtistDetails = () => {
         )}
       </div>
 
-      {/* Popular Songs Section */}
+      {/* Suggest for you */}
       <div className=" ml-5">
-        <h1 className="my-5 text-white font-bold text-2xl">Popular songs</h1>
+        <h1 className="my-3 text-white font-bold text-2xl">Suggest for you</h1>
         <div className="flex overflow-auto gap-4">
           {artistSong && artistSong.length > 0 ? (
             artistSong.map((item) => (
-              <div key={item.id} className="flex flex-col items-center relative">
+              <div key={item.id} className="py-2 px-2 flex flex-col items-center relative hover:bg-neutral-800 transition duration-300">
                 <div
                   className="relative w-32 h-32 rounded-lg overflow-hidden cursor-pointer"
                   onClick={() => handleSelectSong(item)}
                 >
                   <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                   <button
-                    className={`absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300 ${
+                    className={`absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300 text-4xl ${
                       currentSong?._id === item._id && isPlaying ? "opacity-100" : "opacity-0 hover:opacity-100"
                     }`}
                   >
                     {currentSong?._id === item._id && isPlaying ? "⏸" : "▶"}
                   </button>
                 </div>
-                <p className="mt-2 text-white font-medium">{item.name}</p>
+               <Link  to={`/singleSong/${item._id}`}> <p className="mt-2 text-white font-medium hover:underline">{item.name}</p></Link>
               </div>
             ))
           ) : (
@@ -152,6 +152,7 @@ const ArtistDetails = () => {
         </div>
       </div>
 
+      {/* artist section */}
       <div className="display the artist">
         <DisplayArtist />
       </div>
