@@ -10,7 +10,8 @@ const authSlice=createSlice({
         status : STATUS.LOADING,
         token:"",
         profile:"",
-        artist:[]
+        artist:[],
+        singleUser:null
     },
     reducers:{
         setUserData(state,action){
@@ -29,6 +30,9 @@ const authSlice=createSlice({
         setProfile(state,action){
             state.profile=action.payload
         },
+        setSingleUser(state,action){
+            state.singleUser=action.payload
+        },
         setArtistData(state, action){
             state.artist=action.payload
         },
@@ -44,7 +48,7 @@ const authSlice=createSlice({
     }
 })
 
-export const {setUserData,setArtistData,setStatus,resetStatus,setToken,setProfile,setUpdateUserProfile}=authSlice.actions
+export const {setUserData,setArtistData,setStatus,resetStatus,setToken,setProfile,setUpdateUserProfile, setSingleUser}=authSlice.actions
 export default authSlice.reducer
 
 //signup
@@ -133,25 +137,21 @@ export function updateUserProfile({ id, userData }) {
     };
 }
   
-
-// // Fetch all artists
-// export function fetchAllArtists() {
-//     return async function fetchAllArtistsThunk(dispatch) {
-//       dispatch(setStatus(STATUS.LOADING));
-//       try {
-//         const response = await API.get("/api/artist");
-//         console.log(response);
-//         if (response.status === 200) {
-//           const { data } = response.data;
-//           dispatch(setArtistData(data));
-//           dispatch(setStatus(STATUS.SUCCESS));
-
-//         } else {
-//           dispatch(setStatus(STATUS.ERROR));
-//         }
-//       } catch (err) {
-//         dispatch(setStatus(STATUS.ERROR));
-//       }
-//     };
-//   }
-  
+//fetch single user
+export function fetchSingleUser(id){
+    return async function fetchSingleUserThunk(dispatch) {
+        dispatch(setStatus(STATUS.LOADING));
+        try{
+            const response=await APIAuthenticated.get(`/api/user/${id}`);
+            if(response.status===200){
+                const {data}=response.data;
+                dispatch(setSingleUser(data));
+                dispatch(setStatus(STATUS.SUCCESS));
+            }else{
+                dispatch(setStatus(STATUS.ERROR));
+            }
+        }catch(err){
+            dispatch(setStatus(STATUS.ERROR));
+        }
+    }
+}

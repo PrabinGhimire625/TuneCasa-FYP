@@ -16,6 +16,7 @@ import Player from "./components/pages/player/Player"
 import DisplayHome from "./components/display/DisplayHome"
 import ArtistDetails from "./components/pages/artist/ArtistDetails"
 
+
 function App() {
   return (
     <>       
@@ -38,7 +39,7 @@ function App() {
               <Route path="/navbar" element={<Navbar/>}/>
               <Route path="/sidebar" element={<Sidebar/>}/>
               <Route path="/album/:name" element={<SingleAlbum/>}/>
-              <Route path="/artistDetails" element={<ArtistDetails/>}/>
+              <Route path="/artistDetails/:id" element={<ArtistDetails/>}/>
             </Routes>
           </div>
         </div>

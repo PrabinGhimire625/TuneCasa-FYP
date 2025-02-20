@@ -39,7 +39,7 @@ const DisplayArtist = () => {
                     {data.map((item) => (
                         <div key={item._id} className="flex flex-col items-center space-y-2">
                             {/* Circular Image */}
-                           <Link to={`/artistDetails`}>
+                           <Link to={`/artistDetails/${item._id}`}>
                            <div className="w-56 h-56 rounded-full overflow-hidden bg-gray-700">
                                 {/* Use a fallback image if no image exists */}
                                 <img

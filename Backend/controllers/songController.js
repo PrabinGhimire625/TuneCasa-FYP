@@ -132,4 +132,17 @@ export const fetchSongsByAlbum = async (req, res) => {
       });
     }
   };
+
+  //fetch artist song
+  export const fetchArtistSongs = async (req, res) => {
+    const { userId } = req.params;
+  
+    const songs = await songModel.find({ userId });
+  
+    if (!songs.length) {
+      return res.status(404).json({ message: "No songs found for this artist." });
+    }
+  
+    res.status(200).json({ message: "Songs fetched successfully", data: songs });
+  };
   

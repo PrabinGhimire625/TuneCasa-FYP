@@ -1,6 +1,6 @@
 import {Router} from "express";
 import errorHandler from "../services/catchAsyncError.js";
-import { approveArtist,artistProfile, artistLogin, fetchAllUser, fetchPendingArtists, forgetPassword, login, profile, register, registerArtist, rejectArtist, resetPassword, updateUser, verifyOtp, fetchAllArtists } from "../controllers/userController.js";
+import { approveArtist,artistProfile, artistLogin, fetchAllUser, fetchPendingArtists, forgetPassword, login, profile, register, registerArtist, rejectArtist, resetPassword, updateUser, verifyOtp, fetchAllArtists, fetchSingleUser } from "../controllers/userController.js";
 import { isAuthenticated } from "../middleware/authMiddleware.js";
 import upload from "../middleware/multer.js"
 const router=Router();
@@ -21,6 +21,8 @@ router.route("/user").get(errorHandler(fetchAllUser))
 router.route("/user/forgetPassword").post(errorHandler(forgetPassword))
 router.route("/user/verifyOtp").post(errorHandler(verifyOtp))
 router.route("/user/resetPassword").post(errorHandler(resetPassword))
+
+router.route("/user/:id").get(errorHandler(fetchSingleUser))
 
 //artist route
 router.route("/artist").get(errorHandler(fetchAllArtists))

@@ -90,15 +90,33 @@ export const fetchAllUser=async(req,res)=>{
 
 
 //fetch single user
-export const fetchSingleUser=async(req, res)=>{
-  const id=req.params.id;
-  const singleUser=await User.findById(id);
-  if(singleUser){
-    res.status(200).json({message:"Successfully fetch single users",data:singleUser});
-  }else{
-    res.status(404).json({message:"User not found"});
-   }
-}
+// Fetch single user and include the bio inside the data object
+export const fetchSingleUser = async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    // Find the user by ID
+    const singleUser = await User.findById(id);
+    
+    if (singleUser) {
+      // Find the artist by the user's ID and populate the bio field
+      const artist = await Artist.findOne({ userId: singleUser._id }).select('bio');
+      
+      res.status(200).json({
+        message: "Successfully fetched single user",
+        data: {
+          user: singleUser,
+          bio: artist ? artist.bio : null // Include bio inside the data object
+        }
+      });
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
 
 //delete user
 export const deleteUser=async(req,res)=>{

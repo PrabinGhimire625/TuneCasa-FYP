@@ -51,7 +51,7 @@ const SingleAlbum = () => {
           <b className="mr-4">#</b>Title
         </p>
         <p>Album</p>
-        <p className="hidden sm:block">Date Added</p>
+        <p className="hidden sm:block">Views</p>
         <img className="m-auto w-4" src={assets.clock_icon} alt="Clock Icon" />
       </div>
 
@@ -78,7 +78,7 @@ const SingleAlbum = () => {
             <span className="text-white ml-3">{item.name}</span>
           </div>
           <p className="text-[15px]">{singleAlbum?.name}</p>
-          <p className="text-[15px] hidden sm:block">5 days ago</p>
+          <p className="text-[15px] hidden sm:block">523454</p>
           <p className="text-[15px] text-center">{item.duration}</p>
         </div>
       ))}
