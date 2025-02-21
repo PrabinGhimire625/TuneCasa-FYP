@@ -1,4 +1,5 @@
 import Playlist from "../models/playlistModel.js";
+import Song from "../models/songModel.js"
 
 //create playlist
 export const createPlaylist = async (req, res) => {
@@ -50,3 +51,79 @@ export const deletePlaylist=async(req, res)=>{
   res.status(200).json(({message: " Playlist deleted successfully"}));
 }
 
+// Update playlist
+export const updatePlaylist = async (req, res) => {
+    const { title, description, privacy, songs } = req.body;
+    const id = req.params.id; 
+    const userId = req.user.id;
+
+    const playlist = await Playlist.findOne({ _id: id, userId });
+    if (!playlist) {
+      return res.status(404).json({ message: "Playlist not found or unauthorized" });
+    }
+
+    if (title) playlist.title = title;
+    if (description) playlist.description = description;
+    if (privacy) playlist.privacy = privacy;
+    if (songs) playlist.songs = songs;
+
+    const updatedPlaylist = await playlist.save();
+    res.status(200).json({ message: "Playlist updated successfully", data: updatedPlaylist });
+};
+
+
+ export const addSongToPlaylist = async (req, res) => {
+  try {
+    const { songId } = req.body;
+    const playlistId = req.params.id; 
+    const userId = req.user.id; 
+
+    // Find the playlist by its ID and the user ID
+    const playlist = await Playlist.findOne({ _id: playlistId, userId });
+    if (!playlist) {
+      return res.status(404).json({ message: "Playlist not found or unauthorized" });
+    }
+
+    // Check if the song is already in the playlist
+    if (playlist.songs.includes(songId)) {
+      return res.status(400).json({ message: "Song already exists in the playlist" });
+    }
+
+    // Add song to the playlist
+    playlist.songs.push(songId);
+    
+    // Save the updated playlist
+    const updatedPlaylist = await playlist.save();
+
+    // Respond with success message and updated playlist
+    res.status(200).json({
+      message: "Song added to playlist successfully",
+      data: updatedPlaylist
+    });
+
+  } catch (error) {
+    // Handle any errors
+    res.status(500).json({ message: "Server Error", error: error.message });
+  }
+};
+
+
+
+
+// export const addSongToPlaylist = async (req, res) => {
+//   const { playlistId, songId } = req.params;
+//   try {
+//     const playlist = await Playlist.findById(playlistId);
+//     const song = await Song.findById(songId);
+
+//     // Add the song to the playlist if not already present
+//     if (!playlist.songs.includes(songId)) {
+//       playlist.songs.push(songId);
+//       await playlist.save();
+//     }
+
+//     res.status(200).json({ message: "Song added to playlist" });
+//   } catch (err) {
+//     res.status(500).json({ message: "Error adding song to playlist", error: err });
+//   }
+// };

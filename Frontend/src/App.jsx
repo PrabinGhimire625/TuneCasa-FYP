@@ -16,7 +16,7 @@ import Player from "./components/pages/player/Player"
 import DisplayHome from "./components/display/DisplayHome"
 import ArtistDetails from "./components/pages/artist/ArtistDetails"
 import SingleSong from "./components/pages/singleSong/SingleSong"
-import AddSongPlaylist from "./components/pages/playlist/AddSongPlaylist"
+import SinglePlaylist from "./components/pages/playlist/SinglePlaylist"
 
 
 function App() {
@@ -43,7 +43,7 @@ function App() {
               <Route path="/album/:name" element={<SingleAlbum/>}/>
               <Route path="/singleSong/:id" element={<SingleSong/>}/>
               <Route path="/artistDetails/:id" element={<ArtistDetails/>}/>
-              <Route path="/addSongPlaylist/:id" element={<AddSongPlaylist/>}/>
+              <Route path="/singlePlaylist/:id" element={<SinglePlaylist/>}/>
 
             </Routes>
           </div>

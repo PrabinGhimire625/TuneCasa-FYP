@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import Playlist from "../playlist/Playlist"; 
 import { useDispatch, useSelector } from "react-redux";
 import { listAllPlaylist } from "../../../store/playlistSlice";
-import SinglePlaylist from "../playlist/SinglePlaylist";
+import AllPlaylist from "../playlist/AllPlaylist";
 
 const Sidebar = () => {
   const dispatch = useDispatch();
@@ -97,7 +97,7 @@ const Sidebar = () => {
 
         {/* Display Playlist */}
         <div>
-          <SinglePlaylist />
+          <AllPlaylist />
         </div>
       </div>
 

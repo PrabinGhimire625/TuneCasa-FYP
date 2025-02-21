@@ -40,6 +40,7 @@ const Login = () => {
       setMessage("Login successful! Redirecting...");
       dispatch(resetStatus()); // Reset the status
       alert("Admin successfully login")
+      navigate("/")
     } else if (status === STATUS.ERROR) {
       setMessage("Your email or password is incorrect!");
     } else {
@@ -108,7 +109,7 @@ const Login = () => {
             Sign in
           </button>
           <p className="mt-3 text-center text-sm text-gray-500 underline">
-          <Link to="/forgetPassword">Forgot password?</Link>
+       
         </p>
 
         </form>
