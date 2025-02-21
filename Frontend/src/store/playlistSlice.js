@@ -8,6 +8,7 @@ const playlistSlice = createSlice({
   initialState: {
     playlist: [],
     status: STATUS.LOADING,
+    singleplaylist:null
   },
   reducers: {
     setPlaylistData(state, action) {
@@ -16,10 +17,13 @@ const playlistSlice = createSlice({
     setStatus(state, action) {
       state.status = action.payload; 
     },
+    setSinglePlaylist(state, action){
+      state.singleplaylist=action.payload;
+    }
   },
 });
 
-export const { setPlaylistData, setStatus } = playlistSlice.actions;
+export const { setPlaylistData, setStatus, setSinglePlaylist } = playlistSlice.actions;
 export default playlistSlice.reducer;
 
 
@@ -60,3 +64,23 @@ export function listAllPlaylist(){
         }  
     }
 }
+
+//fetch single playlist
+export function fetchSinglePlaylist(id){
+  return async function fetchSinglePlaylist(dispatch) {
+    dispatch(setStatus(STATUS.LOADING));
+    try{
+      const response= await APIAuthenticated.get(`/api/playlist/${id}`);
+      if(response.status===200){
+        const {data}=response.data;
+        dispatch(setSinglePlaylist(data));
+        dispatch(setStatus(STATUS.SUCCESS));
+      }
+    }catch(err){
+      dispatch(setStatus(STATUS.ERROR));
+    }
+  }
+}
+
+
+

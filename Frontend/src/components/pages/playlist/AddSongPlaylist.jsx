@@ -1,6 +1,6 @@
 const AddSongPlaylist = () => {
     return (
-      <div className="bg-black text-white min-h-screen p-6 flex gap-6">
+      <div className=" text-white min-h-screen p-6 flex gap-6">
         {/* Left Section: Playlist Info */}
         <div className="flex justify-center w-1/3">
           <div className="flex flex-col items-center gap-6">

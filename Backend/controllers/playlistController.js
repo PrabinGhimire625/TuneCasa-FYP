@@ -29,3 +29,24 @@ export const getAllPlaylist=async(req,res)=>{
   }
   res.status(200).json({message: "Successfull get all the Playlist",data:allPlaylist});
 }
+
+//get single playlist
+export const getSinglePlaylist=async(req, res)=>{
+  const id= req.params.id;
+  const singlePlaylist= await Playlist.findById(id);
+  if(!singlePlaylist){
+    return res.status(400).json({message:"Playlist not found"});
+  }
+  res.status(200).json(({message: " Successfully get the single playlist", data:singlePlaylist}));
+}
+
+//delete playlist 
+export const deletePlaylist=async(req, res)=>{
+  const id=req.params.id;
+  const playlist=await Playlist.findByIdAndDelete(id);
+  if(!playlist){
+    return res.status(400).json({message:"Playlist not found"});
+  }
+  res.status(200).json(({message: " Playlist deleted successfully"}));
+}
+

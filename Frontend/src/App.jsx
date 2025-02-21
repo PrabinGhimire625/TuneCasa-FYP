@@ -27,7 +27,7 @@ function App() {
         <Navbar/>
         <div className="flex items-start min-h-screen">
           <Sidebar/>
-          <div className="flex-1 h-screen overflow-y-scroll bg-stone-900">
+          <div className="flex-1 h-screen overflow-y-scroll bg-[#121212]">
             <Routes>
               <Route path="/" element={<DisplayHome/>}/>
               <Route path="/form" element={<Form/>}/>
@@ -43,7 +43,7 @@ function App() {
               <Route path="/album/:name" element={<SingleAlbum/>}/>
               <Route path="/singleSong/:id" element={<SingleSong/>}/>
               <Route path="/artistDetails/:id" element={<ArtistDetails/>}/>
-              <Route path="/addSongPlaylist" element={<AddSongPlaylist/>}/>
+              <Route path="/addSongPlaylist/:id" element={<AddSongPlaylist/>}/>
 
             </Routes>
           </div>
