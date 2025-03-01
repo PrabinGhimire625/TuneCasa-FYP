@@ -6,6 +6,7 @@ import albumRouter from "./routes/albumRoute.js"
 import userRouter from "./routes/userRoute.js"
 import playlistRouter from "./routes/playlistRoute.js"
 import genreRouter from "./routes/genreRoute.js"
+import likeRouter from "./routes/likeRoute.js"
 import connectDB from "./config/mongoDb.js";
 import connectCloudinary from "./config/cloudinary.js";
 import adminSeeder from "./adminSeeder.js";
@@ -30,6 +31,7 @@ app.use("/api/song",songRouter)
 app.use("/api/album",albumRouter)
 app.use("/api/playlist",playlistRouter)
 app.use("/api/genre",genreRouter)
+app.use("/api/like",likeRouter)
 
 app.listen(port,()=>{
     console.log(`Server is running on the PORT ${port}`)

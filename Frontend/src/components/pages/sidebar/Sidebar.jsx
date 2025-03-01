@@ -58,7 +58,7 @@ const Sidebar = () => {
             <span>Home</span>
           </Link>
           <Link
-            to="/explore"
+            to="/allGenre"
             className="flex items-center space-x-3 py-3 px-4 rounded-lg hover:bg-[#121212] text-xl mb-2"
           >
             <img className="w-6" src={assets.explore} alt="Explore" />

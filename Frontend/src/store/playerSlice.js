@@ -51,12 +51,6 @@ const playerSlice = createSlice({
       state.progress = 0;
       state.isPlaying = false; 
   }
-  
-
-  
-  
-  
-   
   },
 });
 

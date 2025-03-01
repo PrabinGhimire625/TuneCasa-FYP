@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   playPause,
@@ -14,6 +14,9 @@ const Player = () => {
     (state) => state.player
   );
   const audioRef = useRef(new Audio());
+  
+  // State to track the volume
+  const [volume, setVolume] = useState(1); // Volume ranges from 0 to 1
 
   useEffect(() => {
     if (!currentSong) return;
@@ -35,30 +38,29 @@ const Player = () => {
     const updateProgressBar = () => {
       dispatch(updateProgress(audioRef.current.currentTime));
     };
-  
+
     audioRef.current.addEventListener("timeupdate", updateProgressBar);
-  
+
     audioRef.current.onended = () => {
       dispatch(playNext());
-  
+
       setTimeout(() => {
         if (audioRef.current.src !== currentSong.file) {
           audioRef.current.pause();
           audioRef.current.src = currentSong.file;
           audioRef.current.load();
         }
-  
+
         audioRef.current.play();
         dispatch(playPause(true));
       }, 200);
     };
-  
+
     return () => {
       audioRef.current.removeEventListener("timeupdate", updateProgressBar);
       audioRef.current.onended = null;
     };
   }, [dispatch, currentSong]);
-  
 
   useEffect(() => {
     if (isPlaying) {
@@ -122,6 +124,12 @@ const Player = () => {
     }, 200);
   };
 
+  const handleVolumeChange = (e) => {
+    const newVolume = e.target.value;
+    setVolume(newVolume);
+    audioRef.current.volume = newVolume;
+  };
+
   if (!currentSong) return null;
 
   return (
@@ -146,18 +154,32 @@ const Player = () => {
         </div>
 
         <div className="flex items-center gap-5">
-    <p>{Math.floor(progress / 60)}:{String(Math.floor(progress % 60)).padStart(2, "0")}</p>
-    <div
-      className="w-[60vw] max-w-[500px] bg-gray-300 rounded-full cursor-pointer"
-      onMouseDown={handleSeek}
-    >
-      <div
-        className="h-1 bg-green-800 rounded-full"
-        style={{ width: `${(progress / currentSong?.duration) * 100}%` }}
-      />
-    </div>
-    <p>{currentSong.duration }</p>
-  </div>
+          <p>{Math.floor(progress / 60)}:{String(Math.floor(progress % 60)).padStart(2, "0")}</p>
+          <div
+            className="w-[60vw] max-w-[500px] bg-gray-300 rounded-full cursor-pointer"
+            onMouseDown={handleSeek}
+          >
+            <div
+              className="h-1 bg-green-800 rounded-full"
+              style={{ width: `${(progress / currentSong?.duration) * 100}%` }}
+            />
+          </div>
+          <p>{currentSong.duration}</p>
+        </div>
+      </div>
+
+      {/* Volume control on the right */}
+      <div className="flex items-center gap-4">
+        <p>Volume</p>
+        <input
+          type="range"
+          min="0"
+          max="1"
+          step="0.01"
+          value={volume}
+          onChange={handleVolumeChange}
+          className="w-[100px]"
+        />
       </div>
     </div>
   );

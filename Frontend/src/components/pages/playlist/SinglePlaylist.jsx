@@ -2,22 +2,25 @@ import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { deletePlaylist, fetchSinglePlaylist, updateImageOnPlaylist } from "../../../store/playlistSlice";
 import { listAllSong } from "../../../store/songSlice";
+import { setCurrentSong, playPause } from "../../../store/playerSlice";
 import { Link, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faThumbsUp, faThumbsDown, faPen, faPlay, faMinus } from "@fortawesome/free-solid-svg-icons";
 import OptionsMenu from "../singleSong/OptionsMenu";
 import EditPlaylist from "../playlist/EditPlaylist";
+import Player from "../player/Player";
+import { addLike } from "../../../store/likeSlice";
 
 const SinglePlaylist = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const { singleplaylist } = useSelector((state) => state.playlist);
   const { song } = useSelector((state) => state.song);
+  const { currentSong, isPlaying } = useSelector((state) => state.player);
+
   const [showEditForm, setShowEditForm] = useState(false);
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
-
-  // State for paginated songs
   const [visibleSongs, setVisibleSongs] = useState(5);
   const songListRef = useRef();
 
@@ -31,36 +34,27 @@ const SinglePlaylist = () => {
     dispatch(listAllSong());
   }, [dispatch]);
 
-  // Handle image selection
-  const handleImageClick = () => {
-    document.getElementById("imageInput").click();
-  };
+  // Handle image selection and update
+  const handleImageClick = () => document.getElementById("imageInput").click();
 
-  // Handle file selection and preview
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setImageFile(file); // Update the imageFile state with the selected image
+      setImageFile(file);
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);  // Set the preview image
-      };
-      reader.readAsDataURL(file); // Read the image file as a data URL for preview
+      reader.onloadend = () => setImagePreview(reader.result);
+      reader.readAsDataURL(file);
     }
   };
 
-  // Handle image update
   const handleImageUpdate = () => {
     if (imageFile) {
-      // Create a new FormData object and append the file data
       const formData = new FormData();
-      formData.append('image', imageFile);  // 'image' should match the field expected by the backend
-      
-      // Dispatch the image update action
+      formData.append("image", imageFile);
       dispatch(updateImageOnPlaylist({ id, playlistData: formData }))
         .then(() => {
           alert("Playlist image updated successfully!");
-          dispatch(fetchSinglePlaylist(id)); // Fetch the playlist again to get the updated image
+          dispatch(fetchSinglePlaylist(id));
         })
         .catch((error) => {
           alert("Failed to update the playlist image.");
@@ -70,14 +64,13 @@ const SinglePlaylist = () => {
       alert("Please select an image first.");
     }
   };
-  
-  // Delete playlist 
+
   const handleDeletePlaylist = (id) => {
     if (id) {
       dispatch(deletePlaylist(id))
         .then(() => {
-          alert("Playlist is deleted successfully");
-          window.location.reload(); // Refresh the page
+          alert("Playlist deleted successfully");
+          window.location.reload();
         })
         .catch((error) => {
           console.error("Error deleting playlist:", error);
@@ -86,31 +79,43 @@ const SinglePlaylist = () => {
     }
   };
 
-  // Open edit form modal and send the playlist id
-  const handleEditClick = (playlistId) => {
-    setShowEditForm(true);
+  const handleEditClick = () => setShowEditForm(true);
+
+  const handleCloseEditForm = () => setShowEditForm(false);
+
+  const handleSelectSong = (songItem) => {
+    if (currentSong?._id === songItem._id) {
+      dispatch(playPause());
+    } else {
+      dispatch(setCurrentSong(songItem));
+      setTimeout(() => dispatch(playPause(true)), 200);
+    }
   };
 
-  // Close edit form modal
-  const handleCloseEditForm = () => {
-    setShowEditForm(false);
-  };
-
-  // Handle submission of updated data
-  const handleEditSubmit = (updatedData) => {
-    setShowEditForm(false);
-  };
-
-  // Load more songs when user scrolls to the bottom
   const handleScroll = () => {
     if (songListRef.current) {
       const bottom = songListRef.current.scrollHeight === songListRef.current.scrollTop + songListRef.current.clientHeight;
       if (bottom) {
-        // Load more songs when scrolled to bottom
         setVisibleSongs((prevVisible) => prevVisible + 6);
       }
     }
   };
+
+ // Handle thumbs up click
+const handleLike = (songId) => {
+  if (songId) {
+    dispatch(addLike({ songId }))
+      .then(() => {
+        alert("Song is successfully liked");
+      })
+      .catch((error) => {
+        alert("Song is not liked");
+        console.error(error);
+      });
+  }
+};
+
+
 
   return (
     <div className="text-white min-h-screen p-6 flex gap-10">
@@ -121,60 +126,46 @@ const SinglePlaylist = () => {
             <div className="relative">
               <Link to="#" onClick={handleImageClick}>
                 <img
-                  className="object-cover shadow-lg bg-indigo-50 text-indigo-600 h-80 w-80 md:h-80 md:w-80" // Removed rounded-full to make it square
-                  src={imagePreview || singleplaylist?.image || "https://i0.wp.com/www.endofthreefitness.com/wp-content/uploads/2012/06/band-of-brothers.jpeg?resize=640%2C360&ssl=1"} // Default image or preview
+                  className="object-cover shadow-lg bg-indigo-50 text-indigo-600 h-80 w-80"
+                  src={imagePreview || singleplaylist?.image || "https://i0.wp.com/www.endofthreefitness.com/wp-content/uploads/2012/06/band-of-brothers.jpeg?resize=640%2C360&ssl=1"}
                   alt="Playlist"
                 />
-                <p className="absolute top-2 right-2 text-sm md:text-lg text-gray-400 bg-gray-800 px-2 py-1 rounded cursor-pointer hover:text-white hover:bg-gray-700 transition">
+                <p className="absolute top-2 right-2 text-sm text-gray-400 bg-gray-800 px-2 py-1 rounded cursor-pointer hover:text-white hover:bg-gray-700 transition">
                   Edit
                 </p>
               </Link>
-
               <input
                 type="file"
                 id="imageInput"
-                onChange={handleFileChange}  // Handle file change event
-                accept="image/*"  // Only allow image files
-                style={{ display: "none" }}  // Hide the input
+                onChange={handleFileChange}
+                accept="image/*"
+                style={{ display: "none" }}
               />
             </div>
           </div>
 
-          {/* Save Button: Update Image */}
           {imageFile && (
-            <button
-              onClick={handleImageUpdate}
-              className=" bg-[#1c1c1c] text-white py-2 px-4 rounded"
-            >
+            <button onClick={handleImageUpdate} className="bg-[#1c1c1c] text-white py-2 px-4 rounded">
               Save Image
             </button>
           )}
-          
-          <div className="text-center ">
+
+          <div className="text-center">
             <h1 className="text-3xl font-bold text-white">{singleplaylist?.title}</h1>
-            <p className="text-gray-400 text-lg">Playlist • {singleplaylist?.privacy}</p>
+            <p className="text-gray-400 text-lg">{singleplaylist?.privacy}</p>
             <p className="text-gray-400 text-lg">{singleplaylist?.songs?.length || 0} tracks</p>
             <p className="text-white text-lg">{singleplaylist?.description}</p>
 
             <div className="flex items-center space-x-8 ml-10 mt-5">
-              {/* Pencil Icon: Open edit form and send the id */}
-              <button 
-                onClick={() => handleEditClick(id)}
-                className="bg-[#1c1c1c] w-10 h-10 rounded-full flex items-center justify-center"
-              >
+              <button onClick={handleEditClick} className="bg-[#1c1c1c] w-10 h-10 rounded-full flex items-center justify-center">
                 <FontAwesomeIcon icon={faPen} className="text-white w-4 h-4" />
               </button>
 
-              {/* Play Icon */}
-              <button className="bg-white w-12 h-12 rounded-full flex items-center justify-center">
+              <button onClick={() => handleSelectSong(singleplaylist?.songs[0])} className="bg-white w-12 h-12 rounded-full flex items-center justify-center">
                 <FontAwesomeIcon icon={faPlay} className="text-black w-6 h-6" />
               </button>
 
-              {/* Minus Icon (Delete) */}
-              <button 
-                onClick={() => handleDeletePlaylist(id)} 
-                className="bg-[#1c1c1c] w-10 h-10 rounded-full flex items-center justify-center"
-              >
+              <button onClick={() => handleDeletePlaylist(id)} className="bg-[#1c1c1c] w-10 h-10 rounded-full flex items-center justify-center">
                 <FontAwesomeIcon icon={faMinus} className="text-white w-4 h-4" />
               </button>
             </div>
@@ -182,57 +173,79 @@ const SinglePlaylist = () => {
         </div>
       </div>
 
-
-      {/* Right Section: Suggestions */}
       <div className="flex-1 mt-16">
-        <h2 className="text-xl font-bold mb-4 mt-3">Suggestions</h2>
-        <div
-          className="grid gap-4 overflow-y-auto"
-          style={{ maxHeight: "500px" }}
-          ref={songListRef}
-          onScroll={handleScroll}
-        >
-          {song && song.length > 0 ? (
-            song.slice(0, visibleSongs).map((item) => (
-              <div
-                key={item._id}
-                className="flex justify-between items-center bg-stone-900 p-3 rounded-lg cursor-pointer group hover:bg-[#ffffff2b] transition duration-300"
-              >
-                <div className="flex items-center w-1/4 gap-5">
-                  <div className="relative w-12 h-12 bg-gray-500 rounded-md overflow-hidden">
-                    <img className="w-full h-full object-cover" src={item?.image} alt="Song Cover" />
-                  </div>
-                  <div className="w-3/4">
-                    <p className="font-semibold">{item?.name}</p>
-                    <p className="text-gray-400">{item?.album}</p>
-                  </div>
-                </div>
-                <div className="flex justify-end items-center space-x-4">
-                  <p className="text-[15px] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <FontAwesomeIcon icon={faThumbsUp} />
-                  </p>
-                  <p className="text-[15px] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <FontAwesomeIcon icon={faThumbsDown} />
-                  </p>
-                  <OptionsMenu songId={item._id} />
-                  <p className="text-[15px]">{item?.duration || "0:00"}</p>
-                </div>
-              </div>
+        <h2 className="text-xl font-bold mb-4 mt-3">Playlist Songs</h2>
+
+        <div className="grid gap-4 mb-6">
+          {singleplaylist?.songs?.length > 0 ? (
+            singleplaylist.songs.map((item) => (
+              <div key={item._id} className="relative flex items-center bg-stone-900 p-3 rounded-lg">
+  <div className="relative w-12 h-12 bg-gray-500 rounded-md overflow-hidden group">
+    <img className="w-full h-full object-cover" src={item?.image} alt="Song Cover" />
+    
+    {/* Play/Pause Icon */}
+    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+      <button onClick={() => handleSelectSong(item)} className="text-white text-xl">
+        {currentSong?._id === item._id && isPlaying ? "⏸" : "▶"}
+      </button>
+    </div>
+  </div>
+
+  <div className="ml-4 w-full">
+    <Link to={`/singleSong/${item._id}`}><p className="font-semibold text-white hover:underline white">{item?.name}</p></Link>
+    <p className="text-gray-400">{item?.album}</p>
+  </div>
+</div>
+
+     
+
             ))
           ) : (
-            <p className="text-gray-400">No songs found.</p>
+            <p className="text-gray-400">No songs available in this playlist.</p>
           )}
         </div>
+
+        {/* Suggestions */}
+        <h2 className="text-xl font-bold mb-4 mt-3">Suggestions</h2>
+        <div className="grid gap-4 overflow-y-auto" style={{ maxHeight: "500px" }} ref={songListRef} onScroll={handleScroll}>
+  {song && song.length > 0 ? (
+    song.slice(0, visibleSongs).map((item) => (
+      <div key={item._id} className="flex justify-between items-center bg-stone-900 p-3 rounded-lg cursor-pointer group hover:bg-[#ffffff2b] transition duration-300">
+        <Link to={`/singleSong/${item._id}`} className="flex items-center w-1/4 gap-5">
+          <div className="relative w-12 h-12 bg-gray-500 rounded-md overflow-hidden">
+            <img className="w-full h-full object-cover" src={item?.image} alt="Song Cover" />
+          </div>
+          <div className="w-3/4">
+            <p className="font-semibold hover:underline text-white">{item?.name}</p>
+            <p className="text-gray-400">{item?.album}</p>
+          </div>
+        </Link>
+        <div className="flex justify-end items-center space-x-4">
+          <p className="text-[15px] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <button onClick={() => handleLike(item._id)} className="text-white ml-4">
+                  <FontAwesomeIcon icon={faThumbsUp} />
+                </button>
+          </p>
+          <p className="text-[15px] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <FontAwesomeIcon icon={faThumbsDown} />
+          </p>
+          <OptionsMenu songId={item._id} />
+          <p className="text-[15px]">{item?.duration || "0:00"}</p>
+        </div>
+      </div>
+    ))
+  ) : (
+    <p className="text-gray-400">No songs found.</p>
+  )}
+</div>
+
       </div>
 
-      {/* Conditionally render EditPlaylist modal at the bottom */}
+      {/* Player Component */}
+      <Player />
+
       {showEditForm && (
-        <EditPlaylist
-          id={id}
-          playlistData={singleplaylist}
-          onClose={handleCloseEditForm}
-          onSubmit={handleEditSubmit}
-        />
+        <EditPlaylist id={id} playlistData={singleplaylist} onClose={handleCloseEditForm} />
       )}
     </div>
   );

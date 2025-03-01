@@ -55,7 +55,8 @@ export const getAllSong=async(req,res)=>{
 //fetch single song
 export const fetchSingleSong=async(req,res)=>{
     const id=req.params.id;
-    const singleSong=await songModel.findById(id);
+    const singleSong=await songModel.findById(id)
+
     if(!singleSong){
         return res.status(404).json({message:"Songs not found"});   
     }

@@ -44,7 +44,7 @@ const SingleSong = () => {
         </div>
         <div className="flex flex-col text-white">
           <h2 className="text-5xl font-bold mb-4 md:text-7xl">{singleSong?.name || 'Unknown Song'}</h2>
-          <h4 className="text-lg text-gray-400">{singleSong?.artist || 'Unknown Artist'}</h4>
+          <h4 className="text-lg text-gray-400">{singleSong?.artist || 'Prabin Ghimire'}</h4>
         </div>
       </div>
 

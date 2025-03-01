@@ -32,14 +32,22 @@ export const getAllPlaylist=async(req,res)=>{
 }
 
 //get single playlist
-export const getSinglePlaylist=async(req, res)=>{
-  const id= req.params.id;
-  const singlePlaylist= await Playlist.findById(id);
-  if(!singlePlaylist){
-    return res.status(400).json({message:"Playlist not found"});
+export const getSinglePlaylist = async (req, res) => {
+  const id = req.params.id;
+
+  // Find the playlist and populate the song details
+  const singlePlaylist = await Playlist.findById(id).populate('songs', 'name file image'); // Populate song details
+
+  if (!singlePlaylist) {
+    return res.status(400).json({ message: "Playlist not found" });
   }
-  res.status(200).json(({message: " Successfully get the single playlist", data:singlePlaylist}));
+
+  res.status(200).json({
+    message: "Successfully got the single playlist",
+    data: singlePlaylist
+  });
 }
+
 
 
 //delete playlist 

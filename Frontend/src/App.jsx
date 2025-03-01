@@ -20,6 +20,8 @@ import SinglePlaylist from "./components/pages/playlist/SinglePlaylist"
 import EditPlaylist from "./components/pages/playlist/EditPlaylist"
 import Playlist from "./components/pages/playlist/Playlist"
 import Genre from "./components/pages/genre/Genre"
+import Library from "./components/pages/library/Library"
+import LikeSong from "./components/pages/Like/LikeSong"
 
 
 function App() {
@@ -50,6 +52,8 @@ function App() {
               <Route path="/editplaylist/:id" element={<EditPlaylist/>}/>
               <Route path="/playlist" element={<Playlist/>}/>
               <Route path="/allGenre" element={<Genre/>}/>
+              <Route path="/library" element={<Library/>}/>
+              <Route path="/likeSong" element={<LikeSong/>}/>
 
 
             </Routes>
