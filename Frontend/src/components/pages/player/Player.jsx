@@ -35,15 +35,30 @@ const Player = () => {
     const updateProgressBar = () => {
       dispatch(updateProgress(audioRef.current.currentTime));
     };
-
+  
     audioRef.current.addEventListener("timeupdate", updateProgressBar);
-    audioRef.current.onended = () => dispatch(playNext());
-
+  
+    audioRef.current.onended = () => {
+      dispatch(playNext());
+  
+      setTimeout(() => {
+        if (audioRef.current.src !== currentSong.file) {
+          audioRef.current.pause();
+          audioRef.current.src = currentSong.file;
+          audioRef.current.load();
+        }
+  
+        audioRef.current.play();
+        dispatch(playPause(true));
+      }, 200);
+    };
+  
     return () => {
       audioRef.current.removeEventListener("timeupdate", updateProgressBar);
       audioRef.current.onended = null;
     };
-  }, [dispatch]);
+  }, [dispatch, currentSong]);
+  
 
   useEffect(() => {
     if (isPlaying) {
@@ -69,6 +84,16 @@ const Player = () => {
     }
 
     dispatch(playPause());
+  };
+
+  const handleSeek = (e) => {
+    const bar = e.currentTarget;
+    const rect = bar.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const newTime = (clickX / rect.width) * audioRef.current.duration;
+  
+    audioRef.current.currentTime = newTime;
+    dispatch(updateProgress(newTime));
   };
 
   const handleNext = () => {
@@ -121,12 +146,18 @@ const Player = () => {
         </div>
 
         <div className="flex items-center gap-5">
-          <p>{Math.floor(progress / 60)}:{Math.floor(progress % 60)}</p>
-          <div className="w-[60vw] max-w-[500px] bg-gray-300 rounded-full cursor-pointer">
-            <hr className="h-1 border-none bg-green-800 rounded-full" style={{ width: `${(progress / currentSong?.duration) * 100}%` }} />
-          </div>
-          <p>{currentSong.duration}</p>
-        </div>
+    <p>{Math.floor(progress / 60)}:{String(Math.floor(progress % 60)).padStart(2, "0")}</p>
+    <div
+      className="w-[60vw] max-w-[500px] bg-gray-300 rounded-full cursor-pointer"
+      onMouseDown={handleSeek}
+    >
+      <div
+        className="h-1 bg-green-800 rounded-full"
+        style={{ width: `${(progress / currentSong?.duration) * 100}%` }}
+      />
+    </div>
+    <p>{currentSong.duration }</p>
+  </div>
       </div>
     </div>
   );
