@@ -34,21 +34,27 @@ const playerSlice = createSlice({
       if (!state.currentSong || state.songList.length === 0) return;
   
       const currentIndex = state.songList.findIndex(song => song._id === state.currentSong._id);
-      const nextIndex = (currentIndex + 1) % state.songList.length; // Loop back to the first song
+      const nextIndex = (currentIndex + 1) % state.songList.length;
+  
       state.currentSong = state.songList[nextIndex];
-      state.progress = 0;  // Reset progress
-      state.isPlaying = true; // Ensure it starts playing
+      state.progress = 0;
+      state.isPlaying = false; // Stop previous song first
   },
+  
   playPrev: (state) => {
-    if (!state.currentSong || state.songList.length === 0) return;
+      if (!state.currentSong || state.songList.length === 0) return;
+  
+      const currentIndex = state.songList.findIndex(song => song._id === state.currentSong._id);
+      const prevIndex = (currentIndex - 1 + state.songList.length) % state.songList.length;
+  
+      state.currentSong = state.songList[prevIndex];
+      state.progress = 0;
+      state.isPlaying = false; 
+  }
+  
 
-    const currentIndex = state.songList.findIndex(song => song._id === state.currentSong._id);
-    const prevIndex = (currentIndex - 1 + state.songList.length) % state.songList.length; // Loop to the last song if it's the first song
-    state.currentSong = state.songList[prevIndex];
-    state.progress = 0;  // Reset progress
-    state.isPlaying = true; // Ensure it starts playing
-}
-
+  
+  
   
    
   },

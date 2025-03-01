@@ -1,22 +1,35 @@
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { playPause, updateProgress, stopPlayer, playNext, playPrev, setCurrentSong } from "../../../store/playerSlice";
+import {
+  playPause,
+  updateProgress,
+  playNext,
+  playPrev,
+} from "../../../store/playerSlice";
 import { assets } from "../../../assets/frontend-assets/assets";
 
 const Player = () => {
   const dispatch = useDispatch();
-  const { currentSong, isPlaying, progress, songList } = useSelector((state) => state.player);
+  const { currentSong, isPlaying, progress, songList } = useSelector(
+    (state) => state.player
+  );
   const audioRef = useRef(new Audio());
 
   useEffect(() => {
-    if (currentSong) {
+    if (!currentSong) return;
+
+    if (audioRef.current.src !== currentSong.file) {
+      audioRef.current.pause();
       audioRef.current.src = currentSong.file;
       audioRef.current.load();
+    }
+
+    audioRef.current.onloadeddata = () => {
       if (isPlaying) {
         audioRef.current.play();
       }
-    }
-  }, [currentSong, isPlaying]);
+    };
+  }, [currentSong]);
 
   useEffect(() => {
     const updateProgressBar = () => {
@@ -24,9 +37,7 @@ const Player = () => {
     };
 
     audioRef.current.addEventListener("timeupdate", updateProgressBar);
-    audioRef.current.onended = () => {
-      dispatch(playNext());
-    };
+    audioRef.current.onended = () => dispatch(playNext());
 
     return () => {
       audioRef.current.removeEventListener("timeupdate", updateProgressBar);
@@ -34,23 +45,57 @@ const Player = () => {
     };
   }, [dispatch]);
 
-  const handlePlayPause = () => {
+  useEffect(() => {
     if (isPlaying) {
+      audioRef.current.play();
+    } else {
+      audioRef.current.pause();
+    }
+  }, [isPlaying]);
+
+  const handlePlayPause = async () => {
+    if (!currentSong) return;
+
+    if (isPlaying) {
+      dispatch(updateProgress(audioRef.current.currentTime));
       audioRef.current.pause();
     } else {
-      audioRef.current.play();
+      audioRef.current.currentTime = progress || 0;
+      try {
+        await audioRef.current.play();
+      } catch (error) {
+        console.error("Error playing the song:", error);
+      }
     }
+
     dispatch(playPause());
   };
 
-  const handlePrev = () => {
-    dispatch(playPrev());  // Just dispatch the action
-};
-
-
   const handleNext = () => {
-    dispatch(playNext());  // Just dispatch the action
-};
+    if (songList.length === 0) return;
+
+    dispatch(playPause(false));
+    dispatch(playNext());
+
+    setTimeout(() => {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play();
+      dispatch(playPause(true));
+    }, 200);
+  };
+
+  const handlePrev = () => {
+    if (songList.length === 0) return;
+
+    dispatch(playPause(false));
+    dispatch(playPrev());
+
+    setTimeout(() => {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play();
+      dispatch(playPause(true));
+    }, 200);
+  };
 
   if (!currentSong) return null;
 

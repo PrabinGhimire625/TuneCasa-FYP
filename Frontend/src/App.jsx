@@ -55,8 +55,8 @@ function App() {
             </Routes>
           </div>
         </div>
-        <Player/>
-        <audio preload="auto"></audio>
+   
+       
       </BrowserRouter>
       </Provider>
     </>

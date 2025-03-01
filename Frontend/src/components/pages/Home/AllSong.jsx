@@ -1,8 +1,8 @@
-import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { listAllSong } from "../../../store/songSlice";
 import { setCurrentSong, playPause, setSongList } from "../../../store/playerSlice";
 import Player from "../player/Player";
+import { useEffect, useRef } from "react";
 
 const AllSong = () => {
   const dispatch = useDispatch();
@@ -16,10 +16,9 @@ const AllSong = () => {
 
   useEffect(() => {
     if (song.length > 0) {
-        dispatch(setSongList(song)); // Ensure song list is available in Redux
+      dispatch(setSongList(song));
     }
-}, [song, dispatch]);
-
+  }, [song, dispatch]);
 
   const scrollLeft = () => {
     scrollContainer.current?.scrollBy({ left: -500, behavior: "smooth" });
@@ -31,26 +30,23 @@ const AllSong = () => {
 
   const handleSelectSong = (songItem) => {
     if (currentSong?._id === songItem._id) {
-      dispatch(playPause()); // Toggle play/pause
+      dispatch(playPause());
     } else {
-      dispatch(setCurrentSong(songItem)); // Set new song
-      dispatch(playPause(true)); // Start playing
+      dispatch(setCurrentSong(songItem));
+      setTimeout(() => dispatch(playPause(true)), 200);
     }
   };
 
-  // Group songs into sets of 3
-  const groupSongs = (songs, groupSize) => {
-    let result = [];
-    for (let i = 0; i < songs.length; i += groupSize) {
-      result.push(songs.slice(i, i + groupSize));
-    }
-    return result;
-  };
-
-  const groupedSongs = groupSongs(song, 3);
+  // Group songs into chunks of 3 (for each column)
+  const chunkSize = 3;
+  const songColumns = [];
+  for (let i = 0; i < song.length; i += chunkSize) {
+    songColumns.push(song.slice(i, i + chunkSize));
+  }
 
   return (
     <div className="w-full p-4 text-white">
+      {/* Title & Scroll Buttons */}
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-lg font-bold">Quick Picks</h3>
         <div className="flex items-center gap-2">
@@ -59,12 +55,14 @@ const AllSong = () => {
         </div>
       </div>
 
-      <div ref={scrollContainer} className="overflow-x-auto whitespace-nowrap scrollbar-hide">
-        <div className="flex gap-16">
-          {groupedSongs.map((group, i) => (
-            <div key={i} className="flex flex-col gap-6">
-              {group.map((songItem, i) => (
-                <div key={i} className="flex items-center gap-4 rounded-lg">
+      {/* Scrollable Song Container */}
+      <div ref={scrollContainer} className="overflow-x-auto scrollbar-hide">
+        <div className="flex gap-6">
+          {songColumns.map((column, colIndex) => (
+            <div key={colIndex} className="flex flex-col gap-4">
+              {column.map((songItem, i) => (
+                <div key={i} className=" p-1 rounded-lg shadow-lg flex items-center gap-4 w-56">
+                  {/* Song Image with Play Button */}
                   <div className="relative w-12 h-12 bg-gray-500 rounded-md overflow-hidden">
                     <img src={songItem.image} alt={songItem.name} className="w-full h-full object-cover" />
                     <button
@@ -76,9 +74,11 @@ const AllSong = () => {
                       {currentSong?._id === songItem._id && isPlaying ? "⏸" : "▶"}
                     </button>
                   </div>
-                  <div className="flex flex-col flex-grow">
-                    <span className="text-white font-semibold text-base truncate">{songItem.name}</span>
-                    <span className="text-gray-400 text-sm truncate">{songItem.artist} • {songItem.album}</span>
+
+                  {/* Song Details */}
+                  <div className="flex flex-col">
+                    <span className="text-white font-semibold text-sm truncate">{songItem.name}</span>
+                    <span className="text-gray-400 text-xs truncate">• {songItem.desc?.slice(0, 20)}...</span>
                   </div>
                 </div>
               ))}
@@ -87,7 +87,7 @@ const AllSong = () => {
         </div>
       </div>
 
-      <Player /> {/* Use Player component here */}
+      <Player />
     </div>
   );
 };
