@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { STATUS } from "../globals/components/enumStatus/Status";
-import { API, APIAuthenticated } from "../http";
+import { STATUS } from "../globals/enumStatus/Status";
+import { API, APIAuthenticated } from "../http/index";
 
 
 const playlistSlice = createSlice({

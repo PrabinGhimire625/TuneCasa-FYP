@@ -6,7 +6,7 @@ import User from "../models/userModel.js";
 
 //add songs
 export const addSong = async (req, res) => {
-  const { name, desc, album } = req.body;
+  const { name, desc, album, genre } = req.body;
   const audioFile = req.files.audio[0];
   const imageFile = req.files.image[0];
   const userId=req.user.id;
@@ -28,6 +28,7 @@ export const addSong = async (req, res) => {
       name,
       desc,
       album,
+      genre,
       userId, 
       image: imageUpload.secure_url,
       file: audioUpload.secure_url,

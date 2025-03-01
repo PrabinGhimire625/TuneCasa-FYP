@@ -1,7 +1,8 @@
 import { Router } from "express";
 import { isAuthenticated } from "../middleware/authMiddleware.js";
 import errorHandler from "../services/catchAsyncError.js";
-import { addSongToPlaylist, createPlaylist, deletePlaylist, getAllPlaylist, getSinglePlaylist, updatePlaylist } from "../controllers/playlistController.js";
+import { addSongToPlaylist, createPlaylist, deletePlaylist, getAllPlaylist, getSinglePlaylist, updatePlaylist, updatePlaylistImage } from "../controllers/playlistController.js";
+import upload from "../middleware/multer.js";
 const router=Router();
 
 router.route("/").post(isAuthenticated, errorHandler(createPlaylist))
@@ -13,6 +14,9 @@ router.route("/add-song/:id").post(isAuthenticated, errorHandler(addSongToPlayli
 router.route("/:id").get(isAuthenticated, errorHandler(getSinglePlaylist))
 .delete(isAuthenticated, errorHandler(deletePlaylist))
 .patch(isAuthenticated, errorHandler(updatePlaylist))
+
+
+router.route("/image/:id").patch(isAuthenticated, upload.fields([{ name: 'image', maxCount: 1 }]),errorHandler(updatePlaylistImage))
 
 
 export default router

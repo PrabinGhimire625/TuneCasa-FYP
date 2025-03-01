@@ -26,7 +26,7 @@ const Navbar = () => {
  useEffect(() => {
        const token = localStorage.getItem('token');
        if (token) {
-         dispatch((userProfile())); // Fetch user profile only if the token exists
+         dispatch((userProfile())); 
        }
      }, [dispatch]);
 

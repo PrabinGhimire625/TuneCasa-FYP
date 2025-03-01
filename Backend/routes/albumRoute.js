@@ -12,8 +12,9 @@ router.route("/").post(isAuthenticated, upload.single('image'),errorHandler(addA
 
 router.route("/:name").get(errorHandler(fetchSingleAlbumByName));  
 
-router.route("/:id").get( errorHandler(fetchSingleAlbum))
-.delete(isAuthenticated, errorHandler(deleteAlbum))
+router.route("/singleAlbum/:id").get( errorHandler(fetchSingleAlbum))
+
+router.route("/:id").delete(isAuthenticated, errorHandler(deleteAlbum))
 .patch(isAuthenticated, upload.fields([{ name: 'image', maxCount: 1 }]),errorHandler(updateAlbum))
 
 

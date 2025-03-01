@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { listAllSong } from "../../../store/songSlice";
-import { setCurrentSong, playPause } from "../../../store/playerSlice";
+import { setCurrentSong, playPause, setSongList } from "../../../store/playerSlice";
 import Player from "../player/Player";
 
 const AllSong = () => {
@@ -13,6 +13,13 @@ const AllSong = () => {
   useEffect(() => {
     dispatch(listAllSong());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (song.length > 0) {
+        dispatch(setSongList(song)); // Ensure song list is available in Redux
+    }
+}, [song, dispatch]);
+
 
   const scrollLeft = () => {
     scrollContainer.current?.scrollBy({ left: -500, behavior: "smooth" });

@@ -58,8 +58,8 @@ const EditSong = () => {
   console.log(singleSong)
 
   return (
-    <div className="min-h-screen flex  justify-center bg-black">
-      <div className="w-full max-w-2xl  rounded-lg shadow-lg p-6 md:p-12">
+    <div className="min-h-screen flex  justify-center ">
+      <div className="w-full max-w-2xl  rounded-lg shadow-lg bg-black p-6 md:p-12 h-[500px]">
         <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
           {/* Profile Image Upload */}
           <div className="relative flex flex-col items-center">

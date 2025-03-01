@@ -17,6 +17,9 @@ import DisplayHome from "./components/display/DisplayHome"
 import ArtistDetails from "./components/pages/artist/ArtistDetails"
 import SingleSong from "./components/pages/singleSong/SingleSong"
 import SinglePlaylist from "./components/pages/playlist/SinglePlaylist"
+import EditPlaylist from "./components/pages/playlist/EditPlaylist"
+import Playlist from "./components/pages/playlist/Playlist"
+import Genre from "./components/pages/genre/Genre"
 
 
 function App() {
@@ -44,6 +47,10 @@ function App() {
               <Route path="/singleSong/:id" element={<SingleSong/>}/>
               <Route path="/artistDetails/:id" element={<ArtistDetails/>}/>
               <Route path="/singlePlaylist/:id" element={<SinglePlaylist/>}/>
+              <Route path="/editplaylist/:id" element={<EditPlaylist/>}/>
+              <Route path="/playlist" element={<Playlist/>}/>
+              <Route path="/allGenre" element={<Genre/>}/>
+
 
             </Routes>
           </div>

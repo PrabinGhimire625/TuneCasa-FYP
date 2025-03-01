@@ -13,18 +13,15 @@ const authSlice=createSlice({
     reducers : {
         setUserdata(state,action){
             state.data=action.payload
-            console.log(state.data)
         },
         setStatus(state,action){
             state.status=action.payload
-            console.log(state.status)
         },
         resetStatus(state){
             state.status=STATUS.LOADING
         },
         setToken(state,action){
             state.token=action.payload;
-            console.log(state.token);
         },
         setProfile(state,action){
             state.profile=action.payload          
@@ -43,8 +40,6 @@ export function login(data){
             const response=await API.post("/api/login",data);
             if(response.status===200){
                 const {token,data}=response.data;
-                console.log(data);
-                console.log(token);
                 if (data.role !== 'admin') {
                     throw new Error('Only admins can log in.');
                   }
@@ -68,10 +63,8 @@ export function ArtistProfile(){
         dispatch(setStatus(STATUS.LOADING));
         try{
             const response=await APIAuthenticated.get("/api/user/profile");
-            console.log(response);
             if(response.status===200){
                 const {data}=response.data;
-                console.log(data);
                 dispatch(setProfile(data));
                 dispatch(setStatus(STATUS.SUCCESS));  
             }else{

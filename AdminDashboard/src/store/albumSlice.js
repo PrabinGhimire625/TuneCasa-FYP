@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { STATUS } from "../globals/components/Status";
+import { STATUS } from "../globals/enumStatus/Status"
 import {API, APIAuthenticated} from "../http/index"
 
 const albumSlice = createSlice({

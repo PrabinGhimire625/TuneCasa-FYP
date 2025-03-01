@@ -8,16 +8,10 @@ const Navbar = () => {
     const dispatch=useDispatch();
     const navigate=useNavigate();
     const {token,status, profile}=useSelector((state)=>state.auth);
-    console.log(token);
-    console.log(status);
-
-
     const [isLoggedIn, setIsloggedIn]=useState(false);
 
     useEffect(() => {
         const localStorageToken = localStorage.getItem('token');
-        console.log(localStorageToken)
-        console.log(token)
         if(localStorageToken){
           dispatch(setToken(localStorageToken))
         }
@@ -27,7 +21,6 @@ const Navbar = () => {
   useEffect(()=>{
         dispatch(ArtistProfile());
     },[dispatch])
-    console.log(profile)
     const firstLetter =   profile?.username?.slice(0, 1) || '';
 
       // handle logout

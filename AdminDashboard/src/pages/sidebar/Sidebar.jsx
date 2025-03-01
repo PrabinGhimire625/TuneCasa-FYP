@@ -51,14 +51,21 @@ const Sidebar = () => {
                     <Link to="/login" className="flex items-center px-4 py-2 mt-2 text-gray-100 hover:bg-gray-700" >
                      - Login
                     </Link>
-                    <Link to="/addCandidate" className="flex items-center px-4 py-2 mt-2 text-gray-100 hover:bg-gray-700"  >
-                      - Add candidate
+                    
+                    <Link to="/allSong" className="flex items-center px-4 py-2 mt-2 text-gray-100 hover:bg-gray-700"  >
+                      - List all song
                     </Link>
-                    <Link to="/addCategory" className="flex items-center px-4 py-2 mt-2 text-gray-100 hover:bg-gray-700"  >
-                      - Add Category
+                    <Link to="/allAlbum" className="flex items-center px-4 py-2 mt-2 text-gray-100 hover:bg-gray-700"  >
+                      - List all album
                     </Link>
-                    <Link to="/addParty" className="flex items-center px-4 py-2 mt-2 text-gray-100 hover:bg-gray-700"  >
-                      - Add Party
+                    <Link to="/allPlaylist" className="flex items-center px-4 py-2 mt-2 text-gray-100 hover:bg-gray-700"  >
+                      - List all playlist
+                    </Link>
+                    <Link to="/addGenre" className="flex items-center px-4 py-2 mt-2 text-gray-100 hover:bg-gray-700"  >
+                      - Add genre
+                    </Link>
+                    <Link to="/allGenre" className="flex items-center px-4 py-2 mt-2 text-gray-100 hover:bg-gray-700"  >
+                      - list genre
                     </Link>
                 </div>
               )}

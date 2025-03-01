@@ -43,7 +43,7 @@ function App() {
                 <Route path="/add-album" element={<AddAlbum />} />
                 <Route path="/list-song" element={<ListSong />} />
                 <Route path="/list-album" element={<ListAlbum />} />
-                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/" element={<Dashboard />} />
                 <Route path="/editAlbum/:id" element={<EditAlbum />} />
                 <Route path="/editSong/:id" element={<EditSong />} />
               </Routes>

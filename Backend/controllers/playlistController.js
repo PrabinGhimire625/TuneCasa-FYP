@@ -1,6 +1,6 @@
 import Playlist from "../models/playlistModel.js";
 import Song from "../models/songModel.js"
-
+import { v2 as cloudinary } from "cloudinary";
 //create playlist
 export const createPlaylist = async (req, res) => {
   try {
@@ -41,6 +41,7 @@ export const getSinglePlaylist=async(req, res)=>{
   res.status(200).json(({message: " Successfully get the single playlist", data:singlePlaylist}));
 }
 
+
 //delete playlist 
 export const deletePlaylist=async(req, res)=>{
   const id=req.params.id;
@@ -72,40 +73,78 @@ export const updatePlaylist = async (req, res) => {
 };
 
 
+//add song in playlist
  export const addSongToPlaylist = async (req, res) => {
   try {
     const { songId } = req.body;
     const playlistId = req.params.id; 
     const userId = req.user.id; 
 
-    // Find the playlist by its ID and the user ID
     const playlist = await Playlist.findOne({ _id: playlistId, userId });
     if (!playlist) {
       return res.status(404).json({ message: "Playlist not found or unauthorized" });
     }
 
-    // Check if the song is already in the playlist
     if (playlist.songs.includes(songId)) {
       return res.status(400).json({ message: "Song already exists in the playlist" });
     }
-
-    // Add song to the playlist
     playlist.songs.push(songId);
     
-    // Save the updated playlist
     const updatedPlaylist = await playlist.save();
-
-    // Respond with success message and updated playlist
     res.status(200).json({
       message: "Song added to playlist successfully",
       data: updatedPlaylist
     });
 
   } catch (error) {
-    // Handle any errors
     res.status(500).json({ message: "Server Error", error: error.message });
   }
 };
+
+
+
+//update playlist iamges
+export const updatePlaylistImage = async (req, res) => {
+  const id = req.params.id;
+  const userId = req.user.id;
+  const imageFile = req.files?.image?.[0];
+
+  if (!imageFile) {
+    return res.status(400).json({ message: "No image uploaded" });
+  }
+
+  try {
+    // Prepare the update data object
+    const updateData = {};
+
+    // Upload image to Cloudinary
+    const imageUpload = await cloudinary.uploader.upload(imageFile.path, {
+      resource_type: "image",
+    });
+    updateData.image = imageUpload.secure_url;
+
+    // Update playlist image
+    const playlistImage = await Playlist.findByIdAndUpdate(
+      id,
+      { $set: updateData },
+      { new: true }
+    );
+
+    if (!playlistImage) {
+      return res.status(404).json({ message: "Playlist not found" });
+    }
+
+    res.status(200).json({
+      message: "Image successfully added to the playlist",
+      data: playlistImage,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server Error", error: error.message });
+  }
+};
+
+
+
 
 
 

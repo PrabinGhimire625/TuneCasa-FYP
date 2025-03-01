@@ -35,7 +35,7 @@ const SingleAlbum = () => {
     <div className="w-full h-full">
       <div className="mt-10 flex gap-8 flex-col md:flex-row md:items-end">
         <div className="ml-5">
-          <img src={singleAlbum?.image || "#"} alt="Album Cover" />
+          <img className="w-64 h-64 object-cover" src={singleAlbum?.image || "#"} alt="Album Cover" />
         </div>
         <div className="flex flex-col text-white">
           <p>Playlist</p>

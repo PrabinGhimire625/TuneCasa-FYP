@@ -14,6 +14,7 @@ const playlistSchema = new mongoose.Schema(
       enum: ["public", "private"],
       default: "public",
     },
+    image: { type: String },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User", 

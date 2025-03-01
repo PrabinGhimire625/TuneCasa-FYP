@@ -3,6 +3,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisV, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { listAllPlaylist, AddSongOnPlaylist } from "../../../store/playlistSlice";
+import {Link} from "react-router-dom"
+import Playlist from "../playlist/Playlist";
 
 const OptionsMenu = ({ songId }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -15,6 +17,7 @@ const OptionsMenu = ({ songId }) => {
     dispatch(listAllPlaylist());
   }, [dispatch]);
 
+  //closes the dropdown if the user clicks anywhere outside of it.
   useEffect(() => {
     function handleClickOutside(event) {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -32,7 +35,6 @@ const OptionsMenu = ({ songId }) => {
     setShowPlaylistModal(false); // Close modal after adding
   };
 
-  console.log("Song id is  : ", songId);
 
   return (
     <>
@@ -70,33 +72,46 @@ const OptionsMenu = ({ songId }) => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-[#121212] p-6 rounded-lg w-96 text-white">
             <div className="flex justify-between items-center">
-              <h2 className="text-lg font-bold">Save to playlist</h2>
+              <h2 className="text-lg font-bold">Your playlist</h2>
               <button onClick={() => setShowPlaylistModal(false)}>
                 <FontAwesomeIcon icon={faTimes} />
               </button>
             </div>
 
             <div className="mt-4 space-y-2">
-              <h2 className="text-lg font-bold">Your playlists</h2>
-              {playlist && playlist.length > 0 ? (
-                <ul className="max-h-64 overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-900 mt-2">
-                  {playlist.map((item) => (
-                    <li key={item._id} className="mb-3">
-                      <button
-                        onClick={() => handleAddToPlaylist(item._id)}
-                        className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-700 w-full"
-                      >
-                        <p>{item.title}</p>
-                        <p className="text-gray-400">{item.songs.length} songs</p>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="text-gray-400">No playlists found.</p>
-              )}
+  {playlist && playlist.length > 0 ? (
+    <ul className="max-h-64 overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-900 mt-2">
+      {playlist.map((item) => (
+        <li key={item._id} className="mb-3">
+          <button
+            onClick={() => handleAddToPlaylist(item._id)}
+            className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-700 w-full"
+          >
+            <div className="flex items-center space-x-3">
+              <img src={item.image || "https://i0.wp.com/www.endofthreefitness.com/wp-content/uploads/2012/06/band-of-brothers.jpeg?resize=640%2C360&ssl=1"} alt={item.title} className="w-10 h-10 rounded-md object-cover" />
+              <p>{item.title}</p>
             </div>
+            <p className="text-gray-400">{item.songs.length} songs</p>
+          </button>
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <p className="text-gray-400">No playlists found.</p>
+  )}
+
+   <Link to="/playlist">
+   <button className="bg-white text-black font-medium py-2 px-4 rounded-lg ml-auto block mt-5">
+    Create
+  </button>
+   </Link>
+</div>
+
+           
+
           </div>
+
+          
         </div>
       )}
     </>

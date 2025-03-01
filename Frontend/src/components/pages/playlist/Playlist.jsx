@@ -31,7 +31,7 @@ const Playlist = ({ onClose }) => {
 
     // Wait for the status to be updated
     if (status === STATUS.SUCCESS) {
-      navigate('/addSongPlaylist');
+      navigate('/');
       onClose(); // Close the form
     } else if (status === STATUS.ERROR) {
       alert('Failed to create playlist. Try again!');

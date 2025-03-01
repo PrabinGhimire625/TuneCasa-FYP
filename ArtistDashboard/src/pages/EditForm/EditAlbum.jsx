@@ -22,6 +22,8 @@ const EditAlbum = () => {
     }
   }, [id, dispatch]);
 
+  console.log(singleAlbum)
+
 
   // prevoius data came on the singleAlbum and set in the setAlbumData usestate
   useEffect(() => {

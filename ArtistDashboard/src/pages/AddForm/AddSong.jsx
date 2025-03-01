@@ -5,11 +5,13 @@ import { listAllAlbum } from '../../store/albumSlice';
 import { addSong } from '../../store/songSlice';
 import { STATUS } from '../../globals/components/Status';
 import { toast, ToastContainer } from 'react-toastify';
+import { listAllGenre } from '../../store/genreSlice';
 
 
 
 const AddSong = () => {
   const { albums, status } = useSelector((state) => state.album);
+  const { genre } = useSelector((state) => state.genre);
   const dispatch = useDispatch();
 
   const [songData, setSongData] = useState({
@@ -17,7 +19,8 @@ const AddSong = () => {
     desc: "",
     image: null,
     audio: null,
-    album: "none"
+    album: "none",
+    genre:"none"
   });
 
   const handleChange = (e) => {
@@ -49,7 +52,9 @@ const AddSong = () => {
 
   useEffect(() => {
     dispatch(listAllAlbum());
+    dispatch(listAllGenre())
   }, [dispatch]);
+
 
   return (
     <>
@@ -114,6 +119,7 @@ const AddSong = () => {
           />
         </div>
 
+        {/* select album */}
         <div className='flex flex-col gap-2.5'>
           <p>Album</p>
           <select
@@ -130,6 +136,27 @@ const AddSong = () => {
               ))
             ) : (
               <option disabled>No Albums Available</option>
+            )}
+          </select>
+        </div>
+
+        {/* select genre */}
+        <div className='flex flex-col gap-2.5'>
+          <p>Genre</p>
+          <select
+            onChange={handleChange}
+            name='genre'
+            value={songData.genre}
+            className='bg-transparent outline-green-600 border-2 border-gray-400 p-2.5 w-[500px]'
+            required
+          >
+            <option value="none">Select an Album</option>
+            {genre.length > 0 ? (
+              genre.map((item, index) => (
+                <option key={index} value={item?.name}>{item?.name}</option>
+              ))
+            ) : (
+              <option disabled>No genre available</option>
             )}
           </select>
         </div>

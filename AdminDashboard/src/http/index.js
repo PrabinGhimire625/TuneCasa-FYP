@@ -8,7 +8,6 @@ const API=axios.create({
     }
 })
 
-console.log(localStorage.getItem('token'))
 
 //use this api if the token is needed
 const APIAuthenticated = axios.create({

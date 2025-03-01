@@ -18,7 +18,7 @@ const APIAuthenticated = axios.create({
     }
 });
 
-// Interceptor to update token dynamically before every request
+// Interceptor to
 APIAuthenticated.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('token');  // Fetch the latest token
