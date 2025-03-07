@@ -75,7 +75,7 @@ const Navbar = () => {
           {
             isLoggedIn ? (
               <>
-                <p className='bg-white text-black text-[15px] px-4 py-1 rounded-2xl hidden md:block cursor-pointer'>Explore Premium</p>
+               <Link to="/plan"> <p className='bg-white text-black text-[15px] px-4 py-1 rounded-2xl hidden md:block cursor-pointer'>Explore Premium</p></Link>
               
                 {/* dropdown for the profile icon */}
                 <div className='relative' ref={dropdownRef}>

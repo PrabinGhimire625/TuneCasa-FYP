@@ -5,7 +5,7 @@ import albumModel from "../models/albumModel.js";
 //add album
 export const addAlbum = async (req, res) => {
     try{
-        const { name, desc, bgColour } = req.body;
+        const { name, desc, bgColour, genre } = req.body;
         const imageFile = req.file;
         if (!name || !desc || !bgColour) {
             return res.status(404).json({ message: "Please provide name, description, and background color." });
@@ -29,6 +29,7 @@ export const addAlbum = async (req, res) => {
             name,
             desc,
             bgColour,
+            genre,
             image: imageUpload.secure_url,
         };
 
@@ -123,4 +124,35 @@ export const updateAlbum = async (req, res) => {
         return res.status(404).json({ message: "Album not found" });
       }
       res.status(200).json({ message: "Album updated successfully", data: updatedAlbum });
+};
+
+export const fetchAlbumByGenre = async (req, res) => {
+    const { genre } = req.params;
+
+    try {
+        // Case-insensitive regex search to find albums with the specified genre
+        const albums = await albumModel.find({
+            genre: { $regex: new RegExp(`^${genre}$`, 'i') } // 'i' for case-insensitive search
+        });
+
+        // Check if albums were found
+        if (!albums || albums.length === 0) {
+            return res.status(404).json({
+                message: "No albums found for this genre", 
+            });
+        }
+
+        // Return the fetched albums
+        res.status(200).json({
+            message: "Successfully fetched albums for the genre", 
+            data: albums,
+        });
+
+    } catch (error) {
+        console.error("Error fetching albums by genre:", error); 
+        res.status(500).json({
+            message: "Server error while fetching albums", 
+            error: error.message,
+        });
+    }
 };

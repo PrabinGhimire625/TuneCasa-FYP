@@ -40,7 +40,7 @@ const DisplayArtist = () => {
                         <div key={item._id} className="flex flex-col items-center space-y-2">
                             {/* Circular Image */}
                            <Link to={`/artistDetails/${item._id}`}>
-                           <div className="w-56 h-56 rounded-full overflow-hidden bg-gray-700">
+                           <div className="w-48 h-48 rounded-full overflow-hidden bg-gray-700">
                                 {/* Use a fallback image if no image exists */}
                                 <img
                                     src={item.image || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9nFbCnqa-fAIyStp-cQG9M-LezEqxUz0HYg&s'}

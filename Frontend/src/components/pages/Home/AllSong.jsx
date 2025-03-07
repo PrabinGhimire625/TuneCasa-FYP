@@ -3,6 +3,7 @@ import { listAllSong } from "../../../store/songSlice";
 import { setCurrentSong, playPause, setSongList } from "../../../store/playerSlice";
 import Player from "../player/Player";
 import { useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 
 const AllSong = () => {
   const dispatch = useDispatch();
@@ -77,7 +78,7 @@ const AllSong = () => {
 
                   {/* Song Details */}
                   <div className="flex flex-col">
-                    <span className="text-white font-semibold text-sm truncate">{songItem.name}</span>
+                      <Link to={`singleSong/${songItem._id}`}><span className="text-white font-semibold text-sm truncate hover:underline white">{songItem.name}</span></Link>
                     <span className="text-gray-400 text-xs truncate">• {songItem.desc?.slice(0, 20)}...</span>
                   </div>
                 </div>

@@ -38,7 +38,7 @@ const LikeSong = () => {
             <h1 className="text-3xl font-bold text-white">Playlist Title</h1>
             <p className="text-gray-400 text-lg">Playlist • Public</p>
             <p className="text-gray-400 text-lg">10 tracks</p>
-            <p className="text-white text-lg">Description of the playlist.</p>
+           
 
             <div className="flex items-center space-x-8 ml-10 mt-5">
               <button className="bg-[#1c1c1c] w-10 h-10 rounded-full flex items-center justify-center">

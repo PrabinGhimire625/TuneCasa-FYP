@@ -22,6 +22,12 @@ import Playlist from "./components/pages/playlist/Playlist"
 import Genre from "./components/pages/genre/Genre"
 import Library from "./components/pages/library/Library"
 import LikeSong from "./components/pages/Like/LikeSong"
+import AllPlaylist from "./components/pages/playlist/AllPlaylist"
+import GenreBasedSong from "./components/pages/genre/GenreBasedSong"
+import Payment from "./components/pages/payment/Payment"
+import Plan from "./components/pages/payment/Plan"
+import Checkout from "./components/pages/payment/Checkout"
+import VerifyPayment from "./components/pages/payment/VerifyPayment"
 
 
 function App() {
@@ -51,11 +57,15 @@ function App() {
               <Route path="/singlePlaylist/:id" element={<SinglePlaylist/>}/>
               <Route path="/editplaylist/:id" element={<EditPlaylist/>}/>
               <Route path="/playlist" element={<Playlist/>}/>
+              <Route path="/allPlaylist" element={<AllPlaylist/>}/>
               <Route path="/allGenre" element={<Genre/>}/>
+              <Route path="/genreBasedSong/:id" element={<GenreBasedSong/>}/>
               <Route path="/library" element={<Library/>}/>
               <Route path="/likeSong" element={<LikeSong/>}/>
-
-
+              <Route path="/payment" element={<Payment/>}/>
+              <Route path="/plan" element={<Plan/>}/>
+              <Route path="/checkout/:planName" element={<Checkout/>}/>
+              <Route path="/verifyPayment" element={<VerifyPayment/>}/>
             </Routes>
           </div>
         </div>

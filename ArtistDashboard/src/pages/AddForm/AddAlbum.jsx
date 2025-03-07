@@ -1,12 +1,14 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { assets } from '../../assets/artist-assets/assets'
 import {useDispatch, useSelector} from  "react-redux"
 import { addAlbum } from '../../store/albumSlice';
 import { STATUS } from '../../globals/components/Status';
+import { listAllGenre } from '../../store/genreSlice';
 
 const AddAlbum = () => {
   const dispatch=useDispatch();
   const {status, albums}=useSelector((state)=>state.album);
+  const { genre } = useSelector((state) => state.genre);
   console.log(status);
   console.log(albums)
 
@@ -15,6 +17,7 @@ const AddAlbum = () => {
     name:"",
     desc:"",
     bgColour:"#121212",
+    genre:"none"
   }))
 
 
@@ -36,6 +39,10 @@ const AddAlbum = () => {
       alert('Failed to add the album!');
   }
   }
+
+  useEffect(() => {
+      dispatch(listAllGenre())
+    }, [dispatch]);
 
   console.log(albumData)
 
@@ -75,6 +82,28 @@ const AddAlbum = () => {
           <p>Background color</p>
           <input onChange={handleChange} type='color' name='bgColour'/>
         </div>
+
+           {/* select genre */}
+           <div className='flex flex-col gap-2.5'>
+          <p>Genre</p>
+          <select
+            onChange={handleChange}
+            name='genre'
+            value={albumData.genre}
+            className='bg-transparent outline-green-600 border-2 border-gray-400 p-2.5 w-[500px]'
+            required
+          >
+            <option value="none">Select an genre</option>
+            {genre.length > 0 ? (
+              genre.map((item, index) => (
+                <option key={index} value={item?.name}>{item?.name}</option>
+              ))
+            ) : (
+              <option disabled>No genre available</option>
+            )}
+          </select>
+        </div>
+
 
         <button type='submit' className='text-base bg-black text-white py-2.5 px-14 cursor-pointer'>Add</button>
       </form>

@@ -97,6 +97,12 @@ const Sidebar = () => {
 
         {/* Display Playlist */}
         <div>
+           <Link to={`/likeSong`}>
+                <div className="mt-5 ml-2">
+                  <h2 className="text-lg font-bold">Liked music</h2>
+                  <p className="text-gray-400 text-sm mb-2 ml">🎵 Auto playlist</p>
+                </div>
+              </Link>
           <AllPlaylist />
         </div>
       </div>

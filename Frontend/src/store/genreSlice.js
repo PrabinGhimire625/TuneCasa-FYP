@@ -9,6 +9,7 @@ const genreSlice = createSlice({
         genre: [],
         singleGenre: null,
         status: STATUS.LOADING,
+        albumByGenre:null
     },
     reducers: {
         setGenreData(state, action) {
@@ -19,6 +20,9 @@ const genreSlice = createSlice({
         },
         setStatus(state, action) {
             state.status = action.payload;
+        },
+        setAlbumByGenre(state,action){
+            state.albumByGenre=action.payload
         },
         setUpdateGenre(state, action) {
             const index = state.genre.findIndex(item => item._id === action.payload.id);
@@ -35,7 +39,7 @@ const genreSlice = createSlice({
     },
 });
 
-export const { setGenreData, setSingleGenre, setStatus, setDeleteGenre, setUpdateGenre } = genreSlice.actions;
+export const { setGenreData, setSingleGenre, setStatus, setDeleteGenre, setUpdateGenre ,setAlbumByGenre} = genreSlice.actions;
 export default genreSlice.reducer;
 
 // Add Genre
@@ -130,4 +134,22 @@ export function updateGenre({ id, genreData }) {
             dispatch(setStatus(STATUS.ERROR));
         }
     };
+}
+
+
+//fetch album by genre
+export function fetchAlbumByGenre(genre) {  
+    return async function fetchAlbumByGenreThunk(dispatch) {
+        dispatch(setStatus(STATUS.LOADING));
+        try {
+            const response = await API.get(`api/album/albumByGenre/${genre}`); 
+            if (response.status === 200) {
+                const { data } = response.data;
+                dispatch(setAlbumByGenre(data));
+                dispatch(setStatus(STATUS.SUCCESS));
+            }
+        } catch (err) {
+            dispatch(setStatus(STATUS.ERROR));  
+        }   
+    }
 }

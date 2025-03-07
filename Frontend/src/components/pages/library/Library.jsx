@@ -1,6 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faThumbsUp, faBookmark } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
+import AllPlaylist from "../playlist/AllPlaylist";
 
 const Library = () => {
   return (
@@ -16,6 +17,7 @@ const Library = () => {
           <p className="text-gray-300 text-sm">Auto playlist</p>
         </div>
       </Link>
+      
 
       {/* Episodes for later Playlist */}
       <Link
@@ -24,10 +26,13 @@ const Library = () => {
       >
         <FontAwesomeIcon icon={faBookmark} className="text-white text-3xl" />
         <div>
-          <p className="text-white font-semibold">Episodes for later</p>
-          <p className="text-gray-300 text-sm">Episodes that you save for later</p>
+          <p className="text-white font-semibold">Song for later</p>
+          <p className="text-gray-300 text-sm">Song that you save for later</p>
         </div>
       </Link>
+
+
+    
     </div>
   );
 };

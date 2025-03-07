@@ -28,7 +28,7 @@ const DisplayHome = () => {
       </div>
 
       <div className=" p-4 flex space-x-4 mt-2">
-        <div className="px-4 py-2 bg-stone-950 text-white rounded-md hover:bg-gray-900 focus:outline-none">Playlists</div>
+        <Link to={`/allPlaylist`}> <div className="px-4 py-2 bg-stone-950 text-white rounded-md hover:bg-gray-900 focus:outline-none">Playlists</div></Link>
         <div className="px-4 py-2 bg-stone-950 text-white rounded-md hover:bg-gray-900 focus:outline-none">Songs</div>
         <div className="px-4 py-2 bg-stone-950 text-white rounded-md hover:bg-gray-900 focus:outline-none">Albums</div>
         <div className="px-4 py-2 bg-stone-950 text-white rounded-md hover:bg-gray-900 focus:outline-none">Artists</div>

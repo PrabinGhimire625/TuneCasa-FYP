@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import Navbar from "../../../globals/components/navbar/Navbar";
-import { useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { assets } from "../../../assets/frontend-assets/assets";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllSongByAlbum } from "../../../store/songSlice";
@@ -10,6 +10,7 @@ import Player from "../player/Player";
 
 const SingleAlbum = () => {
   const { name } = useParams();
+  const navigate=useNavigate();
   const dispatch = useDispatch();
   const { songByAlbum } = useSelector((state) => state.song);
   const { singleAlbum } = useSelector((state) => state.album);
@@ -39,9 +40,7 @@ const SingleAlbum = () => {
         </div>
         <div className="flex flex-col text-white">
           <p>Playlist</p>
-          <h2 className="text-5xl font-bold mb-4 md:text-7xl">
-            {singleAlbum?.name || "Unknown Album"}
-          </h2>
+            <h2 onClick={() => navigate(`/album/${singleAlbum.name}`)} className="text-5xl font-bold mb-4 md:text-7xl hover:underline white hover:decoration-2 ">{singleAlbum?.name || "Unknown Album"}</h2>
           <h4>{singleAlbum?.desc || "No description available"}</h4>
         </div>
       </div>
@@ -50,9 +49,9 @@ const SingleAlbum = () => {
         <p>
           <b className="mr-4">#</b>Title
         </p>
-        <p>Album</p>
+        <p className="hidden sm:block">Album</p>
         <p className="hidden sm:block">Views</p>
-        <img className="m-auto w-4" src={assets.clock_icon} alt="Clock Icon" />
+        <img className="m-auto w-4 hidden sm:block" src={assets.clock_icon} alt="Clock Icon" />
       </div>
 
       <hr />
@@ -75,11 +74,11 @@ const SingleAlbum = () => {
                 {currentSong?._id === item._id && isPlaying ? "⏸" : "▶"}
               </button>
             </div>
-            <span className="text-white ml-3">{item.name}</span>
+           <Link to={`/singleSong/${item._id}`}> <span className="text-white ml-3 hover:underline white">{item.name}</span></Link>
           </div>
-          <p className="text-[15px]">{singleAlbum?.name}</p>
+          <p className="text-[15px] hover:underline">{singleAlbum?.name}</p>
           <p className="text-[15px] hidden sm:block">523454</p>
-          <p className="text-[15px] text-center">{item.duration}</p>
+          <p className="text-[15px] text-center hidden sm:block">{item.duration}</p>
         </div>
       ))}
 

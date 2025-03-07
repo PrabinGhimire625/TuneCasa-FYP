@@ -7,6 +7,7 @@ import artistSlice from "./artistSlice"
 import playlistSlice from "./playlistSlice"
 import genreSlice from "./genreSlice"
 import likeSlice from "./likeSlice"
+import subscriptionSlice from "./subscriptionSlice"
 
 const store=configureStore({
     reducer : {
@@ -18,7 +19,7 @@ const store=configureStore({
         playlist:playlistSlice,
         genre:genreSlice,
         like:likeSlice,
-        
+        subscription:subscriptionSlice,
     }
 })
 

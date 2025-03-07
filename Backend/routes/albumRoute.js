@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { addAlbum, deleteAlbum, fetchSingleAlbum, fetchSingleAlbumByName, getAllAlbum, updateAlbum } from "../controllers/albumController.js";
+import { addAlbum, deleteAlbum, fetchAlbumByGenre, fetchSingleAlbum, fetchSingleAlbumByName, getAllAlbum, updateAlbum } from "../controllers/albumController.js";
 import errorHandler from "../services/catchAsyncError.js";
 import upload from "../middleware/multer.js"
 import { isAuthenticated } from "../middleware/authMiddleware.js";
@@ -7,10 +7,10 @@ import { isAuthenticated } from "../middleware/authMiddleware.js";
 const router=Router();
 
 router.route("/").post(isAuthenticated, upload.single('image'),errorHandler(addAlbum))
-
 .get( errorHandler(getAllAlbum))
 
 router.route("/:name").get(errorHandler(fetchSingleAlbumByName));  
+router.route("/albumByGenre/:genre").get( errorHandler(fetchAlbumByGenre))
 
 router.route("/singleAlbum/:id").get( errorHandler(fetchSingleAlbum))
 

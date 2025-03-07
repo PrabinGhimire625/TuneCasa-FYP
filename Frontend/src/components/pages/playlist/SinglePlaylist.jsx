@@ -152,8 +152,12 @@ const handleLike = (songId) => {
 
           <div className="text-center">
             <h1 className="text-3xl font-bold text-white">{singleplaylist?.title}</h1>
-            <p className="text-gray-400 text-lg">{singleplaylist?.privacy}</p>
-            <p className="text-gray-400 text-lg">{singleplaylist?.songs?.length || 0} tracks</p>
+            <div className="flex items-center gap-2 text-gray-400 text-lg justify-center">
+                <p>{singleplaylist?.privacy}</p>
+                <span className="text-3xl leading-none">•</span>
+                <p>{singleplaylist?.songs?.length || 0} tracks</p>
+          </div>
+
             <p className="text-white text-lg">{singleplaylist?.description}</p>
 
             <div className="flex items-center space-x-8 ml-10 mt-5">

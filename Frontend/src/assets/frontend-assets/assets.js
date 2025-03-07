@@ -32,6 +32,7 @@ import album4 from './album4.jpg'
 import artist1 from './artist1.jpg'
 import explore from './explore.png'
 import tunecasaLogo from './tunecasaLogo.png'
+import khalti from "./khalti.jpg"
 
 export const assets = {
     img1,
@@ -40,6 +41,7 @@ export const assets = {
     logo,
     bell_icon,
     album1,
+    khalti,
     explore,
     album3,
     album4,
