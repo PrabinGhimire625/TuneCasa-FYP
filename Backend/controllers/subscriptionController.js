@@ -35,10 +35,10 @@ export const createSubscription = async (req, res) => {
     
     // Define Khalti payment initiation request data
     const paymentData = {
-      return_url: "http://localhost:5173/verifyPayment/", // Replace with your frontend success URL
+      return_url: "http://localhost:5173/verifyPayment/", 
       purchase_order_id: subscription._id.toString(), 
       amount: PLAN_PRICES[planName] * 100, 
-      website_url: "http://localhost:5173/", // Your website URL
+      website_url: "http://localhost:5173/", 
       purchase_order_name: `orderName_${subscription._id}`, 
     };
 
@@ -74,7 +74,6 @@ export const createSubscription = async (req, res) => {
 };
 
 // Khalti payment verification
-// Khalti payment verification
 export const khaltiVerification = async (req, res) => {
   try {
     const { pidx } = req.body;
@@ -89,13 +88,11 @@ export const khaltiVerification = async (req, res) => {
       return res.status(404).json({ message: "Payment not found" });
     }
 
-    // Fetch the subscription linked to the payment
     const subscription = await Subscription.findById(payment.subscriptionId);
     if (!subscription) {
       return res.status(404).json({ message: "Subscription not found" });
     }
 
-    // Retrieve the planName from the subscription
     const planName = subscription.planName;
 
     // Check if the planName is valid and retrieve the duration
@@ -104,7 +101,6 @@ export const khaltiVerification = async (req, res) => {
       return res.status(400).json({ message: "Invalid plan duration" });
     }
 
-    // Verify the payment with Khalti API
     const response = await axios.post(
       "https://a.khalti.com/api/v2/epayment/lookup/",
       { pidx },
@@ -125,7 +121,7 @@ export const khaltiVerification = async (req, res) => {
       // Calculate the start and end date for the subscription
       const startDate = new Date();
       const endDate = new Date(startDate);
-      endDate.setDate(startDate.getDate() + durationInDays); // Adds duration days
+      endDate.setDate(startDate.getDate() + durationInDays); 
 
       // Activate the subscription associated with the payment
       await Subscription.findByIdAndUpdate(payment.subscriptionId, {
@@ -137,11 +133,11 @@ export const khaltiVerification = async (req, res) => {
       res.status(200).json({
         message: "Payment successful, subscription activated!",
         payment: {
-          paymentId: payment._id, // The payment ID
+          paymentId: payment._id,
           paymentMethod: payment.paymentMethod,
           totalAmount: payment.totalAmount,
           paymentStatus: payment.paymentStatus,
-          pidx: payment.pidx, // The Khalti pidx
+          pidx: payment.pidx, 
         },
         subscription: {
           subscriptionId: payment.subscriptionId,
@@ -150,7 +146,6 @@ export const khaltiVerification = async (req, res) => {
         },
       });
     } else if (data.status === "Pending") {
-      // If payment is still pending, inform the user
       res.status(201).json({
         message: "Payment is still pending. Please wait or try again later.",
         status: "Pending",
@@ -163,3 +158,32 @@ export const khaltiVerification = async (req, res) => {
     res.status(500).json({ message: "Error verifying payment", error: error.message });
   }
 };
+
+// Check if user already has an active subscription
+export const checkActiveSubscription = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // Find the user's active subscription
+    const activeSubscription = await Subscription.findOne({
+      userId,
+      status: "active",
+    });
+
+    if (activeSubscription) {
+      return res.status(200).json({
+        message: "You already have an active subscription.",
+        data: activeSubscription,
+      });
+    } else {
+      return res.status(404).json({
+        message: "You do not have an active subscription.",
+      });
+    }
+  } catch (error) {
+    console.error("Error checking active subscription:", error);
+    res.status(500).json({ message: "Error checking subscription", error: error.message });
+  }
+};
+
+//update or add the

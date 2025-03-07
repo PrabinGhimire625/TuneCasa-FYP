@@ -40,13 +40,13 @@ const VerifyPayment = () => {
   };
 
   return (
-    <div className=" flex items-center justify-center p-4">
+    <div className=" flex items-center justify-center p-4   bg-gradient-to-r from-black via-gray-900 to-purple-700 h-full">
       <div className="bg-white rounded-lg shadow-lg p-6 max-w-md w-full">
         <h2 className="text-xl font-semibold mb-4">Payment Verification</h2>
         {renderPaymentStatus()}
         {paymentStatusFromState === STATUS.SUCCESS && (
           <button
-            onClick={() => navigate('/plan')}
+            onClick={() => navigate('/mainSubcription')}
             className="w-full mt-4 bg-blue-500 text-white py-2 rounded-md"
           >
            Done

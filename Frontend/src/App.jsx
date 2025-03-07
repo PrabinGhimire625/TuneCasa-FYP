@@ -28,6 +28,7 @@ import Payment from "./components/pages/payment/Payment"
 import Plan from "./components/pages/payment/Plan"
 import Checkout from "./components/pages/payment/Checkout"
 import VerifyPayment from "./components/pages/payment/VerifyPayment"
+import MainSubscription from "./components/pages/payment/MainSubscription "
 
 
 function App() {
@@ -63,6 +64,7 @@ function App() {
               <Route path="/library" element={<Library/>}/>
               <Route path="/likeSong" element={<LikeSong/>}/>
               <Route path="/payment" element={<Payment/>}/>
+              <Route path="/mainSubcription" element={<MainSubscription/>}/>
               <Route path="/plan" element={<Plan/>}/>
               <Route path="/checkout/:planName" element={<Checkout/>}/>
               <Route path="/verifyPayment" element={<VerifyPayment/>}/>
