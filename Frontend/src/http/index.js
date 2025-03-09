@@ -18,6 +18,7 @@ const APIAuthenticated = axios.create({
     }
 });
 
+
 // Interceptor to
 APIAuthenticated.interceptors.request.use(
     (config) => {
@@ -33,3 +34,14 @@ APIAuthenticated.interceptors.request.use(
 );
 
 export { API, APIAuthenticated };
+
+
+const api = axios.create({
+    baseURL: "http://localhost:3000/api/auth/",
+    headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+    }
+    // withCredentials: true,
+});
+export const googleAuth = (code) => api.get(`/google?code=${code}`);

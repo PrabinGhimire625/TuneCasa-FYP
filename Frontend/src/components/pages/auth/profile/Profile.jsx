@@ -49,6 +49,9 @@ const Profile = () => {
                 <h1 className="text-7xl md:text-12xl text-gray-200 font-bold">
                   {profile?.username || "Guest"}
                 </h1>
+                <h3 className="text-4xl md:text-xl text-gray-200 font-bold mt-3">
+                  {profile?.email || "Guest"}
+                </h3>
               </Link>
              
             </div>

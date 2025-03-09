@@ -1,8 +1,9 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const ArtistBook = () => {
   return (
-    <div className="p-4 x-auto bg-gray-800 rounded-lg shadow-lg ">
+    <div className="p-10 x-auto bg-gray-800 rounded-lg shadow-lg ">
       <div className="flex items-center gap-3">
         <div className="p-2 bg-blue-500 rounded-full">
           <svg
@@ -28,9 +29,11 @@ const ArtistBook = () => {
       </p>
 
       {/* Button with Glow Effect */}
-      <button className="mt-6 px-6 py-3 w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold rounded-lg shadow-md transform transition hover:scale-105 hover:shadow-xl">
-        🎤 Book Now
-      </button>
+      <Link to="/displayArtist">
+        <button className="mt-6 px-6 py-3 w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold rounded-lg shadow-md transform transition hover:scale-105 hover:shadow-xl">
+          🎤 Book Now
+        </button>
+      </Link>
     </div>
   );
 };

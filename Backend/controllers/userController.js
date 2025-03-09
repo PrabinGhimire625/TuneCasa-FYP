@@ -5,6 +5,10 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import sendEmail from "../services/sendEmail.js";
 import { sendEmailToAdmin,sendEmailToArtist } from '../services/SendAdminEmail.js';
+import axios from "axios";
+import { oauth2Client } from "../config/googleConfig.js"; 
+import { sendMessageToArtistEmail } from "../services/SendAdminEmail.js";
+
 
 //user registration
 export const register = async (req, res) => {
@@ -58,6 +62,45 @@ export const login = async (req, res) => {
     res.status(500).json({ message: "Server error, please try again later" });
   }
 };
+
+//googlelogin
+export const googleLogin = async (req, res) => {
+  try {
+    const { code } = req.query;
+    if (!code) {
+      return res.status(400).json({ message: 'Authorization code missing' });
+    }
+
+    // Exchange authorization code for tokens
+    const { tokens } = await oauth2Client.getToken(code);
+    oauth2Client.setCredentials(tokens);
+
+    // Fetch user information from Google API
+    const userResponse = await axios.get(
+      `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${tokens.access_token}`
+    );
+
+    const { email, name, image } = userResponse.data;
+
+    // Check if the user already exists in the database
+    let user = await User.findOne({ email });
+    if (!user) {
+      user = await User.create({ name, email, image });
+    }
+
+    const { _id } = user;
+
+    // Generate JWT for the user
+    const token = jwt.sign({ _id, email }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_TIMEOUT });
+
+    // Send response with JWT and user information
+    return res.status(200).json({ message: 'Success', token, user });
+  } catch (err) {
+    console.error('Google login error:', err);
+    return res.status(500).json({ message: 'Internal server error', error: err.message });
+  }
+};
+
 
 //user Profile
 export const profile = async (req, res) => {
@@ -336,27 +379,6 @@ export const fetchPendingArtists = async (req, res) => {
   }
 };
 
-//admin update artist status
-// export const updateArtistStatus = async (req, res) => { 
-//   const { artistId, status } = req.body; 
-
-//   // Validate status
-//   if (!['approved', 'rejected'].includes(status)) {
-//       return res.status(400).json({ message: 'Invalid status. It must be either "approved" or "rejected".' });
-//   }
-
-//   const artist = await Artist.findById(artistId);
-//   if (!artist) {
-//     return res.status(404).json({ message: 'Artist not found' });
-//   }
-
-//   artist.status = status;
-//   await artist.save();
-
-//   await sendEmailToArtist(artist, status);
-
-//   res.status(200).json({ message: 'Artist status updated successfully.' });
-// };
 
 // Approve artist
 export const approveArtist = async (req, res) => {
@@ -450,5 +472,32 @@ export const fetchAllArtists = async (req, res) => {
   }
 };
 
+//send message to the artist by the user
+export const sendMessageToArtist = async (req, res) => {
+  const userId = req.user.id; 
+  const { artistId, message } = req.body;
 
+  try {
+    // Fetch user data
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
 
+    // Fetch artist details
+    const artist = await Artist.findById(artistId).populate("userId");
+    if (!artist) {
+      return res.status(404).json({ success: false, message: "Artist not found" });
+    }
+
+    // Call the function to send an email dynamically to the artist
+    await sendMessageToArtistEmail(user, artist, message);
+
+    // Respond with success
+    res.status(200).json({ success: true, message: "Message sent to artist successfully!" });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Error sending message", error: error.message });
+  }
+};

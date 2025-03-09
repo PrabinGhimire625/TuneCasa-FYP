@@ -51,8 +51,8 @@ const AllSong = () => {
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-lg font-bold">Quick Picks</h3>
         <div className="flex items-center gap-2">
-          <button onClick={scrollLeft} className="px-3 py-1 bg-gray-700 rounded-full text-lg">{"<"}</button>
-          <button onClick={scrollRight} className="px-3 py-1 bg-gray-700 rounded-full text-lg">{">"}</button>
+          <button onClick={scrollLeft} className="px-2  rounded-full text-lg text-gray-600 border-2 border-gray-600">{"<"}</button>
+          <button onClick={scrollRight} className="px-2  rounded-full text-lg text-gray-600 border-2 border-gray-600">{">"}</button>
         </div>
       </div>
 

@@ -1,6 +1,6 @@
 import {Router} from "express";
 import errorHandler from "../services/catchAsyncError.js";
-import { approveArtist,artistProfile, artistLogin, fetchAllUser, fetchPendingArtists, forgetPassword, login, profile, register, registerArtist, rejectArtist, resetPassword, updateUser, verifyOtp, fetchAllArtists, fetchSingleUser } from "../controllers/userController.js";
+import { approveArtist,artistProfile, artistLogin, fetchAllUser, fetchPendingArtists, forgetPassword, login, profile, register, registerArtist, rejectArtist, resetPassword, updateUser, verifyOtp, fetchAllArtists, fetchSingleUser, googleLogin, sendMessageToArtist } from "../controllers/userController.js";
 import { isAuthenticated } from "../middleware/authMiddleware.js";
 import upload from "../middleware/multer.js"
 const router=Router();
@@ -13,6 +13,10 @@ router.route("/user/register").post((req, res, next) => {  //user register
 }, errorHandler(register));
 
 router.route("/login").post(errorHandler(login))
+router.route("/auth/google").get(googleLogin)
+router.route("/messages/send-message-to-artist").post(isAuthenticated, sendMessageToArtist)
+
+
 router.route("/user/profile").get(isAuthenticated,errorHandler(profile))
 router.route("/artist/profile").get(isAuthenticated,errorHandler(artistProfile))
 

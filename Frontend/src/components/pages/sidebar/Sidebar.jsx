@@ -72,7 +72,7 @@ const Sidebar = () => {
             <span>Library</span>
           </Link>
           <Link
-            to="/artist-booking"
+            to="/displayArtist"
             className="flex items-center space-x-3 py-3 px-4 rounded-lg hover:bg-[#121212] text-xl"
           >
             <img className="w-6" src={assets.stack_icon} alt="Artist Booking" />

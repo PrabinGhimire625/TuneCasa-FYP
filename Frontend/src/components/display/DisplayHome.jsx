@@ -31,8 +31,7 @@ const DisplayHome = () => {
         <Link to={`/allPlaylist`}> <div className="px-4 py-2 bg-stone-950 text-white rounded-md hover:bg-gray-900 focus:outline-none">Playlists</div></Link>
         <div className="px-4 py-2 bg-stone-950 text-white rounded-md hover:bg-gray-900 focus:outline-none">Songs</div>
         <div className="px-4 py-2 bg-stone-950 text-white rounded-md hover:bg-gray-900 focus:outline-none">Albums</div>
-        <div className="px-4 py-2 bg-stone-950 text-white rounded-md hover:bg-gray-900 focus:outline-none">Artists</div>
-        <div className="px-4 py-2 bg-stone-950 text-white rounded-md hover:bg-gray-900 focus:outline-none">Book artist</div>
+        <Link to="displayArtist"> <div className="px-4 py-2 bg-stone-950 text-white rounded-md hover:bg-gray-900 focus:outline-none">Artists</div></Link>
        <Link to="/allGenre"> <div className="px-4 py-2 bg-stone-950 text-white rounded-md hover:bg-gray-900 focus:outline-none">Genre</div></Link>
       </div>
 

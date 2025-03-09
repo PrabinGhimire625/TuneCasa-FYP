@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer';
 import dotenv from "dotenv"
+import Artist from '../models/artistModel.js';
 dotenv.config();
 const BASE_URL = process.env.NODE_ENV === 'production' ? 'https://yourdomain.com' : 'http://localhost:3000';
 
@@ -97,3 +98,38 @@ export const sendEmailToArtist = async (artist, status) => {
       console.log('Error in sendEmailToArtist:', error);
     }
   };
+  
+
+  // Function to send email to the artist
+// Function to send email to the artist
+export const sendMessageToArtistEmail = async (user, artist, message) => {
+  try {
+    const { username, email } = user; // User's details (sender)
+    const artistEmail = artist.userId.email; // Artist's email from populated userId
+
+    // Email content
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: artistEmail, // Dynamic artist's email
+      subject: `New Message from ${username}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+          <h2 style="color: #007bff;">You have a new message from ${username}</h2>
+          <p><strong>From:</strong> ${username} (${email})</p>
+          <p><strong>Event Info:</strong> ${message.eventDetails || "No event details provided"}</p>
+          <p><strong>Message:</strong> ${message.text}</p>
+          <p style="margin-top: 20px;">Please reply to this email to continue the conversation.</p>
+          <footer style="margin-top: 30px; font-size: 12px; color: #777;">
+            <p>This email was sent from the TuneCasa system.</p>
+          </footer>
+        </div>
+      `,
+    };
+
+    // Send the email
+    await transporter.sendMail(mailOptions);
+    console.log("Message sent successfully to artist:", artistEmail);
+  } catch (error) {
+    console.log("Error sending email:", error);
+  }
+};
