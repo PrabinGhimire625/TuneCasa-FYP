@@ -101,35 +101,52 @@ export const sendEmailToArtist = async (artist, status) => {
   
 
   // Function to send email to the artist
-// Function to send email to the artist
-export const sendMessageToArtistEmail = async (user, artist, message) => {
-  try {
-    const { username, email } = user; // User's details (sender)
-    const artistEmail = artist.userId.email; // Artist's email from populated userId
+  export const sendMessageToArtistEmail = async (user, artist, message) => {
+    try {
+      const { username, email } = user; // User's details (sender)
+      const artistEmail = artist.userId.email; // Artist's email from populated userId
 
-    // Email content
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: artistEmail, // Dynamic artist's email
-      subject: `New Message from ${username}`,
-      html: `
-        <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-          <h2 style="color: #007bff;">You have a new message from ${username}</h2>
-          <p><strong>From:</strong> ${username} (${email})</p>
-          <p><strong>Event Info:</strong> ${message.eventDetails || "No event details provided"}</p>
-          <p><strong>Message:</strong> ${message.text}</p>
-          <p style="margin-top: 20px;">Please reply to this email to continue the conversation.</p>
-          <footer style="margin-top: 30px; font-size: 12px; color: #777;">
-            <p>This email was sent from the TuneCasa system.</p>
-          </footer>
-        </div>
-      `,
-    };
-
-    // Send the email
-    await transporter.sendMail(mailOptions);
-    console.log("Message sent successfully to artist:", artistEmail);
-  } catch (error) {
-    console.log("Error sending email:", error);
-  }
-};
+      // Email content with improved styling
+      const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: artistEmail, // Dynamic artist's email
+        subject: `🎵 New Message from ${username} - TuneCasa`,
+        html: `
+          <div style="font-family: 'Arial', sans-serif; background-color: #f4f4f4; padding: 20px;">
+            <div style="max-width: 600px; background: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);">
+              <h2 style="color: #007bff; text-align: center;">🎶 You Have a New Message! 🎶</h2>
+              
+              <div style="border-bottom: 2px solid #007bff; padding-bottom: 15px; margin-bottom: 15px;">
+                <h3 style="color: #333; margin: 0;">📌 Sender Details</h3>
+                <p style="margin: 5px 0;"><strong>Name:</strong> ${username}</p>
+                <p style="margin: 5px 0;"><strong>Email:</strong> <a href="mailto:${email}" style="color: #007bff; text-decoration: none;">${email}</a></p>
+                <p style="margin: 5px 0;"><strong>Phone:</strong> <a href="tel:${message.phone}" style="color: #007bff; text-decoration: none;">${message.phone || "N/A"}</a></p>
+                <p style="margin: 5px 0;"><strong>Address:</strong> ${message.address || "Not Provided"}</p>
+              </div>
+  
+              <div>
+                <h3 style="color: #333; margin: 0;">💬 Message</h3>
+                <p style="background: #f8f9fa; padding: 15px; border-left: 4px solid #007bff; font-style: italic;">
+                  ${message.message}
+                </p>
+              </div>
+  
+              <p style="margin-top: 20px; text-align: center;">
+                📩 <strong>Reply to this email</strong> to continue the conversation.
+              </p>
+  
+              <footer style="margin-top: 30px; text-align: center; font-size: 12px; color: #777;">
+                <p>⚡ This email was sent via <strong>TuneCasa</strong> - Connecting Artists & Fans.</p>
+              </footer>
+            </div>
+          </div>
+        `,
+      };
+  
+      // Send the email
+      await transporter.sendMail(mailOptions)
+    } catch (error) {
+      console.log("Error sending email:", error);
+    }
+  };
+  

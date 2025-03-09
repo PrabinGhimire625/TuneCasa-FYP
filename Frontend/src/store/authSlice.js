@@ -177,3 +177,32 @@ export function fetchSingleUser(id){
         }
     }
 }
+
+
+//fetch single user
+export function sendMessageToArtist(artistId, message, phone, address) {
+    return async function (dispatch) {
+      dispatch(setStatus(STATUS.LOADING));
+      try {
+        const response = await APIAuthenticated.post(`/api/messages/send-message-to-artist`, {
+          artistId,
+          message,  // Direct message string
+          phone,
+          address
+        });
+        
+        if (response.status === 200) {
+          const { data } = response.data;
+          dispatch(setStatus(STATUS.SUCCESS));
+          // Optionally, you can dispatch additional actions here to store the response data if needed
+        } else {
+          dispatch(setStatus(STATUS.ERROR));
+        }
+      } catch (err) {
+        console.error("Error sending message:", err);
+        dispatch(setStatus(STATUS.ERROR));
+      }
+    };
+  }
+  
+

@@ -133,7 +133,6 @@ export const fetchAllUser=async(req,res)=>{
 
 
 //fetch single user
-// Fetch single user and include the bio inside the data object
 export const fetchSingleUser = async (req, res) => {
   const id = req.params.id;
 
@@ -472,32 +471,61 @@ export const fetchAllArtists = async (req, res) => {
   }
 };
 
-//send message to the artist by the user
+
+
 export const sendMessageToArtist = async (req, res) => {
-  const userId = req.user.id; 
-  const { artistId, message } = req.body;
+  const userId = req.user.id;
+  const { artistId, message, phone, address } = req.body;  // Extract phone and address from the request body
+  console.log( phone, address)
+  console.log(" message", message)
 
   try {
-    // Fetch user data
-    const user = await User.findById(userId);
+    // Fetch user data with necessary fields (username, email)
+    const user = await User.findById(userId).select("username email");
     if (!user) {
       return res.status(404).json({ success: false, message: "User not found" });
     }
 
-    // Fetch artist details
-    const artist = await Artist.findById(artistId).populate("userId");
-    if (!artist) {
-      return res.status(404).json({ success: false, message: "Artist not found" });
+    // Fetch artist details by userId from the artist table, populate to get the artist's email
+    const artist = await Artist.findOne({ userId: artistId }).populate("userId", "email");
+    if (!artist || !artist.userId?.email) {
+      return res.status(404).json({ success: false, message: "Artist not found or email not available" });
     }
 
-    // Call the function to send an email dynamically to the artist
-    await sendMessageToArtistEmail(user, artist, message);
+    // Add phone and address to the message object to be sent
+    const fullMessage = {
+      message: message,  // Just use the 'text' from the message object
+      phone: phone || "N/A",  // Use provided phone or default to "N/A"
+      address: address || "Not Provided",  // Use provided address or default to "Not Provided"
+    };
 
-    // Respond with success
-    res.status(200).json({ success: true, message: "Message sent to artist successfully!" });
+    // Call the function to send an email dynamically to the artist with the updated message
+    await sendMessageToArtistEmail(user, artist, fullMessage);
+
+    // Log successful email sending
+    console.log(`✅ Message sent to artist (${artist.userId.email}) from user (${user.email})`);
+
+    // Respond with success and include details of what was sent
+    res.status(200).json({
+      success: true,
+      message: "Message sent to artist successfully!",
+      data: {
+        sender: {
+          username: user.username,
+          email: user.email,
+          phone: phone || "N/A",
+          address: address || "Not Provided"
+        },
+        artist: {
+          artistId: artist._id,
+          artistEmail: artist.userId.email
+        },
+        message: fullMessage
+      }
+    });
 
   } catch (error) {
-    console.error(error);
+    console.error("Error sending message:", error.message);
     res.status(500).json({ success: false, message: "Error sending message", error: error.message });
   }
 };
