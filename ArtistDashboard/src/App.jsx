@@ -20,6 +20,9 @@ import ResetPassword from "./pages/Auth/forgetPassword/ResetPassword";
 import Profile from "./pages/Auth/profile/Profile";
 import EditProfile from "./pages/Auth/profile/EditProfile";
 import EditSong from "./pages/EditForm/EditSong";
+import AddEvent from "./pages/AddForm/AddEvent";
+import ListEvent from "./pages/Tables/ListEvent";
+import EditEvent from "./pages/EditForm/EditEvent";
 
 function App() {
   return (
@@ -42,11 +45,14 @@ function App() {
                 <Route path="/resetPassword" element={<ResetPassword/>}/>
                 <Route path="/add-song" element={<AddSong />} />
                 <Route path="/add-album" element={<AddAlbum />} />
+                <Route path="/add-event" element={<AddEvent />} />
                 <Route path="/list-song" element={<ListSong />} />
                 <Route path="/list-album" element={<ListAlbum />} />
+                <Route path="/list-event" element={<ListEvent />} />
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/editAlbum/:id" element={<EditAlbum />} />
                 <Route path="/editSong/:id" element={<EditSong />} />
+                <Route path="/editEvent/:id" element={<EditEvent />} />
               </Routes>
             </div>
           </div>

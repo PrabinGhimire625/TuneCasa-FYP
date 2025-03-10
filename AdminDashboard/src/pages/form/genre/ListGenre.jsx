@@ -19,17 +19,16 @@ const ListGenre = () => {
 
   return (
     <>
-      <div className="flex h-screen bg-stone-900">
-        <Sidebar />
+
         <div className="flex flex-col flex-1 overflow-y-auto min-h-screen">
           <div className="p-4">
-            <div className="w-full p-6 text-white bg-stone-800 rounded-lg shadow-xl">
+            <div className="w-full p-6 text-white bg-gray-900 rounded-lg shadow-xl">
               <h3 className="text-xl font-bold mb-6 border-b border-gray-700 pb-2">List all genres</h3>
               <div className="space-y-4">
                 {genre.map((genreItem, index) => (
                   <div
                     key={index}
-                    className="flex items-center gap-4 bg-stone-900 p-3 rounded-lg shadow-md transition duration-300 hover:bg-gray-700 cursor-pointer"
+                    className="flex items-center gap-4 bg-gray-800 p-3 rounded-lg shadow-md transition duration-300 hover:bg-gray-700 cursor-pointer"
                   >
                     {/* Wrap genre item in Link to navigate to editGenre/:id */}
                     <Link
@@ -59,7 +58,7 @@ const ListGenre = () => {
             </div>
           </div>
         </div>
-      </div>
+
     </>
   );
 };

@@ -17,7 +17,7 @@ const Users = () => {
     <div className="my-7">
       <h2 className="text-3xl font-bold text-white mb-5">{roleName}</h2>
       <div className="overflow-x-auto mb-10">
-        <table className="w-full text-sm text-left text-gray-300 dark:text-gray-300">
+        <table className="w-full text-sm text-left text-gray-300 ">
           <thead className="text-xs uppercase bg-gray-600 dark:bg-gray-700 text-gray-100">
             <tr>
               <th scope="col" className="px-4 py-3">User Name</th>
@@ -55,7 +55,7 @@ const Users = () => {
   return (
     <section className="p-3 sm:p-5">
       <div className="mx-auto px-4 lg:px-12">
-        <div className="border-3  rounded-lg dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
+        <div className="border-3  rounded-lg relative shadow-md sm:rounded-lg overflow-hidden">
           {generateRoleTable(filterByRole('user'), 'Users')}
           {generateRoleTable(filterByRole('artist'), 'Artists')}
         </div>

@@ -6,8 +6,10 @@ import albumRouter from "./routes/albumRoute.js"
 import userRouter from "./routes/userRoute.js"
 import playlistRouter from "./routes/playlistRoute.js"
 import genreRouter from "./routes/genreRoute.js"
+import eventRouter from "./routes/eventRoute.js"
 import likeRouter from "./routes/likeRoute.js"
 import subscriptionRouter from "./routes/subscriptionRoute.js"
+import adsRouter from "./routes/adRoutes.js"
 import connectDB from "./config/mongoDb.js";
 import connectCloudinary from "./config/cloudinary.js";
 import adminSeeder from "./adminSeeder.js";
@@ -36,8 +38,10 @@ app.use("/api/song",songRouter)
 app.use("/api/album",albumRouter)
 app.use("/api/playlist",playlistRouter)
 app.use("/api/genre",genreRouter)
+app.use("/api/event",eventRouter)
 app.use("/api/like",likeRouter)
 app.use("/api/subscription",subscriptionRouter)
+app.use("/api/ads",adsRouter)
 
 app.listen(port,()=>{
     console.log(`Server is running on the PORT ${port}`)

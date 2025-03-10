@@ -8,7 +8,8 @@ const authSlice=createSlice({
         data:[],
         status:STATUS.LOADING,
         token:"",
-        profile:""
+        profile:"",
+        singleUser:null
     },
     reducers : {
         setUserdata(state,action){
@@ -25,11 +26,14 @@ const authSlice=createSlice({
         },
         setProfile(state,action){
             state.profile=action.payload          
+        },
+        setSingleUser(state,action){
+            state.singleUser=action.payload
         }
     }
 })
 
-export const {setUserdata,setStatus, resetStatus,setToken,setProfile}=authSlice.actions
+export const {setUserdata,setStatus, resetStatus,setToken,setProfile,setSingleUser}=authSlice.actions
 export default authSlice.reducer
 
 //login user
@@ -78,3 +82,21 @@ export function ArtistProfile(){
 }
 
 
+//fetch single user
+export function fetchSingleUser(id){
+    return async function fetchSingleUserThunk(dispatch) {
+        dispatch(setStatus(STATUS.LOADING));
+        try{
+            const response=await APIAuthenticated.get(`/api/user/${id}`);
+            if(response.status===200){
+                const {data}=response.data;
+                dispatch(setSingleUser(data));
+                dispatch(setStatus(STATUS.SUCCESS));
+            }else{
+                dispatch(setStatus(STATUS.ERROR));
+            }
+        }catch(err){
+            dispatch(setStatus(STATUS.ERROR));
+        }
+    }
+}

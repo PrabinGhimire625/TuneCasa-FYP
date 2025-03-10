@@ -22,7 +22,7 @@ const ArtistRequest = () => {
   };
 
   return (
-    <section className=" dark:bg-gray-900 p-3 sm:p-5">
+    <section className=" bg-gray-900 p-3 sm:p-5">
       <div className="mx-auto max-w-screen-xl px-4 lg:px-12">
         <h1 className="text-3xl font-bold text-white text-center my-4">
           Pending Artist Requests

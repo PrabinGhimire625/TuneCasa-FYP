@@ -63,11 +63,9 @@ const EditGenre = () => {
 
   return (
     <>
-      <div className="flex h-screen bg-stone-900">
-        <Sidebar />
         <div className="flex flex-col flex-1 overflow-y-auto min-h-screen">
           <div className="p-4">
-            <div className="w-full p-6 text-white bg-stone-800 rounded-lg shadow-xl">
+            <div className="w-full p-6 text-white bg-gray-800 rounded-lg shadow-xl">
               <h3 className="text-xl font-bold mb-6 border-b border-gray-700 pb-2">Edit Genre</h3>
               <form onSubmit={handleSubmit} className="flex flex-col items-start gap-8 text-gray-600">
                 <div className="flex flex-col gap-2.5 text-white">
@@ -103,7 +101,7 @@ const EditGenre = () => {
             </div>
           </div>
         </div>
-      </div>
+
     </>
   );
 };

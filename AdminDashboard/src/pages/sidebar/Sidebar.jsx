@@ -1,86 +1,96 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import React, { useState } from "react";
+import { FaChartPie, FaTable, FaCog, FaAngleDown, FaMusic, FaUsers, FaHome } from "react-icons/fa";
+import { MdLibraryMusic } from "react-icons/md";
+import { RiPlayListFill, RiAdvertisementFill } from "react-icons/ri";
+import { FiLogOut } from "react-icons/fi";
+import { assets } from '../../assets/artist-assets/assets';
 
 const Sidebar = () => {
-  const [showOptions, setShowOptions] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState(null);
 
-  // Function to toggle the state
-  const toggleOptions = () => {
-    setShowOptions(!showOptions);
+  const toggleDropdown = (menu) => {
+    setOpenDropdown(openDropdown === menu ? null : menu);
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
-      {/* Sidebar */}
-      <div className="hidden md:flex flex-col w-64 bg-stone-950 min-h-screen">
-        <div className="flex items-center justify-center h-16 bg-stone-950">
-          <span className="text-white font-bold uppercase">Sidebar</span>
-        </div>
-        <div className="flex flex-col flex-1 overflow-y-auto">
-          <nav className="flex-1 px-2 py-4 bg-stone-950">
-            {/* Dashboard Link */}
-            <Link to="/" className="flex items-center text-[1.6rem] px-4 py-2 text-gray-100 hover:bg-gray-700">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-              Dashboard
-            </Link>
-
-            {/* Tables Link */}
-            <Link to="/tables" className="flex items-center text-[1.6rem] px-4 py-2 mt-2 text-gray-100 hover:bg-gray-700">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M3 14h18M4 6h16a1 1 0 011 1v10a1 1 0 01-1 1H4a1 1 0 01-1-1V7a1 1 0 011-1z" />
-              </svg>
-              Tables
-            </Link>
-
-            {/* Form Link with Dropdown */}
-            <div>
-              <div
-                onClick={toggleOptions}
-                className="flex items-center px-4 py-2 mt-2 text-[1.6rem] text-gray-100 hover:bg-gray-700 cursor-pointer">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 20h9M4 4h16v16H4V4zm6 9h4m-4-4h4m1 9H9m6-12v4H9v-4h6z" />
-                </svg>
-                Form
-              </div>
-
-              {/* Conditionally render Login and Add candidate options */}
-              {showOptions && (
-                <div className="ml-6">
-                    <Link to="/login" className="flex items-center px-4 py-2 mt-2 text-gray-100 hover:bg-gray-700" >
-                     - Login
-                    </Link>
-                    
-                    <Link to="/allSong" className="flex items-center px-4 py-2 mt-2 text-gray-100 hover:bg-gray-700"  >
-                      - List all song
-                    </Link>
-                    <Link to="/allAlbum" className="flex items-center px-4 py-2 mt-2 text-gray-100 hover:bg-gray-700"  >
-                      - List all album
-                    </Link>
-                    <Link to="/allPlaylist" className="flex items-center px-4 py-2 mt-2 text-gray-100 hover:bg-gray-700"  >
-                      - List all playlist
-                    </Link>
-                    <Link to="/addGenre" className="flex items-center px-4 py-2 mt-2 text-gray-100 hover:bg-gray-700"  >
-                      - Add genre
-                    </Link>
-                    <Link to="/allGenre" className="flex items-center px-4 py-2 mt-2 text-gray-100 hover:bg-gray-700"  >
-                      - list genre
-                    </Link>
-                </div>
-              )}
-            </div>
-
-            {/* Settings Link */}
-            <a href="#" className="flex items-center px-4 py-2 text-[1.6rem] mt-2 text-gray-100 hover:bg-gray-700">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-              Settings
-            </a>
-          </nav>
+    <div className="w-72 bg-gray-800 text-gray-300 min-h-screen p-5 flex flex-col text-lg ">
+      {/* User Profile Section */}
+      <Link to="/dashboard">
+      <div className="flex items-center space-x-3 mb-10 mt-2">
+      <img src={assets.Prabin} alt="Profile" className="w-12 h-12 rounded-full object-cover" />
+        <div>
+          <h3 className="text-lg font-semibold">Pravin Ghimire</h3>
+          <p className="text-sm text-green-400">Online</p>
         </div>
       </div>
+      </Link>
+
+      {/* Sidebar Menu */}
+      <nav className="flex-1">
+        <Link to="/dashboard" className="flex items-center p-3 rounded-lg hover:bg-gray-700">
+          <FaChartPie className="mr-3" /> Dashboard
+        </Link>
+        <Link to="/artistRequest" className="flex items-center p-3 rounded-lg hover:bg-gray-700">
+          <FaUsers className="mr-3" /> Artist Request
+        </Link>
+        <Link to="/users" className="flex items-center p-3 rounded-lg hover:bg-gray-700">
+          <FaTable className="mr-3" /> User Management
+        </Link>
+        <Link to="/displayArtist" className="flex items-center p-3 rounded-lg hover:bg-gray-700">
+          <FaTable className="mr-3" /> Event Management
+        </Link>
+
+        {/* Music Management Dropdown */}
+        <div>
+          <button
+            onClick={() => toggleDropdown("music")}
+            className="flex justify-between items-center p-3 w-full rounded-lg hover:bg-gray-700"
+          >
+            <span className="flex items-center">
+              <MdLibraryMusic className="mr-3" /> Music Management
+            </span>
+            <FaAngleDown className={`transition-transform ${openDropdown === "music" ? "rotate-180" : ""}`} />
+          </button>
+          {openDropdown === "music" && (
+            <div className="ml-6">
+              <Link to="/allSong" className="block p-2 text-sm hover:bg-gray-700 rounded-md">All Songs</Link>
+              <Link to="/allAlbum" className="block p-2 text-sm hover:bg-gray-700 rounded-md">All Albums</Link>
+              <Link to="/allPlaylist" className="block p-2 text-sm hover:bg-gray-700 rounded-md">All Playlists</Link>
+              <Link to="/addGenre" className="block p-2 text-sm hover:bg-gray-700 rounded-md">Add Genre</Link>
+              <Link to="/allGenre" className="block p-2 text-sm hover:bg-gray-700 rounded-md">List Genre</Link>
+            </div>
+          )}
+        </div>
+
+        {/* Ads Management Dropdown */}
+        <div>
+          <button
+            onClick={() => toggleDropdown("ads")}
+            className="flex justify-between items-center p-3 w-full rounded-lg hover:bg-gray-700"
+          >
+            <span className="flex items-center">
+              <RiAdvertisementFill className="mr-3" /> Ads Management
+            </span>
+            <FaAngleDown className={`transition-transform ${openDropdown === "ads" ? "rotate-180" : ""}`} />
+          </button>
+          {openDropdown === "ads" && (
+            <div className="ml-6">
+              <Link to="/createAds" className="block p-2 text-sm hover:bg-gray-700 rounded-md">Create Ads</Link>
+              <Link to="/listAds" className="block p-2 text-sm hover:bg-gray-700 rounded-md">List Ads</Link>
+            </div>
+          )}
+        </div>
+
+        <Link to="/settings" className="flex items-center p-3 rounded-lg hover:bg-gray-700">
+          <FaCog className="mr-3" /> Settings
+        </Link>
+      </nav>
+
+      {/* Logout Button */}
+      <button className="flex items-center p-3 rounded-lg hover:bg-red-600 mt-5 text-red-400 hover:text-white">
+        <FiLogOut className="mr-3" /> Logout
+      </button>
     </div>
   );
 };

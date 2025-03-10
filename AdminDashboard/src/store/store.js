@@ -5,6 +5,9 @@ import songSlice from "./songSlice"
 import albumSlice from "./albumSlice"
 import playlistSlice from "./playlistSlice"
 import genreSlice from "./genreSlice"
+import adsSlice from "./adsSlice"
+import artistSlice from "./artistSlice"
+import eventSlice from "./eventSlice"
 
 const store=configureStore({
     reducer:{
@@ -13,7 +16,11 @@ const store=configureStore({
         song:songSlice,
         album:albumSlice,
         playlist:playlistSlice,
-        genre:genreSlice
+        genre:genreSlice,
+        ads:adsSlice,
+        artist:artistSlice,
+        event:eventSlice,
+        
 
     }
 })

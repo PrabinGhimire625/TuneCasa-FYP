@@ -2,44 +2,48 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { fetchSingleUser, sendMessageToArtist, userProfile } from '../../../store/authSlice';
+import { listEventForSpecificArtist } from '../../../store/eventSlice';
 
 const SingleArtist = () => {
   const { id } = useParams(); // Artist ID from URL
   const dispatch = useDispatch();
-  const { singleUser,profile, status } = useSelector((state) => state.auth);
+  const { singleUser, profile, status } = useSelector((state) => state.auth);
+  const { eventOfArtist } = useSelector((state) => state.event);
   // Local state for controlling the modal and form fields
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
-
   const [message, setMessage] = useState("");
 
   useEffect(() => {
     if (id) {
       dispatch(fetchSingleUser(id));
+      dispatch(listEventForSpecificArtist(id))
     }
   }, [dispatch, id]);
 
-
-    useEffect(() => {
-      const token = localStorage.getItem('token');
-      if (token) {
-        dispatch(userProfile()); // Fetch user profile only if the token exists
-      }
-    }, [dispatch]);
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      dispatch(userProfile()); // Fetch user profile only if the token exists
+    }
+  }, [dispatch]);
 
   // Handle form submission: dispatch sendMessageToArtist and close modal
   const handleSubmit = (e) => {
     e.preventDefault();
     // Dispatch your action with artistId (from URL), message text, phone, and address.
     dispatch(sendMessageToArtist(id, message, phone, address));
+    alert("Successfully sent the message to the artist");
     setIsModalOpen(false);
   };
+
+  console.log("All the events of the specific artist are", eventOfArtist);
 
   return (
     <div className="w-full h-full">
       {/* Artist Profile Section */}
-      <div className="py-10 flex gap-8 flex-col md:flex-row md:items-end bg-neutral-900">
+      <div className="py-10 flex gap-8 flex-col md:flex-row md:items-end ">
         <div className="ml-5">
           <img
             src={
@@ -50,7 +54,7 @@ const SingleArtist = () => {
             className="w-40 h-40 rounded-full object-cover"
           />
         </div>
-        <div className="flex flex-col text-white">
+        <div className="flex flex-col text-white ml-5">
           <p>Artist</p>
           <h2 className="text-5xl font-bold mb-4 md:text-7xl">
             {singleUser?.user?.username || "Unknown Artist"}
@@ -66,14 +70,45 @@ const SingleArtist = () => {
         {/* Button to open modal */}
         <button
           onClick={() => setIsModalOpen(true)}
-          className="px-4 py-2 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400"
+          className="px-4  ml-48 py-2 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400"
         >
           Message to the artist
         </button>
       </div>
 
+      {/* Events Section */}
+      <div className="py-10 px-5 bg-[#121212] text-white">
+        <h3 className="text-3xl font-bold mb-6">Upcoming Events</h3>
+        {eventOfArtist && eventOfArtist.length > 0 ? (
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {eventOfArtist
+      .filter((event) => new Date(event.eventDate) > new Date()) // Filter future events
+      .map((event) => (
+        <div key={event.id} className="bg-neutral-900 p-5 rounded-lg shadow-lg border border-gray-700 flex items-center gap-4">
+          <img
+            src={event.image || "https://via.placeholder.com/150"}
+            alt={event.title}
+            className="w-24 h-24 object-cover rounded-lg"
+          />
+          <div>
+            <h4 className="text-xl font-semibold">{event.title}</h4>
+            <p className="text-gray-300">{event.description}</p>
+            <p className="text-sm text-gray-400 mt-2">Date: {event.eventDate}</p>
+            <p className="text-sm text-gray-400">Location: {event.location}</p>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+) : (
+  <p className="text-gray-400">No upcoming events.</p>
+)}
+
+      </div>
+
       {/* Modal Popup */}
-      {isModalOpen && (
+         {/* Modal Popup */}
+         {isModalOpen && (
         <div className="fixed inset-0 bg-opacity-90 flex justify-center items-center z-50">
           <div className="bg-gradient-to-br from-[#0a0a1a] to-[#101020] p-6 rounded-lg shadow-xl w-96 text-white border border-purple-500/30">
             <h2 className="text-2xl font-bold mb-4 text-center text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">
