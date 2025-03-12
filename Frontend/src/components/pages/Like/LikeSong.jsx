@@ -68,11 +68,11 @@ const LikeSong = () => {
                 <div className="flex items-center w-1/4 gap-5">
                   <div className="relative w-12 h-12 bg-gray-500 rounded-md overflow-hidden">
                     {/* Use the song image URL if available */}
-                    <img className="w-full h-full object-cover" src={song.songId.image || "https://via.placeholder.com/150"} alt="Song Cover" />
+                    <img className="w-full h-full object-cover" src={song.songId?.image || "https://via.placeholder.com/150"} alt="Song Cover" />
                   </div>
                   <div className="w-3/4">
-                    <p className="font-semibold">{song.songId.name}</p>
-                    <p className="text-gray-400">{song.songId.album}</p>
+                    <p className="font-semibold">{song.songId?.name}</p>
+                    <p className="text-gray-400">{song.songId?.album}</p>
                   </div>
                 </div>
                 <div className="flex justify-end items-center space-x-4">
@@ -82,7 +82,7 @@ const LikeSong = () => {
                   <p className="text-[15px] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <FontAwesomeIcon icon={faThumbsDown} />
                   </p>
-                  <p className="text-[15px]">{song.songId.duration || "3:45"}</p>
+                  <p className="text-[15px]">{song?.songId?.duration || "3:45"}</p>
                 </div>
               </div>
             ))

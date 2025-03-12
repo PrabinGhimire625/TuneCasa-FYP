@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { STATUS } from "../globals/enumStatus/Status";
+import { STATUS } from "../globals/components/enumStatus/Status";
 import { API, APIAuthenticated } from "../http";
 
 const adsSlice=createSlice({
@@ -8,10 +8,27 @@ const adsSlice=createSlice({
         ads:[],
         status:STATUS.LOADING,
         singleAds:null,
+        adsForFreeUsers:null,
+        trackView:null,
+        adsSkips:null,
+        adsClick:null,
     },
     reducers:{
         setAds(state,action){
             state.ads=action.payload
+        },
+        setAdsForFreeUser(state,action){
+            state.adsForFreeUsers=action.payload
+        },
+        setTrackAdsView(state, action) {
+            state.trackView = (state.trackView || 0) + 1; // Increment the view count
+        },
+        
+        setTrackAdsSkips(state,action){
+            state.adsSkips=action.payload
+        },
+        setTrackAdsClick(state,action){
+            state.adsClick=action.payload
         },
         setStatus(state,action){
             state.status=action.payload
@@ -38,7 +55,7 @@ const adsSlice=createSlice({
     }
 })
 
-export const {setAds,setStatus,setSingleAds,setDeleteAds,setUpdateAds}=adsSlice.actions
+export const {setAds,setStatus,setSingleAds,setDeleteAds,setUpdateAds, setAdsForFreeUser, setTrackAdsView, setTrackAdsSkips, setTrackAdsClick}=adsSlice.actions
 export default adsSlice.reducer
 
 
@@ -119,12 +136,13 @@ export function deleteAds(adsId){
             dispatch(setStatus(STATUS.ERROR)); 
         }
         }catch(err){
-            console.log(err);
+        console.log(err);
         dispatch(setStatus(STATUS.ERROR));  
         }  
     }
 }
 
+//update ads
 export function updateAds({id, adsData}){
     return async function updateAdsThunk(dispatch) {
         dispatch(setStatus(STATUS.LOADING));
@@ -143,4 +161,78 @@ export function updateAds({id, adsData}){
     } 
 }
 
+//list all the freeuser
+export function getAdsForFreeUsers(){
+    return async function getAdsForFreeUsersThunk(dispatch) {
+        dispatch(setStatus(STATUS.LOADING));
+        try{
+        const response=await APIAuthenticated.get("/api/ads/freeAds");
+        if(response.status===200){
+            const {data} =response.data;
+            dispatch(setAdsForFreeUser(data));
+            dispatch(setStatus(STATUS.SUCCESS));
+        }else{
+            dispatch(setStatus(STATUS.ERROR)); 
+        }
+        }catch(err){
+            console.log(err);
+        dispatch(setStatus(STATUS.ERROR));  
+        }  
+    }
+}
 
+//track ads view
+export function trackAdView({id, adsData}){
+    return async function trackAdViewThunk(dispatch) {
+        dispatch(setStatus(STATUS.LOADING));
+        const response= await APIAuthenticated.post(`/api/ads/track-view/${id}`, adsData,{
+            headers:{
+                "Content-Type":"multipart/form-data"
+            }
+        })
+        if(response.status===200){
+            const { data } = response.data;
+            dispatch(setTrackAdsView({ id, data })); 
+            dispatch(setStatus(STATUS.SUCCESS));
+        }else{
+            dispatch(setStatus(STATUS.ERROR));
+        }
+    } 
+}
+
+//track ads skips
+export function trackAdSkip(adsId){
+    return async function trackAdSkipThunk(dispatch) {
+        dispatch(setStatus(STATUS.LOADING));
+        try{
+        const response=await APIAuthenticated.post(`/api/ads/track-skip/${adsId}`);
+        if(response.status===200){
+            dispatch(setTrackAdsSkips({adsId}));
+            dispatch(setStatus(STATUS.SUCCESS));
+        }else{
+            dispatch(setStatus(STATUS.ERROR)); 
+        }
+        }catch(err){
+        dispatch(setStatus(STATUS.ERROR));  
+        }  
+    }
+}
+
+//track-click
+export function trackAdClick(adsId){
+    return async function trackAdClickThunk(dispatch) {
+        dispatch(setStatus(STATUS.LOADING));
+        try{
+        const response=await APIAuthenticated.post(`/api/ads/track-click/${adsId}`);
+        if(response.status===200){
+            dispatch(setTrackAdsClick({adsId}));
+            dispatch(setStatus(STATUS.SUCCESS));
+        }else{
+            dispatch(setStatus(STATUS.ERROR)); 
+        }
+        }catch(err){
+            console.log(err);
+        dispatch(setStatus(STATUS.ERROR));  
+        }  
+    }
+}

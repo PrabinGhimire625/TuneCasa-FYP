@@ -1,20 +1,20 @@
 import Subscription from "../models/subscriptionModel.js";
 
-const checkSubscription = async (req, res, next) => {
+export const checkSubscription = async (req, res, next) => {
     try {
-        const userId = req.user.id; // Assuming authentication middleware is used
+        const userId = req.user.id; // Extract userId from request
 
-        // Find an active subscription for the user
-        const subscription = await Subscription.findOne({ userId, status: "active" });
-
-        if (!subscription) {
-            return res.status(403).json({ message: "You need an active subscription to access this feature." });
+        if (!userId) {
+            return res.status(401).json({ message: "User not authenticated" });
         }
 
-        next(); 
+        const subscription = await Subscription.findOne({ userId, status: "active" });
+
+        // Attach isSubscribed flag to request
+        req.isSubscribed = !!subscription;
+        next();
     } catch (error) {
-        res.status(500).json({ message: "Error checking subscription", error: error.message });
+        console.error(error);
+        res.status(500).json({ message: "Error checking subscription status" });
     }
 };
-
-export default checkSubscription;

@@ -33,6 +33,8 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import GoogleLogin from "./components/pages/auth/googleLogin/GoogleLogin";
 import DisplayArtist from "./components/pages/artist/DisplayArtist";
 import SingleArtist from "./components/pages/artist/SingleArtist";
+import ListAds from "../../AdminDashboard/src/pages/form/ads/ListAds";
+
 
 function App() {
   return (
@@ -71,6 +73,7 @@ function App() {
                 <Route path="/checkout/:planName" element={<Checkout />} />
                 <Route path="/verifyPayment" element={<VerifyPayment />} />
                 <Route path="/singleArtist/:id" element={<SingleArtist />} />
+                <Route path="/listAds" element={<ListAds />} />
                 
                 {/* GoogleLogin Route */}
                 {/* <Route 
@@ -93,5 +96,6 @@ function App() {
     </>
   );
 }
+
 
 export default App;

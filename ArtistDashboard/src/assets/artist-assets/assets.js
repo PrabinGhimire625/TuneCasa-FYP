@@ -9,6 +9,7 @@ import TLogo from "./TLogo.png"
 import Logo from "./Logo.jpeg"
 import LogoHorizontal from "./LogoHorizontal.png"
 import tunecasaLogo from "./tunecasaLogo.png"
+import BackgroundVideo from "./BackgroundVideo.mp4"
 export const assets ={
     Logo,
     tunecasaLogo,
@@ -20,6 +21,7 @@ export const assets ={
     add_song,
     song_icon,
     album_icon,
-    upload_song
+    upload_song,
+    BackgroundVideo
 }
 

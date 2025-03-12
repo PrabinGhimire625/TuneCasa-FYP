@@ -23,6 +23,8 @@ import EditSong from "./pages/EditForm/EditSong";
 import AddEvent from "./pages/AddForm/AddEvent";
 import ListEvent from "./pages/Tables/ListEvent";
 import EditEvent from "./pages/EditForm/EditEvent";
+import { assets } from "./assets/artist-assets/assets"; // Import the video if it's in src/assets
+
 
 function App() {
   return (
@@ -31,31 +33,46 @@ function App() {
       <ToastContainer />
         <div className="flex items-start min-h-screen">
           <Sidebar/>
-          <div className="flex-1 h-screen overflow-y-scroll bg-stone-900">
-            <Navbar/>
-            <div className="pt-8 pl-5 sm:pt-12 sm:pl-12">
-              <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/editProfile/:id" element={<EditProfile/>}/>
-                <Route path="/forgetPassword" element={<ForgetPassword/>}/>
-                <Route path="/verifyOtp" element={<VerifyOtp/>}/>
-                <Route path="/resetPassword" element={<ResetPassword/>}/>
-                <Route path="/add-song" element={<AddSong />} />
-                <Route path="/add-album" element={<AddAlbum />} />
-                <Route path="/add-event" element={<AddEvent />} />
-                <Route path="/list-song" element={<ListSong />} />
-                <Route path="/list-album" element={<ListAlbum />} />
-                <Route path="/list-event" element={<ListEvent />} />
-                <Route path="/" element={<Dashboard />} />
-                <Route path="/editAlbum/:id" element={<EditAlbum />} />
-                <Route path="/editSong/:id" element={<EditSong />} />
-                <Route path="/editEvent/:id" element={<EditEvent />} />
-              </Routes>
-            </div>
-          </div>
+          <div className="relative flex-1 h-screen overflow-y-scroll">
+      {/* Video Background */}
+      <video 
+        className="absolute top-0 left-0 w-full h-full object-cover -z-10" 
+        autoPlay 
+        loop 
+        muted 
+        playsInline
+      >
+        <source src={assets?.BackgroundVideo} type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+
+      {/* Content */}
+      <div className="relative z-10 bg-black/50 h-full">
+        <Navbar />
+        <div className="pt-8 pl-5 sm:pt-12 sm:pl-12">
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/editProfile/:id" element={<EditProfile />} />
+            <Route path="/forgetPassword" element={<ForgetPassword />} />
+            <Route path="/verifyOtp" element={<VerifyOtp />} />
+            <Route path="/resetPassword" element={<ResetPassword />} />
+            <Route path="/add-song" element={<AddSong />} />
+            <Route path="/add-album" element={<AddAlbum />} />
+            <Route path="/add-event" element={<AddEvent />} />
+            <Route path="/list-song" element={<ListSong />} />
+            <Route path="/list-album" element={<ListAlbum />} />
+            <Route path="/list-event" element={<ListEvent />} />
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/editAlbum/:id" element={<EditAlbum />} />
+            <Route path="/editSong/:id" element={<EditSong />} />
+            <Route path="/editEvent/:id" element={<EditEvent />} />
+          </Routes>
+        </div>
+      </div>
+    </div>
         </div>
       </BrowserRouter>
     </Provider>

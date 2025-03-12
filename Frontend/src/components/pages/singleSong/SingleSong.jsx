@@ -52,7 +52,7 @@ const SingleSong = () => {
       <div className="mt-6 ml-5">
         {singleSong ? (
           <div
-            className="flex p-2 items-center text-[#a7a7a7] hover:bg-[#ffffff2b] cursor-pointer group bg-stone-500"
+            className="flex p-2 items-center text-[#a7a7a7] hover:bg-[#ffffff2b] cursor-pointer group "
             onClick={() => handleSelectSong(singleSong)}
            >
             {/* Image Section */}
