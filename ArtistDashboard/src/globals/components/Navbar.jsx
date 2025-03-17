@@ -38,7 +38,7 @@ const Navbar = () => {
   return (
     <>
       <header className="shadow-md font-[sans-serif] tracking-wide relative z-50">
-    <section className="md:flex lg:items-center relative py-3 lg:px-10 px-4 border-gray-200 border-b bg-black lg:min-h-[80px] max-lg:min-h-[60px]">
+    <section className="md:flex lg:items-center relative py-3 lg:px-10 px-4 lg:min-h-[80px] max-lg:min-h-[60px] bg-gray-800">
         <a href="#" className="mr-10 max-sm:w-full max-sm:mb-3 shrink-0">
         <div className="w-[50px] h-[50px] rounded-full overflow-hidden">
             <img 
@@ -90,7 +90,7 @@ const Navbar = () => {
                         <>
                         <li className="mr-4">
                             <Link to="#">
-                                <button onClick={handleLogout} className="max-sm:hidden flex items-center justify-center text-[15px] max-lg:py-3 px-4 font-medium text-white bg-red-700 cursor-pointer rounded-md h-8">
+                                <button onClick={handleLogout} className="max-sm:hidden flex items-center justify-center text-[15px] max-lg:py-3 px-4 font-medium text-white bg-red-900 cursor-pointer rounded-md h-8">
                                     Logout
                                 </button>
                             </Link>

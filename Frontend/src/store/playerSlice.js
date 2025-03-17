@@ -1,13 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { STATUS } from "../globals/components/enumStatus/Status";
+import { setStatus } from "./adsSlice";
+import { APIAuthenticated } from "../http";
 
 const initialState = {
   currentSong: null,
   isPlaying: false,
   progress: 0,
   songList: [],
-  currentAd: null, // Track the current ad
-  isAdPlaying: false, // True when an ad is playing
-  adList: [], // List of ads
+  currentAd: null,
+  isAdPlaying: false,
+  adList: [],
+  songCounter: 0, // Track number of songs before showing an ad
 };
 
 const playerSlice = createSlice({
@@ -17,9 +21,10 @@ const playerSlice = createSlice({
     setCurrentSong: (state, action) => {
       state.currentSong = action.payload;
       state.isPlaying = true;
+      state.progress = 0;
     },
-    playPause: (state) => {
-      state.isPlaying = !state.isPlaying;
+    playPause: (state, action) => {
+      state.isPlaying = action.payload !== undefined ? action.payload : !state.isPlaying;
     },
     updateProgress: (state, action) => {
       state.progress = action.payload;
@@ -32,70 +37,83 @@ const playerSlice = createSlice({
     setSongList: (state, action) => {
       state.songList = action.payload;
     },
+    playNextSong: (state) => {
+      if (!state.currentSong || state.songList.length === 0 || state.isAdPlaying) return;
 
-    playNext: (state) => {
-      if (!state.currentSong || state.songList.length === 0) return;
-  
       const currentIndex = state.songList.findIndex(song => song._id === state.currentSong._id);
       const nextIndex = (currentIndex + 1) % state.songList.length;
-  
+
       state.currentSong = state.songList[nextIndex];
       state.progress = 0;
-      state.isPlaying = false; // Stop previous song first
+      state.isPlaying = true;
+      state.songCounter += 1;
     },
-  
     playPrev: (state) => {
       if (!state.currentSong || state.songList.length === 0) return;
-  
       const currentIndex = state.songList.findIndex(song => song._id === state.currentSong._id);
       const prevIndex = (currentIndex - 1 + state.songList.length) % state.songList.length;
-  
       state.currentSong = state.songList[prevIndex];
       state.progress = 0;
-      state.isPlaying = false; 
+      state.isPlaying = true;
     },
-    
-    // Set the ad after it is fetched
     setAd: (state, action) => {
-      state.currentAd = action.payload; // Set the fetched ad
-      state.isAdPlaying = false; // Initially, the ad is not playing
+      state.currentAd = action.payload;
     },
-
-    // Action to start playing the ad
     playAd: (state) => {
-      state.isAdPlaying = true; // Mark that the ad is playing
-      state.isPlaying = false; // Pause the song
+      state.isAdPlaying = true;
+      state.isPlaying = false;
     },
-
-    // Action to stop the ad and resume the song after the ad finishes or is skipped
     stopAd: (state) => {
-      state.isAdPlaying = false; // Stop the ad
-      state.isPlaying = true; // Resume the song
-      state.currentAd = null; // Clear the ad
+      state.isAdPlaying = false;
+      state.isPlaying = true;
+      state.currentAd = null;
+    },
+    resetSongCounter: (state) => {
+      state.songCounter = 0;
     },
   },
 });
 
+export const { 
+  setCurrentSong, playPause, updateProgress, stopPlayer, setSongList, 
+  playNextSong, playPrev, setAd, playAd, stopAd, resetSongCounter 
+} = playerSlice.actions;
 
-export const { setCurrentSong, playPause, updateProgress, stopPlayer, setSongList, playNext, playPrev, setAd, playAd, stopAd } = playerSlice.actions;
 export default playerSlice.reducer;
 
-//list all the freeuser
-export function getAdsForFreeUsers(){
-  return async function getAdsForFreeUsersThunk(dispatch) {
-      dispatch(setStatus(STATUS.LOADING));
-      try{
-      const response=await APIAuthenticated.get("/api/ads/freeAds");
-      if(response.status===200){
-          const {data} =response.data;
+// 🔹 Thunk to Handle Next with Ad Logic
+export function handlePlayNext() {
+  return async function (dispatch, getState) {
+    const { songCounter } = getState().player;
+
+    if (songCounter >= 2) {  
+      dispatch(resetSongCounter());
+      dispatch(getAdsForFreeUsers());
+    } else {
+      dispatch(playNextSong());
+    }
+  };
+}
+
+// 🔹 Thunk to Fetch Ads
+export function getAdsForFreeUsers() {
+  return async function (dispatch) {
+    dispatch(setStatus(STATUS.LOADING));
+    try {
+      const response = await APIAuthenticated.get("/api/ads/freeAds");
+      if (response.status === 200) {
+        const { data } = response.data;
+        if (data) {
           dispatch(setAd(data));
-          dispatch(setStatus(STATUS.SUCCESS));
-      }else{
-          dispatch(setStatus(STATUS.ERROR)); 
+          dispatch(playAd());
+        }
+        dispatch(setStatus(STATUS.SUCCESS));
+      } else {
+        dispatch(setStatus(STATUS.ERROR));
       }
-      }catch(err){
-          console.log(err);
-      dispatch(setStatus(STATUS.ERROR));  
-      }  
-  }
+    } catch (err) {
+      console.error(err);
+      dispatch(setStatus(STATUS.ERROR));
+    }
+  };
 }

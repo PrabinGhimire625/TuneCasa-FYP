@@ -26,7 +26,7 @@ const Sidebar = () => {
 
   return (
     <>
-      <div className='bg-black min-h-screen pl-[4vw] pr-[4vw]'>
+      <div className='bg-gray-800 min-h-screen pl-[4vw] pr-[4vw]'>
       
         <div className="flex justify-center mt-10">
           <label className="cursor-pointer">

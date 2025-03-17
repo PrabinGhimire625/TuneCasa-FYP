@@ -60,7 +60,7 @@ const Form = ({ type, onSubmit }) => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-stone-900">
+    <div className="flex justify-center items-center min-h-screen">
       <div className="max-w-md w-full mt-[-110px] bg-white shadow-lg rounded-lg p-5">
         <div className="text-center">
           <img
