@@ -5,7 +5,7 @@ import { assets } from "../../../assets/frontend-assets/assets";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllSongByAlbum } from "../../../store/songSlice";
 import { listSingleAlbumByName } from "../../../store/albumSlice";
-import { setCurrentSong, playPause } from "../../../store/playerSlice";
+import { setCurrentSong, playPause, setSongList } from "../../../store/playerSlice";
 import Player from "../player/Player";
 
 const SingleAlbum = () => {
@@ -15,6 +15,7 @@ const SingleAlbum = () => {
   const { songByAlbum } = useSelector((state) => state.song);
   const { singleAlbum } = useSelector((state) => state.album);
   const { currentSong, isPlaying } = useSelector((state) => state.player);
+  
 
   useEffect(() => {
     if (name) {
@@ -22,6 +23,15 @@ const SingleAlbum = () => {
       dispatch(listSingleAlbumByName(name));
     }
   }, [dispatch, name]);
+
+  useEffect(() => {
+    if (songByAlbum && songByAlbum.length > 0) {
+      dispatch(setSongList(songByAlbum));
+    }
+  }, [songByAlbum, dispatch]);
+  
+
+  console.log("All the song of the single album is ", songByAlbum)
 
   const handleSelectSong = (songItem) => {
     if (currentSong?._id === songItem._id) {

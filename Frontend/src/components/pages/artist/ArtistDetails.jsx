@@ -5,7 +5,7 @@ import { Link, useParams } from 'react-router-dom';
 import Player from '../player/Player';
 import DisplayArtist from "./DisplayArtist";
 import { fetchSingleUser } from '../../../store/authSlice';
-import { setCurrentSong, playPause } from '../../../store/playerSlice';
+import { setCurrentSong, playPause, setSongList } from '../../../store/playerSlice';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlay, faPlus, faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 
@@ -25,6 +25,12 @@ const ArtistDetails = () => {
       dispatch(getArtistSong(id));
     }
   }, [dispatch, id]);
+
+    useEffect(() => {
+      if (artistSong && artistSong.length > 0) {
+        dispatch(setSongList(artistSong));
+      }
+    }, [artistSong, dispatch]);
 
   //handle selected song
   const handleSelectSong = (songItem) => {

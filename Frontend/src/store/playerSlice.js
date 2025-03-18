@@ -27,6 +27,7 @@ const playerSlice = createSlice({
       state.isPlaying = action.payload !== undefined ? action.payload : !state.isPlaying;
     },
     updateProgress: (state, action) => {
+      console.log("Updating Redux Progress:", action.payload);  // Add this log
       state.progress = action.payload;
     },
     stopPlayer: (state) => {
@@ -84,16 +85,23 @@ export default playerSlice.reducer;
 // 🔹 Thunk to Handle Next with Ad Logic
 export function handlePlayNext() {
   return async function (dispatch, getState) {
-    const { songCounter } = getState().player;
+    const { songCounter, isAdPlaying } = getState().player;
 
-    if (songCounter >= 2) {  
+    if (songCounter >= 2) {
       dispatch(resetSongCounter());
       dispatch(getAdsForFreeUsers());
     } else {
-      dispatch(playNextSong());
+      // Ensure the next song is played even if the ad was skipped
+      if (!isAdPlaying) {
+        dispatch(playNextSong());
+      } else {
+        dispatch(stopAd());
+        dispatch(playNextSong());
+      }
     }
   };
 }
+
 
 // 🔹 Thunk to Fetch Ads
 export function getAdsForFreeUsers() {

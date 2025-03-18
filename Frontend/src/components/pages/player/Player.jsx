@@ -1,132 +1,141 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  playPause,
-  updateProgress,
-  playPrev,
-  handlePlayNext, // Now using thunk
-  getAdsForFreeUsers,
-  playAd,
-  stopAd,
-} from "../../../store/playerSlice";
+import {playPause,updateProgress,playPrev,handlePlayNext,playAd,stopAd} from "../../../store/playerSlice";
 import { assets } from "../../../assets/frontend-assets/assets";
 
 const Player = () => {
   const dispatch = useDispatch();
-  const {
-    currentSong,
-    isPlaying,
-    progress,
-    songList,
-    currentAd,
-    isAdPlaying,
-    songCounter, // Updated from songCount
-  } = useSelector((state) => state.player);
+  const { currentSong, isPlaying, progress, songList, currentAd, isAdPlaying } = useSelector((state) => state.player);
+  console.log(currentSong)
 
   const audioRef = useRef(new Audio());
+  const progressBarRef = useRef(null);
   const [volume, setVolume] = useState(1);
+  const [localProgress, setLocalProgress] = useState(progress || 0);
+  const [duration, setDuration] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
 
+  // ✅ Load & Play New Song or Ad
   useEffect(() => {
-    if (!currentSong) return;
+    const audioElement = audioRef.current;
 
-    if (audioRef.current.src !== currentSong.file) {
-      audioRef.current.pause();
-      audioRef.current.src = currentSong.file;
-      audioRef.current.load();
+    if (currentAd) {
+      // If an ad is playing, set ad file and play it
+      if (audioElement.src !== currentAd.file) {
+        audioElement.pause();
+        audioElement.src = currentAd.file;
+        audioElement.load();
+        audioElement.play().then(() => dispatch(playAd()));
+      }
+    } else if (currentSong) {
+      // If no ad, load and play the song
+      if (audioElement.src !== currentSong.file) {
+        audioElement.pause();
+        audioElement.src = currentSong.file;
+        audioElement.load();
+        audioElement.play();
+      }
     }
 
-    audioRef.current.onloadeddata = () => {
-      if (isPlaying) {
-        audioRef.current.play();
-      }
-    };
-  }, [currentSong]);
+    audioElement.onloadedmetadata = () => setDuration(audioElement.duration);
 
-  useEffect(() => {
-    const updateProgressBar = () => {
-      dispatch(updateProgress(audioRef.current.currentTime));
-    };
-
-    audioRef.current.addEventListener("timeupdate", updateProgressBar);
-
-    audioRef.current.onended = async () => {
-      if (isAdPlaying) {
-        dispatch(stopAd());
-        dispatch(handlePlayNext());
-      } else {
-        dispatch(handlePlayNext());
-      }
-    };
+    if (isPlaying) {
+      audioElement.play();
+    }
 
     return () => {
-      audioRef.current.removeEventListener("timeupdate", updateProgressBar);
-      audioRef.current.onended = null;
+      // Ensure we stop audio when switching to another song or ad
+      audioElement.pause();
     };
-  }, [dispatch, isAdPlaying]);
+  }, [currentSong, currentAd, isPlaying]);
 
+  // ✅ Handle Play/Pause
   useEffect(() => {
-    if (currentAd && currentAd.file) {
-      audioRef.current.pause();
-      audioRef.current.src = currentAd.file;
-      audioRef.current.load();
-
-      audioRef.current.play()
-        .then(() => dispatch(playAd()))
-        .catch((error) => console.error("Error playing ad:", error));
-
-      audioRef.current.onended = () => {
-        dispatch(stopAd());
-        dispatch(handlePlayNext());
-      };
-    }
-  }, [currentAd]);
-
-  useEffect(() => {
-    if (isPlaying) {
+    if (!currentAd && isPlaying) {
       audioRef.current.play();
-    } else {
+    } else if (!currentAd && !isPlaying) {
       audioRef.current.pause();
     }
-  }, [isPlaying]);
+  }, [isPlaying, currentAd]);
 
-  const handlePlayPause = async () => {
-    if (!currentSong) return;
-
-    if (isPlaying) {
-      dispatch(updateProgress(audioRef.current.currentTime));
-      audioRef.current.pause();
-    } else {
-      audioRef.current.currentTime = progress || 0;
-      try {
-        await audioRef.current.play();
-      } catch (error) {
-        console.error("Error playing the song:", error);
+  // ✅ Update Progress Bar Every 500ms
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!isDragging && isPlaying) {
+        setLocalProgress(audioRef.current.currentTime);
+        dispatch(updateProgress(audioRef.current.currentTime));
       }
+    }, 500);
+
+    return () => clearInterval(interval);
+  }, [isPlaying, isDragging]);
+
+  // ✅ Handle Song/Ad End & Auto-Next
+  useEffect(() => {
+    audioRef.current.onended = () => {
+      if (isAdPlaying) {
+        dispatch(stopAd());
+      }
+      dispatch(handlePlayNext());
+    };
+  }, [isAdPlaying]);
+
+  // ✅ Handle Seek (Click + Drag)
+  const handleSeekStart = (e) => {
+    setIsDragging(true);
+    handleSeek(e);
+  };
+
+  const handleSeekMove = (e) => {
+    if (isDragging) handleSeek(e);
+  };
+
+  const handleSeekEnd = (e) => {
+    if (isDragging) {
+      handleSeek(e, true);
+      setIsDragging(false);
+    }
+  };
+
+  const handleSeek = (e, commit = false) => {
+    if (!progressBarRef.current || !audioRef.current.duration) return;
+    const rect = progressBarRef.current.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const newTime = (clickX / rect.width) * audioRef.current.duration;
+    
+    setLocalProgress(newTime);
+    if (commit) {
+      audioRef.current.currentTime = newTime;
+      dispatch(updateProgress(newTime));
+    }
+  };
+
+  useEffect(() => {
+    if (isDragging) {
+      window.addEventListener("mousemove", handleSeekMove);
+      window.addEventListener("mouseup", handleSeekEnd);
+    } else {
+      window.removeEventListener("mousemove", handleSeekMove);
+      window.removeEventListener("mouseup", handleSeekEnd);
     }
 
+    return () => {
+      window.removeEventListener("mousemove", handleSeekMove);
+      window.removeEventListener("mouseup", handleSeekEnd);
+    };
+  }, [isDragging]);
+
+  const handlePlayPause = () => {
+    if (!currentSong || isAdPlaying) return; // Prevent play/pause if ad is playing
     dispatch(playPause());
   };
 
-  const handleSeek = (e) => {
-    const bar = e.currentTarget;
-    const rect = bar.getBoundingClientRect();
-    const clickX = e.clientX - rect.left;
-    const newTime = (clickX / rect.width) * audioRef.current.duration;
-
-    audioRef.current.currentTime = newTime;
-    dispatch(updateProgress(newTime));
-  };
-
-  const handleNext = async () => {
-    if (songList.length === 0) return;
-    dispatch(playPause(false));
-    dispatch(handlePlayNext());
+  const handleNext = () => {
+    if (songList.length > 0 && !isAdPlaying) dispatch(handlePlayNext());
   };
 
   const handlePrev = () => {
-    if (songList.length === 0) return;
-    dispatch(playPause(false));
-    dispatch(playPrev());
+    if (songList.length > 0 && !isAdPlaying) dispatch(playPrev());
   };
 
   const handleVolumeChange = (e) => {
@@ -137,26 +146,21 @@ const Player = () => {
 
   const handleSkipAd = async () => {
     if (isAdPlaying) {
-      dispatch(stopAd());
-      dispatch(handlePlayNext());
+      dispatch(stopAd());  // Stop the ad
+      dispatch(handlePlayNext());  // Play the next song after the ad
     }
   };
-
-  useEffect(() => {
-    if (currentAd) {
-      console.log("Fetched Ads for Free Users:", currentAd);
-    }
-  }, [currentAd]);
+  
 
   if (!currentSong) return null;
 
   return (
     <div className="fixed bottom-0 left-0 w-full bg-black text-white px-4 h-[100px] flex justify-between items-center">
       <div className="hidden lg:flex items-center gap-4">
-        <img className="w-12" src={currentSong.image} alt="Song Cover" />
+        <img className="w-12" src={isAdPlaying ? currentAd.image : currentSong.image} alt="Cover" />
         <div>
-          <p>{currentSong.name}</p>
-          <p>{currentSong.desc?.slice(0, 12)}</p>
+          <p>{isAdPlaying ? currentAd.name : currentSong.name}</p>
+          {!isAdPlaying && <p>{currentSong.desc?.slice(0, 12)}</p>}
         </div>
       </div>
 
@@ -164,12 +168,7 @@ const Player = () => {
         {isAdPlaying ? (
           <div className="flex flex-col items-center gap-4">
             <p>Ad is playing...</p>
-            <button
-              onClick={handleSkipAd}
-              className="bg-red-500 text-white py-1 px-4 rounded"
-            >
-              Skip Ad
-            </button>
+            <button onClick={handleSkipAd} className="bg-red-500 text-white py-1 px-4 rounded">Skip Ad</button>
           </div>
         ) : (
           <>
@@ -179,11 +178,12 @@ const Player = () => {
               <img className="w-4 cursor-pointer" src={assets.next_icon} alt="" onClick={handleNext} />
             </div>
             <div className="flex items-center gap-5">
-              <p>{Math.floor(progress / 60)}:{String(Math.floor(progress % 60)).padStart(2, "0")}</p>
-              <div className="w-[60vw] max-w-[500px] bg-gray-300 rounded-full cursor-pointer" onMouseDown={handleSeek}>
-                <div className="h-1 bg-green-800 rounded-full" style={{ width: `${(progress / currentSong?.duration) * 100}%` }} />
+              <p>{Math.floor(localProgress / 60)}:{String(Math.floor(localProgress % 60)).padStart(2, "0")}</p>
+              <div ref={progressBarRef} className="w-[60vw] max-w-[500px] bg-gray-500 rounded-full cursor-pointer h-1 relative" 
+                onMouseDown={handleSeekStart}>
+                <div className="h-1 bg-white rounded-full transition-all duration-100" style={{ width: `${(localProgress / (duration || 1)) * 100}%` }} />
               </div>
-              <p>{currentSong.duration}</p>
+              <p>{Math.floor(duration / 60)}:{String(Math.floor(duration % 60)).padStart(2, "0")}</p>
             </div>
           </>
         )}
