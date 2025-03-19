@@ -6,7 +6,8 @@ const albumSchema= new mongoose.Schema({
     bgColour:{type:String,required:true},
     image:{type:String,required:true},
     genre: { type: String},
-})
+}, { timestamps: true }
+);
 
 const albumModel=mongoose.models.album || mongoose.model("album",albumSchema);
 export default albumModel

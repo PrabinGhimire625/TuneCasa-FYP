@@ -7,8 +7,6 @@ import { STATUS } from '../../globals/components/Status';
 import { toast, ToastContainer } from 'react-toastify';
 import { listAllGenre } from '../../store/genreSlice';
 
-
-
 const AddSong = () => {
   const { albums, status } = useSelector((state) => state.album);
   const { genre } = useSelector((state) => state.genre);

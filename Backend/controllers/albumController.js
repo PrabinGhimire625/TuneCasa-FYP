@@ -126,6 +126,7 @@ export const updateAlbum = async (req, res) => {
       res.status(200).json({ message: "Album updated successfully", data: updatedAlbum });
 };
 
+//fetch album by genre
 export const fetchAlbumByGenre = async (req, res) => {
     const { genre } = req.params;
 
@@ -155,4 +156,21 @@ export const fetchAlbumByGenre = async (req, res) => {
             error: error.message,
         });
     }
+};
+
+//fetch lates release album
+// Fetch the latest top 5 albums
+export const fetchLatestAlbums = async (req, res) => {
+        const latestAlbums = await albumModel.find()
+            .sort({ createdAt: -1 }) // Sort by newest first
+            .limit(2); // Get only the top 5
+
+        if (!latestAlbums || latestAlbums.length === 0) {
+            return res.status(404).json({ message: "No albums found" });
+        }
+
+        res.status(200).json({
+            message: "Successfully fetched latest albums",
+            data: latestAlbums,
+        });
 };

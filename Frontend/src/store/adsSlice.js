@@ -182,57 +182,66 @@ export function getAdsForFreeUsers(){
 }
 
 //track ads view
-export function trackAdView({id, adsData}){
-    return async function trackAdViewThunk(dispatch) {
+export function trackAdWatchTime({ id, watchTime }) {
+    return async function trackAdWatchTimeThunk(dispatch) {
         dispatch(setStatus(STATUS.LOADING));
-        const response= await APIAuthenticated.post(`/api/ads/track-view/${id}`, adsData,{
-            headers:{
-                "Content-Type":"multipart/form-data"
+        try {
+            const response = await APIAuthenticated.post("/api/ads/track-watchTime", {
+                id,
+                watchTime
+            });
+
+            if (response.status === 200) {
+                dispatch(setTrackAdsView(response.data)); // Store latest response
+                dispatch(setStatus(STATUS.SUCCESS));
+            } else {
+                dispatch(setStatus(STATUS.ERROR));
             }
-        })
-        if(response.status===200){
-            const { data } = response.data;
-            dispatch(setTrackAdsView({ id, data })); 
-            dispatch(setStatus(STATUS.SUCCESS));
-        }else{
+        } catch (err) {
+            console.log(err);
             dispatch(setStatus(STATUS.ERROR));
         }
-    } 
+    };
 }
+
 
 //track ads skips
-export function trackAdSkip(adsId){
+export function trackAdSkip(id) {
     return async function trackAdSkipThunk(dispatch) {
         dispatch(setStatus(STATUS.LOADING));
-        try{
-        const response=await APIAuthenticated.post(`/api/ads/track-skip/${adsId}`);
-        if(response.status===200){
-            dispatch(setTrackAdsSkips({adsId}));
-            dispatch(setStatus(STATUS.SUCCESS));
-        }else{
-            dispatch(setStatus(STATUS.ERROR)); 
+        try {
+            const response = await APIAuthenticated.post("/api/ads/track-skip", { id });
+
+            if (response.status === 200) {
+                dispatch(setTrackAdsSkips(response.data));
+                dispatch(setStatus(STATUS.SUCCESS));
+            } else {
+                dispatch(setStatus(STATUS.ERROR));
+            }
+        } catch (err) {
+            console.log(err);
+            dispatch(setStatus(STATUS.ERROR));
         }
-        }catch(err){
-        dispatch(setStatus(STATUS.ERROR));  
-        }  
-    }
+    };
 }
 
+
 //track-click
-export function trackAdClick(adsId){
+export function trackAdClick(id) {
     return async function trackAdClickThunk(dispatch) {
         dispatch(setStatus(STATUS.LOADING));
-        try{
-        const response=await APIAuthenticated.post(`/api/ads/track-click/${adsId}`);
-        if(response.status===200){
-            dispatch(setTrackAdsClick({adsId}));
-            dispatch(setStatus(STATUS.SUCCESS));
-        }else{
-            dispatch(setStatus(STATUS.ERROR)); 
-        }
-        }catch(err){
+        try {
+            const response = await APIAuthenticated.post("/api/ads/track-click", { id });
+
+            if (response.status === 200) {
+                dispatch(setTrackAdsClick(response.data));
+                dispatch(setStatus(STATUS.SUCCESS));
+            } else {
+                dispatch(setStatus(STATUS.ERROR));
+            }
+        } catch (err) {
             console.log(err);
-        dispatch(setStatus(STATUS.ERROR));  
-        }  
-    }
+            dispatch(setStatus(STATUS.ERROR));
+        }
+    };
 }

@@ -149,4 +149,36 @@ export const fetchSongsByAlbum = async (req, res) => {
   };
   
 
+  export const fetchSongByGenre = async (req, res) => {
+      const { genre } = req.params;
+  
+      try {
+          // Case-insensitive regex search to find albums with the specified genre
+          const songs = await songModel.find({
+              genre: { $regex: new RegExp(`^${genre}$`, 'i') } // 'i' for case-insensitive search
+          });
+  
+          // Check if songs were found
+          if (!songs || songs.length === 0) {
+              return res.status(404).json({
+                  message: "No albums found for this genre", 
+              });
+          }
+  
+          // Return the fetched songs
+          res.status(200).json({
+              message: "Successfully fetched songs for the genre", 
+              data: songs,
+          });
+  
+      } catch (error) {
+          console.error("Error fetching albums by genre:", error); 
+          res.status(500).json({
+              message: "Server error while fetching songs", 
+              error: error.message,
+          });
+      }
+  };
+  
+
   

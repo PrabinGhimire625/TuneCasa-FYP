@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { listAllGenre } from "../../../store/genreSlice";
 import { Link } from 'react-router-dom'; // Import Link
+import LatestAlbum from "../album/LatestAlbum";
 
 const Genre = () => {
     const dispatch = useDispatch();
@@ -26,14 +27,15 @@ const Genre = () => {
     };
 
     return (
-        <div className="w-full p-6 bg-stone-900 text-white">
+        <div className="w-full p-6 text-white">
+            <LatestAlbum/>
             {/* Header Section */}
             <div className="flex justify-between items-center">
                 <h2 className="text-2xl font-bold">Moods and Genres</h2>
-                <div className="flex space-x-2">
+                {/* <div className="flex space-x-2">
                     <button onClick={scrollLeft} className="px-3 bg-stone-800 py-1 rounded-full">{"<"}</button>
                     <button onClick={scrollRight} className="px-3 bg-stone-800 py-1 rounded-full">{">"}</button>
-                </div>
+                </div> */}
             </div>
 
             {/* Scrollable Genre List */}
@@ -42,8 +44,8 @@ const Genre = () => {
                     <div className="flex flex-wrap gap-4">
                         {genre.map((item, index) => (
                             <Link 
-                                to={`/genrebasedSong/${item._id}`} // Dynamic route based on genre ID
-                                key={index}
+                                to={`/genreDetails/${encodeURIComponent(item.name)}`} // Dynamic route based on genre ID
+                                key={item._id}
                                 className="flex items-center bg-stone-800 text-white px-6 py-3 rounded-md w-48"
                             >
                                 {/* Vertical Color Strip */}

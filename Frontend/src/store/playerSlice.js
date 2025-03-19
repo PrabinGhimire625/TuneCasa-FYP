@@ -12,6 +12,8 @@ const initialState = {
   isAdPlaying: false,
   adList: [],
   songCounter: 0, // Track number of songs before showing an ad
+  adWatchTime: 0, // Track current ad watch time
+  totalAdWatchTime: 0, // Accumulate total watch time of ads
 };
 
 const playerSlice = createSlice({
@@ -27,7 +29,7 @@ const playerSlice = createSlice({
       state.isPlaying = action.payload !== undefined ? action.payload : !state.isPlaying;
     },
     updateProgress: (state, action) => {
-      console.log("Updating Redux Progress:", action.payload);  // Add this log
+      console.log("Updating Redux Progress:", action.payload);
       state.progress = action.payload;
     },
     stopPlayer: (state) => {
@@ -59,6 +61,7 @@ const playerSlice = createSlice({
     },
     setAd: (state, action) => {
       state.currentAd = action.payload;
+      state.adWatchTime = 0; // Reset ad watch time on new ad
     },
     playAd: (state) => {
       state.isAdPlaying = true;
@@ -68,16 +71,21 @@ const playerSlice = createSlice({
       state.isAdPlaying = false;
       state.isPlaying = true;
       state.currentAd = null;
+      state.adWatchTime = 0; // Reset when ad stops
     },
     resetSongCounter: (state) => {
       state.songCounter = 0;
     },
+    setTrackAdWatchTime(state, action) {
+      state.adWatchTime = action.payload;
+      state.totalAdWatchTime += action.payload; // Accumulate total ad watch time
+  },
   },
 });
 
 export const { 
   setCurrentSong, playPause, updateProgress, stopPlayer, setSongList, 
-  playNextSong, playPrev, setAd, playAd, stopAd, resetSongCounter 
+  playNextSong, playPrev, setAd, playAd, stopAd, resetSongCounter, setTrackAdWatchTime 
 } = playerSlice.actions;
 
 export default playerSlice.reducer;
@@ -91,7 +99,6 @@ export function handlePlayNext() {
       dispatch(resetSongCounter());
       dispatch(getAdsForFreeUsers());
     } else {
-      // Ensure the next song is played even if the ad was skipped
       if (!isAdPlaying) {
         dispatch(playNextSong());
       } else {
@@ -101,7 +108,6 @@ export function handlePlayNext() {
     }
   };
 }
-
 
 // 🔹 Thunk to Fetch Ads
 export function getAdsForFreeUsers() {
@@ -121,6 +127,30 @@ export function getAdsForFreeUsers() {
       }
     } catch (err) {
       console.error(err);
+      dispatch(setStatus(STATUS.ERROR));
+    }
+  };
+}
+
+//track ads view
+// Track ad watch time and update redux store
+export function trackAdWatchTime({ id, watchTime }) {
+  return async function trackAdWatchTimeThunk(dispatch) {
+    dispatch(setStatus(STATUS.LOADING));
+    try {
+      const response = await APIAuthenticated.post("/api/ads/track-watchTime", {
+        id,
+        watchTime,
+      });
+
+      if (response.status === 200) {
+        dispatch(setTrackAdWatchTime(response.data)); // Update Redux store
+        dispatch(setStatus(STATUS.SUCCESS));
+      } else {
+        dispatch(setStatus(STATUS.ERROR));
+      }
+    } catch (err) {
+      console.log(err);
       dispatch(setStatus(STATUS.ERROR));
     }
   };

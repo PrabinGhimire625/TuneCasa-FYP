@@ -32,7 +32,7 @@ const EditPlaylist = ({ id, playlistData, onClose }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-stone-800 p-8 rounded-lg w-[700px]">
+      <div className="bg-[#1a1a1a] p-8 rounded-lg w-[700px]">
         <h2 className="text-2xl font-medium text-white mb-4">Edit Playlist</h2>
         <form onSubmit={handleSubmit}>
           {[
@@ -49,7 +49,7 @@ const EditPlaylist = ({ id, playlistData, onClose }) => {
                   placeholder={placeholder}
                   value={formData[name]}
                   onChange={handleChange}
-                  className="w-full bg-gray-800 border border-gray-600 rounded-md py-2 px-3 text-white focus:ring-2 focus:ring-blue-500"
+                  className="w-full  bg-[#222222] rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-stone-900"
                 />
               ) : (
                 <input
@@ -59,7 +59,7 @@ const EditPlaylist = ({ id, playlistData, onClose }) => {
                   placeholder={placeholder}
                   value={formData[name]}
                   onChange={handleChange}
-                  className="w-full bg-gray-800 border border-gray-600 rounded-md py-2 px-3 text-white focus:ring-2 focus:ring-blue-500"
+                  className="w-full  bg-[#222222]  rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-stone-900"
                   required
                 />
               )}
@@ -73,7 +73,7 @@ const EditPlaylist = ({ id, playlistData, onClose }) => {
               name="privacy"
               value={formData.privacy}
               onChange={handleChange}
-              className="w-full bg-gray-800 border border-gray-600 rounded-md py-2 px-3 text-white focus:ring-2 focus:ring-blue-500"
+              className="w-full  bg-[#222222]  rounded-md py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-stone-900"
             >
               {["public", "private"].map((option) => (
                 <option key={option} value={option}>{option.charAt(0).toUpperCase() + option.slice(1)}</option>

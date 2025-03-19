@@ -34,6 +34,7 @@ import GoogleLogin from "./components/pages/auth/googleLogin/GoogleLogin";
 import DisplayArtist from "./components/pages/artist/DisplayArtist";
 import SingleArtist from "./components/pages/artist/SingleArtist";
 import ListAds from "../../AdminDashboard/src/pages/form/ads/ListAds";
+import GenreDetails from "./components/pages/genre/GenreDetails";
 
 
 function App() {
@@ -64,7 +65,8 @@ function App() {
                 <Route path="/playlist" element={<Playlist />} />
                 <Route path="/allPlaylist" element={<AllPlaylist />} />
                 <Route path="/allGenre" element={<Genre />} />
-                <Route path="/genreBasedSong/:id" element={<GenreBasedSong />} />
+                <Route path="/genreDetails/:genre" element={<GenreDetails />} />
+                <Route path="/genreBasedSong/:genre" element={<GenreBasedSong />} />
                 <Route path="/library" element={<Library />} />
                 <Route path="/likeSong" element={<LikeSong />} />
                 <Route path="/payment" element={<Payment />} />

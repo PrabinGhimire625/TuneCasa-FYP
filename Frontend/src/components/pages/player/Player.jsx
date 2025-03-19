@@ -1,12 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {playPause,updateProgress,playPrev,handlePlayNext,playAd,stopAd} from "../../../store/playerSlice";
+import { playPause, updateProgress, playPrev, handlePlayNext, playAd, stopAd } from "../../../store/playerSlice";
 import { assets } from "../../../assets/frontend-assets/assets";
 
 const Player = () => {
   const dispatch = useDispatch();
   const { currentSong, isPlaying, progress, songList, currentAd, isAdPlaying } = useSelector((state) => state.player);
-  console.log(currentSong)
 
   const audioRef = useRef(new Audio());
   const progressBarRef = useRef(null);
@@ -27,6 +26,12 @@ const Player = () => {
         audioElement.load();
         audioElement.play().then(() => dispatch(playAd()));
       }
+
+      // Set the ad's duration after metadata is loaded
+      audioElement.onloadedmetadata = () => {
+        console.log("Ad Duration:", audioElement.duration);
+        setDuration(audioElement.duration);
+      };
     } else if (currentSong) {
       // If no ad, load and play the song
       if (audioElement.src !== currentSong.file) {
@@ -35,9 +40,12 @@ const Player = () => {
         audioElement.load();
         audioElement.play();
       }
-    }
 
-    audioElement.onloadedmetadata = () => setDuration(audioElement.duration);
+      // Set the song's duration after metadata is loaded
+      audioElement.onloadedmetadata = () => {
+        setDuration(audioElement.duration);
+      };
+    }
 
     if (isPlaying) {
       audioElement.play();
@@ -58,17 +66,20 @@ const Player = () => {
     }
   }, [isPlaying, currentAd]);
 
-  // ✅ Update Progress Bar Every 500ms
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (!isDragging && isPlaying) {
-        setLocalProgress(audioRef.current.currentTime);
-        dispatch(updateProgress(audioRef.current.currentTime));
-      }
-    }, 500);
+  // ✅ Update Progress Bar Every 500ms (for both song and ad)
+ useEffect(() => {
+  const interval = setInterval(() => {
+    if (!isDragging && isPlaying) {
+      const currentTime = audioRef.current.currentTime;
+      console.log("Current Progress:", currentTime); // Log progress
+      setLocalProgress(currentTime);
+      dispatch(updateProgress(currentTime)); // Update redux state
+    }
+  }, 500);
 
-    return () => clearInterval(interval);
-  }, [isPlaying, isDragging]);
+  return () => clearInterval(interval);
+}, [isPlaying, isDragging]);
+
 
   // ✅ Handle Song/Ad End & Auto-Next
   useEffect(() => {
@@ -102,7 +113,7 @@ const Player = () => {
     const rect = progressBarRef.current.getBoundingClientRect();
     const clickX = e.clientX - rect.left;
     const newTime = (clickX / rect.width) * audioRef.current.duration;
-    
+
     setLocalProgress(newTime);
     if (commit) {
       audioRef.current.currentTime = newTime;
@@ -150,7 +161,8 @@ const Player = () => {
       dispatch(handlePlayNext());  // Play the next song after the ad
     }
   };
-  
+
+  console.log("localProgress", localProgress)
 
   if (!currentSong) return null;
 
@@ -167,8 +179,15 @@ const Player = () => {
       <div className="flex flex-col items-center gap-1 m-auto">
         {isAdPlaying ? (
           <div className="flex flex-col items-center gap-4">
-            <p>Ad is playing...</p>
             <button onClick={handleSkipAd} className="bg-red-500 text-white py-1 px-4 rounded">Skip Ad</button>
+            <div className="flex gap-5">
+              <p>{Math.floor(localProgress / 60)}:{String(Math.floor(localProgress % 60)).padStart(2, "0")}</p>
+              <div className="w-[60vw] max-w-[500px] bg-gray-500 rounded-full h-1.5 relative">
+                {/* The progress bar will visually update, but no interaction */}
+                <div className="h-1.5 bg-white rounded-full" style={{ width: `${(localProgress / (duration || 1)) * 100}%` }} />
+              </div>
+              <p>{Math.floor(duration / 60)}:{String(Math.floor(duration % 60)).padStart(2, "0")}</p>
+            </div>
           </div>
         ) : (
           <>
@@ -179,9 +198,9 @@ const Player = () => {
             </div>
             <div className="flex items-center gap-5">
               <p>{Math.floor(localProgress / 60)}:{String(Math.floor(localProgress % 60)).padStart(2, "0")}</p>
-              <div ref={progressBarRef} className="w-[60vw] max-w-[500px] bg-gray-500 rounded-full cursor-pointer h-1 relative" 
+              <div ref={progressBarRef} className="w-[60vw] max-w-[500px] bg-gray-500 rounded-full cursor-pointer h-1.5 relative" 
                 onMouseDown={handleSeekStart}>
-                <div className="h-1 bg-white rounded-full transition-all duration-100" style={{ width: `${(localProgress / (duration || 1)) * 100}%` }} />
+                <div className="h-1.5 bg-white rounded-full transition-all duration-100" style={{ width: `${(localProgress / (duration || 1)) * 100}%` }} />
               </div>
               <p>{Math.floor(duration / 60)}:{String(Math.floor(duration % 60)).padStart(2, "0")}</p>
             </div>

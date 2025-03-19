@@ -13,7 +13,6 @@ const AddGenre = () => {
       desc:"",
     }))
   
-  
     const handleChange=(e)=>{
       const {name, value}=e.target;
       setGenreData({
@@ -32,8 +31,6 @@ const AddGenre = () => {
         alert('Failed to add the genre!');
     }
     }
-  
-
     
     return (
         <>
@@ -42,7 +39,7 @@ const AddGenre = () => {
                         <div className="w-full p-6 text-white bg-gray-800 rounded-lg shadow-xl">
                             <h3 className="text-xl font-bold mb-6 border-b border-gray-700 pb-2">Add genre</h3>
                             <form onSubmit={handleSubmit} className='flex flex-col items-start gap-8 text-gray-600'>
-                                       
+              
                                        <div className='flex flex-col gap-2.5 text-white'>
                                          <p>Genre name</p>
                                          <input onChange={handleChange} name='name' className='bg-transparent outline-green-600 border-2 border-gray-400 p-2.5 w-[500px]' placeholder='Type Here' type="text" required/>
@@ -55,7 +52,6 @@ const AddGenre = () => {
                                
                                        <button type='submit' className='text-base bg-black text-white py-2.5 px-14 cursor-pointer'>Add</button>
                                      </form>
-
                         </div>
                     </div>
                 </div>

@@ -8,6 +8,7 @@ const albumSlice = createSlice({
         albums: [], 
         singleAlbum: null, 
         status: STATUS.LOADING,
+        latestAlbum:[],
     },
     reducers: {
         setAlbumData(state, action) {
@@ -15,6 +16,9 @@ const albumSlice = createSlice({
         },
         setSingleAlbum(state, action) {
             state.singleAlbum = action.payload; 
+        },
+        setLatestAlbumData(state, action) {
+            state.latestAlbum = action.payload;
         },
         setStatus(state, action) {
             state.status = action.payload;
@@ -39,7 +43,7 @@ const albumSlice = createSlice({
     },
 });
 
-export const { setAlbumData, setSingleAlbum, setStatus,setDeleteAlbum,setUpdateAlbum } = albumSlice.actions;
+export const { setAlbumData, setSingleAlbum, setStatus,setDeleteAlbum,setUpdateAlbum,setLatestAlbumData } = albumSlice.actions;
 export default albumSlice.reducer;
 
 // Add a new album
@@ -88,6 +92,29 @@ export function listAllAlbum() {
         }
     };
 }
+
+
+
+//List all latest album
+export function listLatestAlbum() {
+    return async function listLatestAlbumThunk(dispatch) {
+        dispatch(setStatus(STATUS.LOADING));
+        try {
+            const response = await API.get("/api/album/latestReleaseAlbum");
+            if (response.status === 200) {
+                const { data } = response.data;
+                dispatch(setLatestAlbumData(data));
+                dispatch(setStatus(STATUS.SUCCESS));
+            } else {
+                dispatch(setStatus(STATUS.ERROR));
+            }
+        } catch (err) {
+            console.error(err);
+            dispatch(setStatus(STATUS.ERROR));
+        }
+    };
+}
+
 
 //Fetch a single album
 export function listSingleAlbum(albumId) {

@@ -207,19 +207,17 @@ export const getAdsForFreeUsers = async (req, res) => {
 };
 
 //track ad view
-export const trackAdView = async (req, res) => {
+export const trackAdWatchTime = async (req, res) => {
   try {
       const { id, watchTime } = req.body;
 
-      if (!id) {
-          return res.status(400).json({ message: "Ad ID is required" });
+      if (!id || typeof watchTime !== 'number' || watchTime <= 0) {
+          return res.status(400).json({ message: "Valid Ad ID and watch time are required" });
       }
 
       const updatedAd = await Ads.findByIdAndUpdate(
           id,
-          { 
-              $inc: { totalPlays: 1, totalWatchTime: watchTime }
-          },
+          { $inc: { totalWatchTime: watchTime } },
           { new: true }
       );
 
@@ -227,12 +225,13 @@ export const trackAdView = async (req, res) => {
           return res.status(404).json({ message: "Ad not found" });
       }
 
-      res.status(200).json({ message: "Ad view tracked successfully", data: updatedAd });
+      res.status(200).json({ message: "Ad watch time updated successfully", data: updatedAd });
   } catch (error) {
       console.error(error);
-      res.status(500).json({ message: "Error tracking ad view" });
+      res.status(500).json({ message: "Error tracking ad watch time" });
   }
 };
+
 
 export const trackAdSkip = async (req, res) => {
   try {

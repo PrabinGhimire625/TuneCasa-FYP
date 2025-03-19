@@ -10,7 +10,6 @@ const ListAds = () => {
     dispatch(listAllAds());
   }, [dispatch]);
 
-
   return (
     <>
       <div className="flex flex-col flex-1 overflow-y-auto min-h-screen">

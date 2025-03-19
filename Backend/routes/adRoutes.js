@@ -1,5 +1,5 @@
 import {Router} from "express"
-import { createAds, deleteAds, fetchSingleAds, getAdsForFreeUsers, getAllAds, trackAdClick, trackAdSkip, trackAdView, updateAds } from "../controllers/adController.js";
+import { createAds, deleteAds, fetchSingleAds, getAdsForFreeUsers, getAllAds, trackAdClick, trackAdSkip, trackAdWatchTime, updateAds } from "../controllers/adController.js";
 import { isAuthenticated } from "../middleware/authMiddleware.js";
 import upload from "../middleware/multer.js";
 import errorHandler from "../services/catchAsyncError.js";
@@ -22,9 +22,10 @@ router.route("/:id")
 .patch(isAuthenticated, upload.fields([{name:'image',maxCount:1},{name:'audio',maxCount:1}]), errorHandler(updateAds))
 
 
-router.route("/track-view").post(isAuthenticated,checkSubscription, errorHandler(trackAdView))
+router.route("/track-watchTime").post(isAuthenticated,checkSubscription, errorHandler(trackAdWatchTime))
 router.route("/track-skip").post(isAuthenticated,checkSubscription, errorHandler(trackAdSkip))
 router.route("/track-click").post(isAuthenticated,checkSubscription, errorHandler(trackAdClick))
+
 
 
 export default router
