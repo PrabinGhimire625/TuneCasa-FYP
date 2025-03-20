@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { playPause, updateProgress, playPrev, handlePlayNext, playAd, stopAd } from "../../../store/playerSlice";
+import { playPause, updateProgress, playPrev, handlePlayNext, playAd, stopAd, trackSongAnalytic } from "../../../store/playerSlice";
 import { assets } from "../../../assets/frontend-assets/assets";
 
 const Player = () => {
@@ -161,7 +161,19 @@ const Player = () => {
     }
   };
 
+  // useEffect(() => {
+  //   if (currentSong && progress >= 1) { // When the song completes
+  //     const songId = currentSong._id;
+  //     const watchTime = localProgress
+      
+  //     dispatch(trackSongAnalytic(songId, watchTime));
+  //   }
+  // }, [progress, currentSong, dispatch]);
+
   console.log("localProgress", localProgress)
+  console.log("Progress", progress)
+
+  console.log("currentSong", currentSong)
 
   if (!currentSong) return null;
 

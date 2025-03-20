@@ -14,6 +14,7 @@ const initialState = {
   songCounter: 0, // Track number of songs before showing an ad
   adWatchTime: 0, // Track current ad watch time
   totalAdWatchTime: 0, // Accumulate total watch time of ads
+  songAnalytics:null
 };
 
 const playerSlice = createSlice({
@@ -22,6 +23,7 @@ const playerSlice = createSlice({
   reducers: {
     setCurrentSong: (state, action) => {
       state.currentSong = action.payload;
+
       state.isPlaying = true;
       state.progress = 0;
     },
@@ -91,14 +93,17 @@ const playerSlice = createSlice({
         ...state.currentAd,
         totalClicks: action.payload.totalClicks
       };
-    }
+    },
+    setSongAnalytics(state, action) {
+      state.songAnalytics = action.payload;
+    },
   }
 });
 
 export const { 
   setCurrentSong, playPause, updateProgress, stopPlayer, setSongList, 
   playNextSong, playPrev, setAd, playAd, stopAd, resetSongCounter, 
-  setTrackAdWatchTime, setTrackAdsSkips, setTrackAdsClick 
+  setTrackAdWatchTime, setTrackAdsSkips, setTrackAdsClick,setSongAnalytics
 } = playerSlice.actions;
 
 export default playerSlice.reducer;
@@ -208,5 +213,30 @@ export function trackAdClick(id) {
           console.log(err);
           dispatch(setStatus(STATUS.ERROR));
       }
+  };
+}
+
+
+//track the trackSongAnalytics
+export function trackSongAnalytic({ userId, songId, watchTime }) {
+  return async function trackSongAnalyticThunk(dispatch) {
+    dispatch(setStatus(STATUS.LOADING));  // Set loading status
+
+    try {
+      const response = await APIAuthenticated.post('/api/song-analytics', {
+        songId,
+        watchTime,
+      });
+
+      if (response.status === 200) {
+        dispatch(setSongAnalytics(response.data));  // Update Redux store with response data
+        dispatch(setStatus(STATUS.SUCCESS));  // Set success status
+      } else {
+        dispatch(setStatus(STATUS.ERROR));
+      }
+    } catch (err) {
+      console.error(err);
+      dispatch(setStatus(STATUS.ERROR));
+    }
   };
 }

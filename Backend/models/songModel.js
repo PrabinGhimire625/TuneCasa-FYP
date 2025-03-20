@@ -9,6 +9,8 @@ const songSchema = new mongoose.Schema({
   file: { type: String, required: true },
   duration: { type: String, required: true },
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "Artist", required: true },
+  totalViews: { type: Number, default: 0 },  
+  totalWatchTime: { type: Number, default: 0 }, 
 });
 
 //check and create if "song" model is not created
