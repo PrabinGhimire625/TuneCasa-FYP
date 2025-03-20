@@ -67,18 +67,17 @@ const Player = () => {
   }, [isPlaying, currentAd]);
 
   // ✅ Update Progress Bar Every 500ms (for both song and ad)
- useEffect(() => {
-  const interval = setInterval(() => {
-    if (!isDragging && isPlaying) {
-      const currentTime = audioRef.current.currentTime;
-      console.log("Current Progress:", currentTime); // Log progress
-      setLocalProgress(currentTime);
-      dispatch(updateProgress(currentTime)); // Update redux state
-    }
-  }, 500);
-
-  return () => clearInterval(interval);
-}, [isPlaying, isDragging]);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!isDragging && (isPlaying || isAdPlaying)) {  // Check both isPlaying and isAdPlaying
+        const currentTime = audioRef.current.currentTime;
+        setLocalProgress(currentTime);
+        dispatch(updateProgress(currentTime));
+      }
+    }, 500);
+  
+    return () => clearInterval(interval);
+  }, [isPlaying, isDragging, isAdPlaying]);  // Add isAdPlaying to dependencies
 
 
   // ✅ Handle Song/Ad End & Auto-Next
