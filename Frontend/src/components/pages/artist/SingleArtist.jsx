@@ -59,9 +59,7 @@ const SingleArtist = () => {
           <h2 className="text-5xl font-bold mb-4 md:text-7xl">
             {singleUser?.user?.username || "Unknown Artist"}
           </h2>
-          <h4 className="text-xl text-gray-200">
-            {singleUser?.user?.email || "No bio available"}
-          </h4>
+          
           <h4 className="text-lg text-gray-400">
             {singleUser?.bio || "No bio available"}
           </h4>

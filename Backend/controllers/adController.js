@@ -209,26 +209,33 @@ export const getAdsForFreeUsers = async (req, res) => {
 //track ad view
 export const trackAdWatchTime = async (req, res) => {
   try {
-      const { id, watchTime } = req.body;
+    const { id, watchTime } = req.body;
+    const userId = req.user.id;  // Get the user ID from the authenticated request
 
-      if (!id || typeof watchTime !== 'number' || watchTime <= 0) {
-          return res.status(400).json({ message: "Valid Ad ID and watch time are required" });
-      }
+    if (!id || typeof watchTime !== 'number' || watchTime <= 0) {
+      return res.status(400).json({ message: "Valid Ad ID and watch time are required" });
+    }
 
-      const updatedAd = await Ads.findByIdAndUpdate(
-          id,
-          { $inc: { totalWatchTime: watchTime } },
-          { new: true }
-      );
+    const updatedAd = await Ads.findByIdAndUpdate(
+      id,
+      { 
+        $inc: { 
+          totalWatchTime: watchTime,
+          totalViews: 1,    // Increment view count
+          totalPlays: 1     // Increment play count
+        }
+      },
+      { new: true }
+    );
 
-      if (!updatedAd) {
-          return res.status(404).json({ message: "Ad not found" });
-      }
+    if (!updatedAd) {
+      return res.status(404).json({ message: "Ad not found" });
+    }
 
-      res.status(200).json({ message: "Ad watch time updated successfully", data: updatedAd });
+    res.status(200).json({ message: "Ad watch time updated successfully", data: updatedAd });
   } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Error tracking ad watch time" });
+    console.error(error);
+    res.status(500).json({ message: "Error tracking ad watch time" });
   }
 };
 

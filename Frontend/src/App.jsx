@@ -35,6 +35,7 @@ import DisplayArtist from "./components/pages/artist/DisplayArtist";
 import SingleArtist from "./components/pages/artist/SingleArtist";
 import ListAds from "../../AdminDashboard/src/pages/form/ads/ListAds";
 import GenreDetails from "./components/pages/genre/GenreDetails";
+import ArtistList from "./components/pages/artist/ArtistList";
 
 
 function App() {
@@ -59,6 +60,7 @@ function App() {
                 <Route path="/album/:name" element={<SingleAlbum />} />
                 <Route path="/singleSong/:id" element={<SingleSong />} />
                 <Route path="/artistDetails/:id" element={<ArtistDetails />} />
+                <Route path="/artistList" element={<ArtistList />} />
                 <Route path="/displayArtist" element={<DisplayArtist />} />
                 <Route path="/singlePlaylist/:id" element={<SinglePlaylist />} />
                 <Route path="/editplaylist/:id" element={<EditPlaylist />} />

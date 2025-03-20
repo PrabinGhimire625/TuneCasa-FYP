@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisV, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { listAllPlaylist, AddSongOnPlaylist } from "../../../store/playlistSlice";
-import {Link} from "react-router-dom"
+import { Link } from "react-router-dom"
 import Playlist from "../playlist/Playlist";
 
 const OptionsMenu = ({ songId }) => {
@@ -79,39 +79,39 @@ const OptionsMenu = ({ songId }) => {
             </div>
 
             <div className="mt-4 space-y-2">
-  {playlist && playlist.length > 0 ? (
-    <ul className="max-h-64 overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-900 mt-2">
-      {playlist.map((item) => (
-        <li key={item._id} className="mb-3">
-          <button
-            onClick={() => handleAddToPlaylist(item._id)}
-            className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-700 w-full"
-          >
-            <div className="flex items-center space-x-3">
-              <img src={item.image || "https://i0.wp.com/www.endofthreefitness.com/wp-content/uploads/2012/06/band-of-brothers.jpeg?resize=640%2C360&ssl=1"} alt={item.title} className="w-10 h-10 rounded-md object-cover" />
-              <p>{item.title}</p>
+              {playlist && playlist.length > 0 ? (
+                <ul className="max-h-64 overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-900 mt-2">
+                  {playlist.map((item) => (
+                    <li key={item._id} className="mb-3">
+                      <button
+                        onClick={() => handleAddToPlaylist(item._id)}
+                        className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-700 w-full"
+                      >
+                        <div className="flex items-center space-x-3">
+                          <img src={item.image || "https://i0.wp.com/www.endofthreefitness.com/wp-content/uploads/2012/06/band-of-brothers.jpeg?resize=640%2C360&ssl=1"} alt={item.title} className="w-10 h-10 rounded-md object-cover" />
+                          <p>{item.title}</p>
+                        </div>
+                        <p className="text-gray-400">{item.songs.length} songs</p>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-gray-400">No playlists found.</p>
+              )}
+
+              <Link to="/playlist">
+                <button className="bg-white text-black font-medium py-2 px-4 rounded-lg ml-auto block mt-5">
+                  Create
+                </button>
+              </Link>
             </div>
-            <p className="text-gray-400">{item.songs.length} songs</p>
-          </button>
-        </li>
-      ))}
-    </ul>
-  ) : (
-    <p className="text-gray-400">No playlists found.</p>
-  )}
 
-   <Link to="/playlist">
-   <button className="bg-white text-black font-medium py-2 px-4 rounded-lg ml-auto block mt-5">
-    Create
-  </button>
-   </Link>
-</div>
 
-           
 
           </div>
 
-          
+
         </div>
       )}
     </>

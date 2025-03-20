@@ -36,7 +36,7 @@ export const getSinglePlaylist = async (req, res) => {
   const id = req.params.id;
 
   // Find the playlist and populate the song details
-  const singlePlaylist = await Playlist.findById(id).populate('songs', 'name file image'); // Populate song details
+  const singlePlaylist = await Playlist.findById(id).populate('songs', 'name file image album duration'); // Populate song details
 
   if (!singlePlaylist) {
     return res.status(400).json({ message: "Playlist not found" });

@@ -78,14 +78,27 @@ const playerSlice = createSlice({
     },
     setTrackAdWatchTime(state, action) {
       state.adWatchTime = action.payload;
-      state.totalAdWatchTime += action.payload; // Accumulate total ad watch time
-  },
-  },
+      state.totalAdWatchTime += action.payload;
+    },
+    setTrackAdsSkips(state, action) {
+      state.currentAd = {
+        ...state.currentAd,
+        totalSkips: action.payload.totalSkips
+      };
+    },
+    setTrackAdsClick(state, action) {
+      state.currentAd = {
+        ...state.currentAd,
+        totalClicks: action.payload.totalClicks
+      };
+    }
+  }
 });
 
 export const { 
   setCurrentSong, playPause, updateProgress, stopPlayer, setSongList, 
-  playNextSong, playPrev, setAd, playAd, stopAd, resetSongCounter, setTrackAdWatchTime 
+  playNextSong, playPrev, setAd, playAd, stopAd, resetSongCounter, 
+  setTrackAdWatchTime, setTrackAdsSkips, setTrackAdsClick 
 } = playerSlice.actions;
 
 export default playerSlice.reducer;
@@ -153,5 +166,47 @@ export function trackAdWatchTime({ id, watchTime }) {
       console.log(err);
       dispatch(setStatus(STATUS.ERROR));
     }
+  };
+}
+
+
+//track ads skips
+export function trackAdSkip(id) {
+  return async function trackAdSkipThunk(dispatch) {
+      dispatch(setStatus(STATUS.LOADING));
+      try {
+          const response = await APIAuthenticated.post("/api/ads/track-skip", { id });
+
+          if (response.status === 200) {
+              dispatch(setTrackAdsSkips(response.data));
+              dispatch(setStatus(STATUS.SUCCESS));
+          } else {
+              dispatch(setStatus(STATUS.ERROR));
+          }
+      } catch (err) {
+          console.log(err);
+          dispatch(setStatus(STATUS.ERROR));
+      }
+  };
+}
+
+
+//track-click
+export function trackAdClick(id) {
+  return async function trackAdClickThunk(dispatch) {
+      dispatch(setStatus(STATUS.LOADING));
+      try {
+          const response = await APIAuthenticated.post("/api/ads/track-click", { id });
+
+          if (response.status === 200) {
+              dispatch(setTrackAdsClick(response.data));
+              dispatch(setStatus(STATUS.SUCCESS));
+          } else {
+              dispatch(setStatus(STATUS.ERROR));
+          }
+      } catch (err) {
+          console.log(err);
+          dispatch(setStatus(STATUS.ERROR));
+      }
   };
 }

@@ -93,14 +93,7 @@ const SinglePlaylist = () => {
     }
   };
 
-  const handleScroll = () => {
-    if (songListRef.current) {
-      const bottom = songListRef.current.scrollHeight === songListRef.current.scrollTop + songListRef.current.clientHeight;
-      if (bottom) {
-        setVisibleSongs((prevVisible) => prevVisible + 6);
-      }
-    }
-  };
+
 
   // Handle thumbs up click
   const handleLike = (songId) => {
@@ -132,6 +125,7 @@ const SinglePlaylist = () => {
     item.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  console.log("singleplaylist", singleplaylist)
 
   return (
     <div className="text-white min-h-screen p-6 flex gap-10">
@@ -196,43 +190,48 @@ const SinglePlaylist = () => {
       <div className="flex-1 mt-4">
         {/* playlist song */}
         <h2 className="text-xl font-bold mb-4 mt-3">Playlist Songs</h2>
-          <div className="grid gap-4 mb-6">
-  {singleplaylist?.songs?.length > 0 ? (
-    singleplaylist.songs.map((item) => (
-      <div key={item._id} className="relative flex items-center bg-stone-900 p-3 rounded-lg">
-        <div className="relative w-12 h-12 bg-gray-500 rounded-md overflow-hidden group">
-          <img className="w-full h-full object-cover" src={item?.image} alt="Song Cover" />
+        <div className="grid gap-4 mb-6">
+        {singleplaylist?.songs?.length > 0 ? (
+  singleplaylist.songs.map((item) => (
+    <div key={item._id} className="relative flex items-center p-2 rounded-lg group hover:bg-[#ffffff2b] transition duration-300">
+      
+      {/* Song Image + Play Button on Hover */}
+      <div className="relative w-10 h-10 bg-gray-500 rounded-md overflow-hidden group">
+        <img className="w-full h-full object-cover" src={item?.image} alt="Song Cover" />
 
-          {/* Play/Pause Icon */}
-          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <button onClick={() => handleSelectSong(item)} className="text-white text-xl">
-              {currentSong?._id === item._id && isPlaying ? "⏸" : "▶"}
-            </button>
-          </div>
-        </div>
-
-        <div className="ml-4 flex-1">
-          <Link to={`/singleSong/${item._id}`}>
-            <p className="font-semibold text-white hover:underline">{item?.name}</p>
-          </Link>
-          <p className="text-gray-400">{item?.album}</p>
-        </div>
-
-        {/* Like, Dislike, Options, Duration Section */}
-        <div className="flex items-center space-x-4">
-          <button onClick={() => handleLike(item._id)} className="text-white ml-4">
-            <FontAwesomeIcon icon={faThumbsUp} />
+        {/* Play/Pause Icon (Visible on Hover) */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <button onClick={() => handleSelectSong(item)} className="text-white text-xl">
+            {currentSong?._id === item._id && isPlaying ? "⏸" : "▶"}
           </button>
-          <FontAwesomeIcon icon={faThumbsDown} className="text-[15px]" />
-          <OptionsMenu songId={item._id} />
-          <p className="text-[15px]">{item?.duration || "0:00"}</p>
         </div>
       </div>
-    ))
-  ) : (
-    <p className="text-gray-400">No songs available in this playlist.</p>
-  )}
-</div>
+
+      {/* Song Details */}
+      <div className="ml-4 flex-1">
+        <Link to={`/singleSong/${item._id}`}>
+          <p className="font-semibold text-white hover:underline">{item?.name}</p>
+        </Link>
+        <p className="text-gray-400">{item?.album}</p>
+      </div>
+
+      {/* Actions (Hidden by Default, Shown on Hover) */}
+      <div className="relative z-10 flex items-center space-x-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-300">
+        <button onClick={() => handleLike(item._id)} className="text-white ml-4">
+          <FontAwesomeIcon icon={faThumbsUp} />
+        </button>
+        <FontAwesomeIcon icon={faThumbsDown} className="text-[15px]" />
+        <OptionsMenu songId={item._id} />
+        <p className="text-[15px]">{item?.duration || "0:00"}</p>
+      </div>
+
+    </div>
+  ))
+) : (
+  <p className="text-gray-400">No songs available in this playlist.</p>
+)}
+
+        </div>
 
 
         {/* Suggestions */}
@@ -240,10 +239,10 @@ const SinglePlaylist = () => {
           <h2 className="text-xl font-bold mb-4 ">Let's find something for your playlist</h2>
 
           {/* Search Bar */}
-          <div className="flex items-center gap-3 pl-8 cursor-pointer my-8">
+          <div className="flex items-center gap-3  cursor-pointer my-8">
             <input
               type="text"
-              placeholder="Search"
+              placeholder="Search for a song"
               className="w-96 bg-stone-800 p-2 border-white rounded-md text-white"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -251,54 +250,68 @@ const SinglePlaylist = () => {
           </div>
 
           {/* Song List */}
-<div
-  className="grid gap-4 overflow-y-auto"
-  style={{ maxHeight: "500px" }}
-  ref={songListRef}
->
-  {searchQuery ? (
-    filteredSongs.length > 0 ? (
-      filteredSongs.map((item) => (
-        <div
-          key={item._id}
-          className="flex justify-between items-center bg-stone-900 p-3 rounded-lg cursor-pointer group hover:bg-[#ffffff2b] transition duration-300"
-        >
-          <Link
-            to={`/singleSong/${item._id}`}
-            className="flex items-center w-1/4 gap-5"
+          <div
+            className="grid gap-4 overflow-y-auto"
+            style={{ maxHeight: "500px" }}
+            ref={songListRef}
           >
-            <div className="relative w-12 h-12 bg-gray-500 rounded-md overflow-hidden">
-              <img
-                className="w-full h-full object-cover"
-                src={item?.image}
-                alt="Song Cover"
-              />
-            </div>
-            <div className="w-3/4">
-              <p className="font-semibold hover:underline text-white">
-                {item?.name}
-              </p>
-              <p className="text-gray-400">{item?.album}</p>
-            </div>
-          </Link>
+           {searchQuery ? (
+  filteredSongs.length > 0 ? (
+    filteredSongs.map((item) => (
+      <div
+        key={item._id}
+        className="flex justify-between items-center bg-stone-900 p-3 rounded-lg cursor-pointer group hover:bg-[#ffffff2b] transition duration-300"
+      >
+        <Link
+          to={`/singleSong/${item._id}`}
+          className="flex items-center w-1/4 gap-5"
+        >
+            {/* Song Image + Play Button on Hover */}
+      <div className="relative w-10 h-10 bg-gray-500 rounded-md overflow-hidden group">
+        <img className="w-full h-full object-cover" src={item?.image} alt="Song Cover" />
 
-          <div className="flex justify-end items-center space-x-4">
-            <button onClick={() => handleLike(item._id)} className="text-white ml-4">
-              <FontAwesomeIcon icon={faThumbsUp} />
-            </button>
-            <FontAwesomeIcon icon={faThumbsDown} className="text-[15px]" />
-            <OptionsMenu songId={item._id} />
-            <p className="text-[15px]">{item?.duration || "0:00"}</p>
-          </div>
+        {/* Play/Pause Icon (Visible on Hover) */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <button onClick={() => handleSelectSong(item)} className="text-white text-xl">
+            {currentSong?._id === item._id && isPlaying ? "⏸" : "▶"}
+          </button>
         </div>
-      ))
-    ) : (
-      <p className="text-gray-400">No songs found.</p>
-    )
-  ) : (
-    <p className="text-gray-400">Start typing to find songs...</p>
-  )}
+      </div>
+
+          <div className="w-3/4">
+            <p className="font-semibold hover:underline text-white">
+              {item?.name}
+            </p>
+            <p className="text-gray-400">{item?.album}</p>
+          </div>
+        </Link>
+
+        {/* Initially hidden, only shown on hover */}
+{/* Initially hidden, only shown on hover */}
+<div className="relative z-10 flex justify-end items-center space-x-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+  <button onClick={() => handleLike(item._id)} className="text-white ml-4">
+    <FontAwesomeIcon icon={faThumbsUp} />
+  </button>
+  <FontAwesomeIcon icon={faThumbsDown} className="text-[15px]" />
+
+  {/* Wrap OptionsMenu in a container with absolute positioning */}
+  <div className="relative">
+    <OptionsMenu songId={item._id} />
+  </div>
+
+  <p className="text-[15px]">{item?.duration || "0:00"}</p>
 </div>
+
+
+      </div>
+    ))
+  ) : (
+    <p className="text-gray-400">No songs found.</p>
+  )
+) : null}
+
+
+          </div>
 
         </div>
 

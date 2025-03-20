@@ -163,7 +163,7 @@ export const fetchAlbumByGenre = async (req, res) => {
 export const fetchLatestAlbums = async (req, res) => {
         const latestAlbums = await albumModel.find()
             .sort({ createdAt: -1 }) // Sort by newest first
-            .limit(2); // Get only the top 5
+            .limit(5); // Get only the top 5
 
         if (!latestAlbums || latestAlbums.length === 0) {
             return res.status(404).json({ message: "No albums found" });

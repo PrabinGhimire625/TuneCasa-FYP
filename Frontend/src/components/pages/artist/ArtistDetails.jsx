@@ -46,8 +46,8 @@ const ArtistDetails = () => {
   return (
     <div className="w-full h-full">
       {/* Top artist profile section */}
-      <div className="py-10 flex gap-8 flex-col md:flex-row md:items-end bg-neutral-900">
-        <div className="ml-5">
+      <div className="py-10 flex gap-8 flex-col md:flex-row md:items-end bg-neutral-900 ">
+        <div className="ml-16">
           <img
             src={singleUser?.user?.image || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9nFbCnqa-fAIyStp-cQG9M-LezEqxUz0HYg&s"}
             alt="Artist Cover"
@@ -57,13 +57,12 @@ const ArtistDetails = () => {
         <div className="flex flex-col text-white">
           <p className='text-yellow-700'>Artist</p>
           <h2 className="text-5xl font-bold mb-4 md:text-7xl">{singleUser?.user?.username || "Unknown Artist"}</h2>
-          <h4 className="text-xl text-gray-200">{singleUser?.user?.email || "No bio available"}</h4>
           <h4 className="text-lg text-gray-400">{singleUser?.bio || "No bio available"}</h4>
         </div>
 
             {singleUser?.user?._id && (
         <Link to={`/singleArtist/${singleUser.user._id}`}>
-          <button className="text-yellow-500 underline hover:text-blue-500">
+          <button className="text-yellow-500 underline hover:text-blue-500 ml-5 mt-5">
             View More
           </button>
         </Link>
@@ -116,17 +115,17 @@ const ArtistDetails = () => {
         ))}
       </div>
 
-      {/* See More Button */}
+      {/* See More Button
       {artistSong && artistSong.length > 4 && (
         <div className="mb-5 ml-7">
           <button onClick={toggleShowAllSongs} className="text-gray-400 px-4 py-1 rounded-full hover:bg-gray-700 transition">
             {showAllSongs ? "Show Less" : "See More"}
           </button>
         </div>
-      )}
+      )} */}
 
       {/* Suggest for You */}
-      <div className="ml-5">
+      {/* <div className="ml-5">
         <h1 className="my-3 text-white font-bold text-2xl">Suggest for You</h1>
         <div className="flex overflow-auto gap-4">
           {artistSong && artistSong.length > 0 ? (
@@ -150,10 +149,10 @@ const ArtistDetails = () => {
             <p className="text-gray-400">No albums available</p>
           )}
         </div>
-      </div>
+      </div> */}
 
       {/* Artist Section */}
-      <div className="display the artist">
+      <div className="#">
         <DisplayArtist />
       </div>
 
