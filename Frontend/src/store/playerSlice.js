@@ -218,7 +218,7 @@ export function trackAdClick(id) {
 
 
 //track the trackSongAnalytics
-export function trackSongAnalytic({ userId, songId, watchTime }) {
+export function trackSongAnalytic({songId, watchTime }) {
   return async function trackSongAnalyticThunk(dispatch) {
     dispatch(setStatus(STATUS.LOADING));  // Set loading status
 
@@ -227,9 +227,31 @@ export function trackSongAnalytic({ userId, songId, watchTime }) {
         songId,
         watchTime,
       });
+      console.log("response on the song analytics", response)
 
       if (response.status === 200) {
         dispatch(setSongAnalytics(response.data));  // Update Redux store with response data
+        dispatch(setStatus(STATUS.SUCCESS));  // Set success status
+      } else {
+        dispatch(setStatus(STATUS.ERROR));
+      }
+    } catch (err) {
+      console.error(err);
+      dispatch(setStatus(STATUS.ERROR));
+    }
+  };
+}
+
+// track song views
+export function trackSongView({songId }) {
+  return async function trackSongViewThunk(dispatch) {
+    dispatch(setStatus(STATUS.LOADING));  // Set loading status
+
+    try {
+      const response = await APIAuthenticated.post('/api/song-analytics/view', {
+        songId,
+      });
+      if (response.status === 200) {
         dispatch(setStatus(STATUS.SUCCESS));  // Set success status
       } else {
         dispatch(setStatus(STATUS.ERROR));

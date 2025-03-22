@@ -24,11 +24,9 @@ export const trackSongAnalytics = async (req, res) => {
       analytics = new songAnalyticsModel({
         songId,
         userId,
-        views: 1, 
         watchTime,
       });
     } else {
-      analytics.views += 1;
       analytics.watchTime += watchTime;
     }
 
@@ -84,5 +82,33 @@ export const getTotalSongAnalytics = async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Server error. Could not fetch song analytics." });
+  }
+};
+
+
+//get the total views of the song
+export const trackSongView = async (req, res) => {
+  try {
+    const { songId } = req.body;
+    const userId = req.user.id;
+
+    if (!songId || !userId) {
+      return res.status(400).json({ message: "Song ID and User ID are required." });
+    }
+
+    // Check if user has already viewed the song
+    let analytics = await songAnalyticsModel.findOne({ songId, userId });
+
+    if (!analytics) {
+      analytics = new songAnalyticsModel({ songId, userId, views: 1 });
+    } else {
+      analytics.views += 1;
+    }
+
+    await analytics.save();
+    return res.status(200).json({ message: "View counted successfully." });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error tracking view." });
   }
 };

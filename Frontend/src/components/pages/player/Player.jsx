@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { playPause, updateProgress, playPrev, handlePlayNext, playAd, stopAd, trackSongAnalytic } from "../../../store/playerSlice";
+import { playPause, updateProgress, playPrev, handlePlayNext, playAd, stopAd, trackSongAnalytic, trackSongView } from "../../../store/playerSlice";
 import { assets } from "../../../assets/frontend-assets/assets";
 
 const Player = () => {
   const dispatch = useDispatch();
-  const { currentSong, isPlaying, progress, songList, currentAd, isAdPlaying } = useSelector((state) => state.player);
+  const { currentSong, isPlaying, progress, songList, currentAd, isAdPlaying, songAnalytics } = useSelector((state) => state.player);
 
   const audioRef = useRef(new Audio());
   const progressBarRef = useRef(null);
@@ -13,6 +13,8 @@ const Player = () => {
   const [localProgress, setLocalProgress] = useState(progress || 0);
   const [duration, setDuration] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+
+  console.log("Tracksong analytics", songAnalytics)
 
   // ✅ Load & Play New Song or Ad
   useEffect(() => {
@@ -67,17 +69,48 @@ const Player = () => {
   }, [isPlaying, currentAd]);
 
   // ✅ Update Progress Bar Every 500ms (for both song and ad)
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (!isDragging && (isPlaying || isAdPlaying)) {  // Check both isPlaying and isAdPlaying
-        const currentTime = audioRef.current.currentTime;
-        setLocalProgress(currentTime);
-        dispatch(updateProgress(currentTime));
+// ✅ Track Listening Time and Send Analytics
+
+// Add this new useEffect to reset hasViewed when song changes
+useEffect(() => {
+  setHasViewed(false);
+}, [currentSong?._id]);
+
+const [hasViewed, setHasViewed] = useState(false);
+
+useEffect(() => {
+  if (!currentSong) return;
+
+  let totalWatchTime = 0;
+  let watchTimeThreshold = 1;
+  const duration = audioRef.current.duration;
+  const midPoint = duration * 0.5;
+  const lastTenSeconds = duration - 10;
+
+  const interval = setInterval(() => {
+    if (!isDragging && (isPlaying || isAdPlaying)) {
+      const currentTime = audioRef.current.currentTime;
+      setLocalProgress(currentTime);
+      dispatch(updateProgress(currentTime));
+
+      if (!isAdPlaying) {
+        totalWatchTime += 0.5;
+
+        if (!hasViewed && (currentTime >= midPoint || currentTime >= lastTenSeconds)) {
+          dispatch(trackSongView({ songId: currentSong._id }));
+          setHasViewed(true);
+        }
+
+        if (totalWatchTime >= watchTimeThreshold) {
+          dispatch(trackSongAnalytic({ songId: currentSong._id, watchTime: totalWatchTime }));
+          totalWatchTime = 0;
+        }
       }
-    }, 500);
-  
-    return () => clearInterval(interval);
-  }, [isPlaying, isDragging, isAdPlaying]);  // Add isAdPlaying to dependencies
+    }
+  }, 500);
+
+  return () => clearInterval(interval);
+}, [isPlaying, isDragging, isAdPlaying, currentSong?._id, hasViewed]);
 
 
   // ✅ Handle Song/Ad End & Auto-Next
@@ -112,7 +145,6 @@ const Player = () => {
     const rect = progressBarRef.current.getBoundingClientRect();
     const clickX = e.clientX - rect.left;
     const newTime = (clickX / rect.width) * audioRef.current.duration;
-
     setLocalProgress(newTime);
     if (commit) {
       audioRef.current.currentTime = newTime;
@@ -161,14 +193,8 @@ const Player = () => {
     }
   };
 
-  // useEffect(() => {
-  //   if (currentSong && progress >= 1) { // When the song completes
-  //     const songId = currentSong._id;
-  //     const watchTime = localProgress
-      
-  //     dispatch(trackSongAnalytic(songId, watchTime));
-  //   }
-  // }, [progress, currentSong, dispatch]);
+
+  
 
   console.log("localProgress", localProgress)
   console.log("Progress", progress)

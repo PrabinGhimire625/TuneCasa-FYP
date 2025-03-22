@@ -471,6 +471,19 @@ export const fetchAllArtists = async (req, res) => {
   }
 };
 
+// Fetch latest 8 artists
+export const fetchLatestArtists = async (req, res) => {
+    const artists = await User.find({ role: "artist" })
+      .select("username image")
+      .sort({ createdAt: -1 }) // Sort by latest created first
+      .limit(5); // Get only 8 artists
+    
+    if (!artists || artists.length === 0) {
+      return res.status(404).json({ message: "No artists found" });
+    }
+
+    res.status(200).json({ message: "Latest artists fetched successfully", data: artists });
+};
 
 
 export const sendMessageToArtist = async (req, res) => {

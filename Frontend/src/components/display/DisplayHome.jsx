@@ -23,7 +23,7 @@ const DisplayHome = () => {
                  className='w-8 bg-black p-2 rounded-2xl cursor-pointer'
                  src={assets.arrow_right}
                  alt=''
-                 onClick={() => navigate(1)} 
+                 onClick={() => navigate(1)}
                />
       </div>
 
