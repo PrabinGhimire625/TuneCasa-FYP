@@ -151,26 +151,9 @@ export const updatePlaylistImage = async (req, res) => {
   }
 };
 
-
-
-
-
-
-
-// export const addSongToPlaylist = async (req, res) => {
-//   const { playlistId, songId } = req.params;
-//   try {
-//     const playlist = await Playlist.findById(playlistId);
-//     const song = await Song.findById(songId);
-
-//     // Add the song to the playlist if not already present
-//     if (!playlist.songs.includes(songId)) {
-//       playlist.songs.push(songId);
-//       await playlist.save();
-//     }
-
-//     res.status(200).json({ message: "Song added to playlist" });
-//   } catch (err) {
-//     res.status(500).json({ message: "Error adding song to playlist", error: err });
-//   }
-// };
+// Count totalPlaylist
+export const countAllPlaylist = async (req, res) => {
+  const totalPlaylist = await Playlist.countDocuments();
+  // Send the count as a response
+  res.status(200).json({ message: "TotalPlaylist count fetched successfully", data: totalPlaylist });
+};

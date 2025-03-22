@@ -186,3 +186,17 @@ export const checkActiveSubscription = async (req, res) => {
   }
 };
 
+
+export const getTotalSubscribedUsers = async (req, res) => {
+  try {
+    const totalSubscribers = await Subscription.countDocuments({ status: "active" });
+
+    res.status(200).json({
+      message: "Total subscribed users",
+      data:totalSubscribers,
+    });
+  } catch (error) {
+    console.error("Error fetching total subscribed users:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};

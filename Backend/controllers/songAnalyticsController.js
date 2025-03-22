@@ -112,3 +112,43 @@ export const trackSongView = async (req, res) => {
     return res.status(500).json({ message: "Error tracking view." });
   }
 };
+
+
+export const getTotalSongAnalyticsPerSong  = async (req, res) => {
+  try {
+    const songStats = await songAnalyticsModel.aggregate([
+      {
+        $group: {
+          _id: "$songId",
+          totalViews: { $sum: "$views" }, // Sum total views
+          totalWatchTime: { $sum: "$watchTime" }, // Sum total watch time
+        },
+      },
+      {
+        $lookup: {
+          from: "songs", // Ensure this matches your actual songs collection name
+          localField: "_id",
+          foreignField: "_id",
+          as: "song",
+        },
+      },
+      {
+        $unwind: { path: "$song", preserveNullAndEmptyArrays: true }, // Handle missing song details
+      },
+      {
+        $project: {
+          _id: 0,
+          songId: "$_id",
+          songName: { $ifNull: ["$song.name", "Unknown"] }, // Fetch title from song schema
+          totalViews: 1,
+          totalWatchTime: 1,
+        },
+      },
+    ]);
+
+    res.status(200).json({ message: "Total views and watch time per song", data: songStats });
+  } catch (error) {
+    console.error("Error fetching total views and watch time:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};

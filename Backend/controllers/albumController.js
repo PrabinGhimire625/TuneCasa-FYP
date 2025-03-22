@@ -174,3 +174,10 @@ export const fetchLatestAlbums = async (req, res) => {
             data: latestAlbums,
         });
 };
+
+// Count all album
+export const countAllAlbum = async (req, res) => {
+  const totalAlbum = await albumModel.countDocuments();
+  // Send the count as a response
+  res.status(200).json({ message: "Album count fetched successfully", data: totalAlbum });
+};

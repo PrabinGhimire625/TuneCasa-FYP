@@ -52,6 +52,14 @@ export const getAllSong=async(req,res)=>{
         res.status(200).json({message: "Successfull get all the songs",data:allSongs});
 }
 
+// Count all songs
+export const countAllSong = async (req, res) => {
+  const totalSongs = await songModel.countDocuments();
+  // Send the count as a response
+  res.status(200).json({ message: "Song count fetched successfully", data: totalSongs });
+};
+
+
 //fetch single song
 export const fetchSingleSong=async(req,res)=>{
     const id=req.params.id;

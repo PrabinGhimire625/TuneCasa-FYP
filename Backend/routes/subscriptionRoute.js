@@ -1,5 +1,5 @@
 import {Router} from "express";
-import { checkActiveSubscription, createSubscription, khaltiVerification } from "../controllers/subscriptionController.js";
+import { checkActiveSubscription, createSubscription, getTotalSubscribedUsers, khaltiVerification } from "../controllers/subscriptionController.js";
 import { isAuthenticated } from "../middleware/authMiddleware.js";
 import {checkSubscription} from "../middleware/checkSubscription.js";
 
@@ -8,6 +8,7 @@ const router=Router();
 router.route("/").post(isAuthenticated ,createSubscription);
 router.route("/verify-payment").post(isAuthenticated,khaltiVerification)
 router.route("/check-active-subscription").get(isAuthenticated, checkActiveSubscription)
+router.route("/total/count").get( getTotalSubscribedUsers)
 
 
 router.route("/premium-content")

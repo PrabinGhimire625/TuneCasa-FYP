@@ -66,3 +66,40 @@ export const deleteLike = async (req, res) => {
     res.status(500).json({ message: 'Server error', error });
   }
 };
+
+export const getTotalLikesPerSong = async (req, res) => {
+  try {
+    const totalLikes = await Like.aggregate([
+      {
+        $group: {
+          _id: "$songId", // Group by songId
+          totalLikes: { $sum: 1 }, // Count total likes for each song
+        },
+      },
+      {
+        $lookup: {
+          from: "songs", // Ensure this matches your actual songs collection name
+          localField: "_id",
+          foreignField: "_id",
+          as: "song",
+        },
+      },
+      {
+        $unwind: { path: "$song", preserveNullAndEmptyArrays: true }, // Handle missing song details
+      },
+      {
+        $project: {
+          _id: 0,
+          songId: "$_id",
+          songName: { $ifNull: ["$song.name", "Unknown"] }, // Fetch song name
+          totalLikes: 1,
+        },
+      },
+    ]);
+
+    res.status(200).json({ message: "Total likes per song", data: totalLikes });
+  } catch (error) {
+    console.error("Error fetching total likes:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};

@@ -542,3 +542,24 @@ export const sendMessageToArtist = async (req, res) => {
     res.status(500).json({ success: false, message: "Error sending message", error: error.message });
   }
 };
+
+// Count all artists
+export const countAllArtists = async (req, res) => {
+    const artistCount = await User.countDocuments({ role: "artist" });
+    // Send the count as a response
+    res.status(200).json({ message: "Artist count fetched successfully", data: artistCount });
+};
+
+// Count all user+artist
+export const countAllUsers = async (req, res) => {
+  const totalUser = await User.countDocuments();
+  // Send the count as a response
+  res.status(200).json({ message: "TotalUser count fetched successfully", data: totalUser });
+};
+
+// Count all userCount
+export const countUserOnly = async (req, res) => {
+  const userCount = await User.countDocuments({ role: "user" });
+  // Send the count as a response
+  res.status(200).json({ message: "userCount count fetched successfully", data: userCount });
+};

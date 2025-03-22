@@ -1,7 +1,9 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { FiSearch, FiMusic, FiUsers, FiHeadphones, FiList } from "react-icons/fi";
 import { FaChartLine } from "react-icons/fa";
-
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { fetchTotalAlbums, fetchTotalArtists, fetchTotalPlaylists, fetchTotalSongs, fetchTotalSubscriptionUsers, fetchTotalUsers } from "../../store/analyticSlice";
 const data = [
   { year: "2018", listeners: 1000, prevListeners: 800 },
   { year: "2019", listeners: 5000, prevListeners: 3000 },
@@ -20,6 +22,27 @@ const trendingArtists = [
 ];
 
 export default function Dashboard() {
+
+  const dispatch=useDispatch();
+  const { totalUsers, totalArtists, totalSongs,  totalAlbums, totalPlaylist, totalSubscriptionUser} = useSelector((state) => state.analytics);
+
+  useEffect(()=>{
+    dispatch(fetchTotalUsers());
+    dispatch(fetchTotalArtists());
+    dispatch(fetchTotalSongs());
+    dispatch(fetchTotalAlbums());
+    dispatch(fetchTotalPlaylists());
+    dispatch(fetchTotalSubscriptionUsers());
+  },[])
+
+  console.log("totalUsers", totalUsers)
+  console.log("totalArtists", totalArtists)
+  console.log("totalSongs", totalSongs)
+  console.log("totalAlbums", totalAlbums)
+  console.log("totalPlaylist", totalPlaylist)
+  console.log("totalSubscriptionUser", totalSubscriptionUser)
+
+
   return (
     <div className="bg-gray-900 text-white p-5 min-h-screen">
 
