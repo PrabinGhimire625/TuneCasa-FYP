@@ -102,8 +102,6 @@ const SingleSong = () => {
           <p className="text-gray-400">No song available</p>
         )}
       </div>
-
-      <Player />
     </div>
   );
 };

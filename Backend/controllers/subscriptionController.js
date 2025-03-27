@@ -1,6 +1,7 @@
 import Subscription, { PLAN_PRICES, PLAN_DURATION } from "../models/subscriptionModel.js";
 import Payment from "../models/paymentModel.js";
 import axios from "axios";
+import moment from 'moment'; // for better date handling
 
 // Create a new subscription
 export const createSubscription = async (req, res) => {
@@ -198,5 +199,79 @@ export const getTotalSubscribedUsers = async (req, res) => {
   } catch (error) {
     console.error("Error fetching total subscribed users:", error);
     res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// get all active subscriptions
+export const getAllSubscription = async (req, res) => {
+  const allSubscription = await Subscription.find({ status: "active" }).populate("userId", "username");
+
+  if (allSubscription.length < 1) {
+    return res.status(404).json({ message: "No active subscriptions found" });
+  }
+
+  res.status(200).json({
+    message: "Successfully retrieved all active subscriptions",
+    data: allSubscription,
+  });
+};
+
+
+
+
+
+// Get total subscription amount for the current month
+export const getTotalSubscriptionAmount = async (req, res) => {
+  // Get the start and end of the current month
+  const startOfMonth = moment().startOf('month').toDate();
+  const endOfMonth = moment().endOf('month').toDate();
+
+  try {
+    // Find all active subscriptions with startDate within the current month
+    const subscriptions = await Subscription.find({
+      status: "active",
+      startDate: { $gte: startOfMonth, $lte: endOfMonth }
+    });
+
+    // Calculate total amount using reduce on the subscriptions array
+    const totalAmount = subscriptions.reduce((acc, sub) => acc + sub.amount, 0);
+
+    res.status(200).json({
+      message: "Total subscription amount for the month retrieved successfully",
+      data: { totalAmount },
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error calculating total subscription amount",
+      error: error.message,
+    });
+  }
+};
+
+//fetch single subscription
+export const fetchSingleSubscription = async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    // Find the subscription by ID and populate the userId field with user details
+    const singleSubscription = await Subscription.findById(id).populate('userId', 'username');
+
+    if (!singleSubscription) {
+      return res.status(404).json({ message: "Subscription not found" });
+    }
+
+    // Include the username in the response data
+    res.status(200).json({
+      message: "Successfully fetched the subscription",
+      data: {
+        ...singleSubscription.toObject(),
+        username: singleSubscription.userId.username,  // Include username in the response
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error fetching the subscription",
+      error: error.message,
+    });
   }
 };

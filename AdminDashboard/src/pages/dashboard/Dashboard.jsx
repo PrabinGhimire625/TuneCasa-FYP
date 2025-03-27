@@ -1,9 +1,10 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { FiSearch, FiMusic, FiUsers, FiHeadphones, FiList } from "react-icons/fi";
+import { FiMusic, FiUsers, FiHeadphones, FiList } from "react-icons/fi";
 import { FaChartLine } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { fetchTotalAlbums, fetchTotalArtists, fetchTotalPlaylists, fetchTotalSongs, fetchTotalSubscriptionUsers, fetchTotalUsers } from "../../store/analyticSlice";
+
 const data = [
   { year: "2018", listeners: 1000, prevListeners: 800 },
   { year: "2019", listeners: 5000, prevListeners: 3000 },
@@ -22,37 +23,28 @@ const trendingArtists = [
 ];
 
 export default function Dashboard() {
+  const dispatch = useDispatch();
+  const { totalUsers, totalArtists, totalSongs, totalAlbums, totalPlaylist, totalSubscriptionUser } = useSelector((state) => state.analytics);
 
-  const dispatch=useDispatch();
-  const { totalUsers, totalArtists, totalSongs,  totalAlbums, totalPlaylist, totalSubscriptionUser} = useSelector((state) => state.analytics);
-
-  useEffect(()=>{
+  useEffect(() => {
     dispatch(fetchTotalUsers());
     dispatch(fetchTotalArtists());
     dispatch(fetchTotalSongs());
     dispatch(fetchTotalAlbums());
     dispatch(fetchTotalPlaylists());
     dispatch(fetchTotalSubscriptionUsers());
-  },[])
-
-  console.log("totalUsers", totalUsers)
-  console.log("totalArtists", totalArtists)
-  console.log("totalSongs", totalSongs)
-  console.log("totalAlbums", totalAlbums)
-  console.log("totalPlaylist", totalPlaylist)
-  console.log("totalSubscriptionUser", totalSubscriptionUser)
-
+  }, [dispatch]);
 
   return (
     <div className="bg-gray-900 text-white p-5 min-h-screen">
-
+      
       {/* Dashboard Stats */}
       <div className="grid grid-cols-4 gap-6 mt-6">
         {[
-          { label: "Total Artists", value: "3,5", icon: <FiUsers />, color: "text-blue-400" },
-          { label: "Total Songs", value: "120", icon: <FiMusic />, color: "text-yellow-400" },
-          { label: "Active Listeners", value: "70", icon: <FiHeadphones />, color: "text-green-400" },
-          { label: "Playlists Created", value: "47", icon: <FiList />, color: "text-purple-400" },
+          { label: "Total Artists", value: totalArtists?.toLocaleString() || 0, icon: <FiUsers />, color: "text-blue-400" },
+          { label: "Total Songs", value: totalSongs?.toLocaleString() || 0, icon: <FiMusic />, color: "text-yellow-400" },
+          { label: "Total Listeners", value: totalUsers?.toLocaleString() || 0, icon: <FiHeadphones />, color: "text-green-400" },
+          { label: "Playlists Created", value: totalPlaylist?.toLocaleString() || 0, icon: <FiList />, color: "text-purple-400" },
         ].map((stat, index) => (
           <div key={index} className="bg-gray-800 p-5 rounded-xl flex items-center gap-4">
             <div className={`text-3xl ${stat.color}`}>{stat.icon}</div>
@@ -64,7 +56,7 @@ export default function Dashboard() {
         ))}
       </div>
 
-      {/* Listeners Growth Chart */}
+      {/* Listener Growth Chart */}
       <div className="bg-gray-800 p-6 rounded-lg mt-6 shadow-lg">
         <h3 className="text-lg font-semibold flex items-center gap-2">
           <FaChartLine className="text-green-400" /> Listener Growth
@@ -95,6 +87,7 @@ export default function Dashboard() {
           ))}
         </div>
       </div>
+      
     </div>
   );
 }

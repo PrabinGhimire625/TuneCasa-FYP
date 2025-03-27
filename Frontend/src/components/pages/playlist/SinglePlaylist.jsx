@@ -319,7 +319,7 @@ const SinglePlaylist = () => {
       </div>
 
       {/* Player Component */}
-      <Player />
+      {/* <Player /> */}
 
       {showEditForm && (
         <EditPlaylist id={id} playlistData={singleplaylist} onClose={handleCloseEditForm} />

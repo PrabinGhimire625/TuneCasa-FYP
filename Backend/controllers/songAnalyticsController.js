@@ -113,42 +113,110 @@ export const trackSongView = async (req, res) => {
   }
 };
 
-
 export const getTotalSongAnalyticsPerSong  = async (req, res) => {
   try {
     const songStats = await songAnalyticsModel.aggregate([
       {
         $group: {
-          _id: "$songId",
+          _id: "$songId", // Grouping by songId
           totalViews: { $sum: "$views" }, // Sum total views
           totalWatchTime: { $sum: "$watchTime" }, // Sum total watch time
+          totalEarning: { $sum: "$totalEarning" }, // Sum total earnings (if you have earnings field)
         },
       },
       {
         $lookup: {
-          from: "songs", // Ensure this matches your actual songs collection name
-          localField: "_id",
-          foreignField: "_id",
+          from: "songs", // Assuming songs collection is named "songs"
+          localField: "_id", // Matching songId with _id
+          foreignField: "_id", // Foreign field is also _id in the songs collection
           as: "song",
         },
       },
       {
-        $unwind: { path: "$song", preserveNullAndEmptyArrays: true }, // Handle missing song details
+        $unwind: { path: "$song", preserveNullAndEmptyArrays: true }, // Unwind the song data
       },
       {
         $project: {
           _id: 0,
           songId: "$_id",
-          songName: { $ifNull: ["$song.name", "Unknown"] }, // Fetch title from song schema
-          totalViews: 1,
-          totalWatchTime: 1,
+          songName: { $ifNull: ["$song.name", "Unknown"] }, // If song name is missing, default to "Unknown"
+          album: { $ifNull: ["$song.album", "Unknown"] }, // If album is missing, default to "Unknown"
+          desc: { $ifNull: ["$song.desc", "Unknown"] }, // If description is missing, default to "Unknown"
+          image: { $ifNull: ["$song.image", "Unknown"] }, // If image is missing, default to "Unknown"
+          file: { $ifNull: ["$song.file", "Unknown"] }, // If file is missing, default to "Unknown"
+          totalViews: 1, // Total views
+          totalWatchTime: 1, // Total watch time
+          totalEarning: 1, // Total earnings
         },
       },
     ]);
 
-    res.status(200).json({ message: "Total views and watch time per song", data: songStats });
+    res.status(200).json({ message: "Total views, watch time, and earnings per song", data: songStats });
   } catch (error) {
-    console.error("Error fetching total views and watch time:", error);
+    console.error("Error fetching total views, watch time, and earnings:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+import { ObjectId } from 'mongodb'; // Make sure to import ObjectId
+
+export const getSingleSongAnalytics = async (req, res) => {
+  try {
+    const { songId } = req.params; // Extract songId from the URL parameters
+
+    if (!songId) {
+      return res.status(400).json({ message: "Song ID is required" });
+    }
+
+    // Ensure the songId is an ObjectId type (assuming it's stored as an ObjectId in MongoDB)
+    const objectId = ObjectId(songId);
+
+    const songStats = await songAnalyticsModel.aggregate([
+      {
+        $match: { songId: objectId }, // Match the songId from the request parameter
+      },
+      {
+        $group: {
+          _id: "$songId", // Group by songId
+          totalViews: { $sum: "$views" }, // Sum of total views
+          totalWatchTime: { $sum: "$watchTime" }, // Sum of total watch time
+          totalEarning: { $sum: "$totalEarning" }, // Sum of total earnings
+        },
+      },
+      {
+        $lookup: {
+          from: "songs", // Assuming the songs collection is called "songs"
+          localField: "_id", // The songId from the analytics model
+          foreignField: "_id", // The _id field in the songs collection
+          as: "song", // The joined data will be stored in "song"
+        },
+      },
+      {
+        $unwind: { path: "$song", preserveNullAndEmptyArrays: true }, // Unwind the song data
+      },
+      {
+        $project: {
+          _id: 0,
+          songId: "$_id", // The songId
+          songName: { $ifNull: ["$song.name", "Unknown"] }, // Song name, fallback to "Unknown" if missing
+          album: { $ifNull: ["$song.album", "Unknown"] }, // Album, fallback to "Unknown" if missing
+          desc: { $ifNull: ["$song.desc", "Unknown"] }, // Description, fallback to "Unknown" if missing
+          image: { $ifNull: ["$song.image", "Unknown"] }, // Image, fallback to "Unknown" if missing
+          file: { $ifNull: ["$song.file", "Unknown"] }, // File, fallback to "Unknown" if missing
+          totalViews: 1, // Total views
+          totalWatchTime: 1, // Total watch time
+          totalEarning: 1, // Total earnings
+        },
+      },
+    ]);
+
+    if (!songStats.length) {
+      return res.status(404).json({ message: "No analytics found for the specified song" });
+    }
+
+    res.status(200).json({ message: "Song analytics fetched successfully", data: songStats[0] });
+  } catch (error) {
+    console.error("Error fetching song analytics:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };

@@ -94,6 +94,7 @@ function App() {
                 /> */}
               </Routes>
             </div>
+            <Player />
           </div>
         </BrowserRouter>
       </Provider>

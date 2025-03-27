@@ -156,7 +156,7 @@ const ArtistDetails = () => {
         <DisplayArtist />
       </div>
 
-      <Player />
+      {/* <Player /> */}
     </div>
   );
 };

@@ -106,7 +106,7 @@ const GenreBasedSong = () => {
           ))}
         </div>
       </div>
-      <Player />
+      {/* <Player /> */}
     </div>
   );
 };

@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { FaChartPie, FaTable, FaCog, FaAngleDown, FaMusic, FaUsers, FaHome } from "react-icons/fa";
+import { FaChartPie, FaTable, FaCog, FaAngleDown, FaMusic, FaUsers, FaHome, FaUserCog ,FaMoneyCheckAlt } from "react-icons/fa";
 import { MdLibraryMusic } from "react-icons/md";
 import { RiPlayListFill, RiAdvertisementFill } from "react-icons/ri";
 import { FiLogOut } from "react-icons/fi";
 import { assets } from '../../assets/artist-assets/assets';
+      
 
 const Sidebar = () => {
   const [openDropdown, setOpenDropdown] = useState(null);
@@ -34,12 +35,14 @@ const Sidebar = () => {
         <Link to="/artistRequest" className="flex items-center p-3 rounded-lg hover:bg-gray-700">
           <FaUsers className="mr-3" /> Artist Request
         </Link>
+
         <Link to="/users" className="flex items-center p-3 rounded-lg hover:bg-gray-700">
-          <FaTable className="mr-3" /> User Management
+          <FaUserCog className="mr-3" /> User Management
         </Link>
         <Link to="/displayArtist" className="flex items-center p-3 rounded-lg hover:bg-gray-700">
           <FaTable className="mr-3" /> Event Management
         </Link>
+
 
         {/* Music Management Dropdown */}
         <div>
@@ -55,6 +58,7 @@ const Sidebar = () => {
           {openDropdown === "music" && (
             <div className="ml-6">
               <Link to="/allSong" className="block p-2 text-sm hover:bg-gray-700 rounded-md">All Songs</Link>
+              <Link to="/songAnalystic" className="block p-2 text-sm hover:bg-gray-700 rounded-md">Song Analytics</Link>
               <Link to="/allAlbum" className="block p-2 text-sm hover:bg-gray-700 rounded-md">All Albums</Link>
               <Link to="/allPlaylist" className="block p-2 text-sm hover:bg-gray-700 rounded-md">All Playlists</Link>
               <Link to="/addGenre" className="block p-2 text-sm hover:bg-gray-700 rounded-md">Add Genre</Link>
@@ -62,6 +66,9 @@ const Sidebar = () => {
             </div>
           )}
         </div>
+
+       
+
 
         {/* Ads Management Dropdown */}
         <div>
@@ -81,6 +88,10 @@ const Sidebar = () => {
             </div>
           )}
         </div>
+
+        <Link to="/allSubscription" className="flex items-center p-3 rounded-lg hover:bg-gray-700">
+          <FaMoneyCheckAlt className="mr-3" /> Manage Subscriptions
+      </Link>
 
         <Link to="/settings" className="flex items-center p-3 rounded-lg hover:bg-gray-700">
           <FaCog className="mr-3" /> Settings

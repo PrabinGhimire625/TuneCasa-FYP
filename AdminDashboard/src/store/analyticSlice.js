@@ -5,6 +5,7 @@ import { API } from "../http";
 const analyticSlice = createSlice({
     name: "analytics",
     initialState: {
+        songDetails:[],
         totalUsers: null,
         totalArtists: null,
         totalSongs: null, 
@@ -14,6 +15,9 @@ const analyticSlice = createSlice({
         status: STATUS.LOADING,
     },
     reducers: {
+        setSongDetails(state, action) {
+            state.songDetails = action.payload;
+        },
         setTotalUsers(state, action) {
             state.totalUsers = action.payload;
         },
@@ -46,7 +50,8 @@ export const {
     setTotalPlaylist, 
     setTotalSubscriptionUser, 
     setStatus, 
-    setError 
+    setError, 
+    setSongDetails
 } = analyticSlice.actions;
 export default analyticSlice.reducer;
 
@@ -153,6 +158,25 @@ export const fetchTotalSubscriptionUsers = () => async (dispatch) => {
         }
     } catch (err) {
         console.error("Error fetching total subscription users:", err);
+        dispatch(setError(err.message));
+        dispatch(setStatus(STATUS.ERROR));
+    }
+};
+
+
+// Fetch Total Subscription Users
+export const fetchSongDetails = () => async (dispatch) => {
+    dispatch(setStatus(STATUS.LOADING));
+    try {
+        const response = await API.get("/api/song-analytics/totalAnalyticsPerSong"); 
+        if (response.status === 200) {
+            dispatch(setSongDetails(response.data.data));
+            dispatch(setStatus(STATUS.SUCCESS));
+        } else {
+            throw new Error("Failed to fetch song details");
+        }
+    } catch (err) {
+        console.error("Error fetching song details", err);
         dispatch(setError(err.message));
         dispatch(setStatus(STATUS.ERROR));
     }

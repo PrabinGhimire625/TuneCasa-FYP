@@ -20,6 +20,10 @@ import Sidebar from './pages/sidebar/Sidebar'
 import ArtistRequest from './pages/artistRequest/ArtistRequest'
 import DisplayArtist from './pages/artist/DisplayArtist'
 import SingleArtist from './pages/artist/SingleArtist'
+import SongAnalystic from './pages/form/song/SongAnalystic'
+import AllSubscription from './pages/subscription/AllSubscription'
+import SingleSubscription from './pages/subscription/SingleSubscription'
+import SingleSongAnalytics from './pages/form/song/SingleSongAnalytics'
 
 function App() {
 
@@ -41,10 +45,14 @@ function App() {
               <Route path='/singleArtist/:id' element={<SingleArtist />} />
               <Route path='/artistRequest' element={<ArtistRequest />} />
               <Route path='/allSong' element={<AllSong />} />
+              <Route path='/songAnalystic' element={<SongAnalystic />} />
+              <Route path='/singleSongAnalytics/:id' element={<SingleSongAnalytics />} />
               <Route path='/allAlbum' element={<ListAlbum />} />
               <Route path='/allPlaylist' element={<AllPlaylist />} />
               <Route path='/addGenre' element={<AddGenre />} />
               <Route path='/allGenre' element={<ListGenre />} />
+              <Route path='/allSubscription' element={<AllSubscription />} />
+              <Route path='/singleSubscription/:id' element={<SingleSubscription />} />
               <Route path='/createAds' element={<CreateAds />} />
               <Route path='/listAds' element={<ListAds />} />
               <Route path='/editGenre/:id' element={<EditGenre />} />

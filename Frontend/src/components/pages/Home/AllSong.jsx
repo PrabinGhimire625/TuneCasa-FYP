@@ -88,7 +88,7 @@ const AllSong = () => {
         </div>
       </div>
 
-      <Player />
+      {/* <Player /> */}
     </div>
   );
 };

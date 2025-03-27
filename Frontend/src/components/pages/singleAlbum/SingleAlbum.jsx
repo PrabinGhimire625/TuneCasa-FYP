@@ -92,7 +92,6 @@ const SingleAlbum = () => {
         </div>
       ))}
 
-      <Player />
     </div>
   );
 };
