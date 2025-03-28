@@ -1,6 +1,6 @@
 import {Router} from "express";
 import errorHandler from "../services/catchAsyncError.js";
-import { approveArtist,artistProfile, artistLogin, fetchAllUser, fetchPendingArtists, forgetPassword, login, profile, register, registerArtist, rejectArtist, resetPassword, updateUser, verifyOtp, fetchAllArtists, fetchSingleUser, googleLogin, sendMessageToArtist, fetchLatestArtists, countAllArtists, countAllUsers, countUserOnly } from "../controllers/userController.js";
+import { approveArtist,artistProfile, artistLogin, fetchAllUser, fetchPendingArtists, forgetPassword, login, profile, register, registerArtist, rejectArtist, resetPassword, updateUser, verifyOtp, fetchAllArtists, fetchSingleUser, googleLogin, sendMessageToArtist, fetchLatestArtists, countAllArtists, countAllUsers, countUserOnly, deleteUser } from "../controllers/userController.js";
 import { isAuthenticated } from "../middleware/authMiddleware.js";
 import upload from "../middleware/multer.js"
 const router=Router();
@@ -22,6 +22,8 @@ router.route("/artist/profile").get(isAuthenticated,errorHandler(artistProfile))
 
 router.route("/user/profile/:id").patch(upload.fields([{ name: 'image', maxCount: 1 }]), errorHandler(updateUser)); 
 router.route("/user").get(errorHandler(fetchAllUser))
+router.route("/user/:id").delete(errorHandler(deleteUser))
+
 router.route("/user/forgetPassword").post(errorHandler(forgetPassword))
 router.route("/user/verifyOtp").post(errorHandler(verifyOtp))
 router.route("/user/resetPassword").post(errorHandler(resetPassword))

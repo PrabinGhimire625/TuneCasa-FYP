@@ -1,5 +1,7 @@
 import songAnalyticsModel from "../models/SongAnalyticsModel .js";
 import songModel from "../models/songModel.js";
+import mongoose from "mongoose";
+
 
 // Function to track song views and watch time
 export const trackSongAnalytics = async (req, res) => {
@@ -113,22 +115,23 @@ export const trackSongView = async (req, res) => {
   }
 };
 
-export const getTotalSongAnalyticsPerSong  = async (req, res) => {
+
+export const getTotalSongAnalyticsPerSong = async (req, res) => {
   try {
     const songStats = await songAnalyticsModel.aggregate([
       {
         $group: {
-          _id: "$songId", // Grouping by songId
+          _id: { songId: "$songId", analyticsId: "$_id" }, // Keep both songId and analytics _id
           totalViews: { $sum: "$views" }, // Sum total views
           totalWatchTime: { $sum: "$watchTime" }, // Sum total watch time
-          totalEarning: { $sum: "$totalEarning" }, // Sum total earnings (if you have earnings field)
+          totalEarning: { $sum: "$totalEarning" }, // Sum total earnings (if applicable)
         },
       },
       {
         $lookup: {
           from: "songs", // Assuming songs collection is named "songs"
-          localField: "_id", // Matching songId with _id
-          foreignField: "_id", // Foreign field is also _id in the songs collection
+          localField: "_id.songId", // Matching songId with _id in songs collection
+          foreignField: "_id",
           as: "song",
         },
       },
@@ -137,16 +140,16 @@ export const getTotalSongAnalyticsPerSong  = async (req, res) => {
       },
       {
         $project: {
-          _id: 0,
-          songId: "$_id",
-          songName: { $ifNull: ["$song.name", "Unknown"] }, // If song name is missing, default to "Unknown"
-          album: { $ifNull: ["$song.album", "Unknown"] }, // If album is missing, default to "Unknown"
-          desc: { $ifNull: ["$song.desc", "Unknown"] }, // If description is missing, default to "Unknown"
-          image: { $ifNull: ["$song.image", "Unknown"] }, // If image is missing, default to "Unknown"
-          file: { $ifNull: ["$song.file", "Unknown"] }, // If file is missing, default to "Unknown"
-          totalViews: 1, // Total views
-          totalWatchTime: 1, // Total watch time
-          totalEarning: 1, // Total earnings
+          _id: "$_id.analyticsId", // Use analytics _id
+          songId: "$_id.songId", // Use songId separately
+          songName: { $ifNull: ["$song.name", "Unknown"] },
+          album: { $ifNull: ["$song.album", "Unknown"] },
+          desc: { $ifNull: ["$song.desc", "Unknown"] },
+          image: { $ifNull: ["$song.image", "Unknown"] },
+          file: { $ifNull: ["$song.file", "Unknown"] },
+          totalViews: 1,
+          totalWatchTime: 1,
+          totalEarning: 1,
         },
       },
     ]);
@@ -158,60 +161,48 @@ export const getTotalSongAnalyticsPerSong  = async (req, res) => {
   }
 };
 
-import { ObjectId } from 'mongodb'; // Make sure to import ObjectId
 
-export const getSingleSongAnalytics = async (req, res) => {
+export const getSingleTotalSongAnalyticsById = async (req, res) => {
   try {
-    const { songId } = req.params; // Extract songId from the URL parameters
+    const { id } = req.params; // Extract `_id` from request parameters
 
-    if (!songId) {
-      return res.status(400).json({ message: "Song ID is required" });
+    if (!id) {
+      return res.status(400).json({ message: "Analytics ID is required" });
     }
-
-    // Ensure the songId is an ObjectId type (assuming it's stored as an ObjectId in MongoDB)
-    const objectId = ObjectId(songId);
 
     const songStats = await songAnalyticsModel.aggregate([
       {
-        $match: { songId: objectId }, // Match the songId from the request parameter
-      },
-      {
-        $group: {
-          _id: "$songId", // Group by songId
-          totalViews: { $sum: "$views" }, // Sum of total views
-          totalWatchTime: { $sum: "$watchTime" }, // Sum of total watch time
-          totalEarning: { $sum: "$totalEarning" }, // Sum of total earnings
-        },
+        $match: { _id: new mongoose.Types.ObjectId(id) }, // Match by analytics `_id`
       },
       {
         $lookup: {
-          from: "songs", // Assuming the songs collection is called "songs"
-          localField: "_id", // The songId from the analytics model
-          foreignField: "_id", // The _id field in the songs collection
-          as: "song", // The joined data will be stored in "song"
+          from: "songs",
+          localField: "songId",
+          foreignField: "_id",
+          as: "song",
         },
       },
       {
-        $unwind: { path: "$song", preserveNullAndEmptyArrays: true }, // Unwind the song data
+        $unwind: { path: "$song", preserveNullAndEmptyArrays: true },
       },
       {
         $project: {
-          _id: 0,
-          songId: "$_id", // The songId
-          songName: { $ifNull: ["$song.name", "Unknown"] }, // Song name, fallback to "Unknown" if missing
-          album: { $ifNull: ["$song.album", "Unknown"] }, // Album, fallback to "Unknown" if missing
-          desc: { $ifNull: ["$song.desc", "Unknown"] }, // Description, fallback to "Unknown" if missing
-          image: { $ifNull: ["$song.image", "Unknown"] }, // Image, fallback to "Unknown" if missing
-          file: { $ifNull: ["$song.file", "Unknown"] }, // File, fallback to "Unknown" if missing
-          totalViews: 1, // Total views
-          totalWatchTime: 1, // Total watch time
-          totalEarning: 1, // Total earnings
+          _id: 1, // Keep analytics `_id`
+          songId: 1, // Keep songId
+          songName: { $ifNull: ["$song.name", "Unknown"] },
+          album: { $ifNull: ["$song.album", "Unknown"] },
+          desc: { $ifNull: ["$song.desc", "Unknown"] },
+          image: { $ifNull: ["$song.image", "Unknown"] },
+          file: { $ifNull: ["$song.file", "Unknown"] },
+          totalViews: { $ifNull: ["$views", 0] }, // Ensure default 0 if missing
+          totalWatchTime: { $ifNull: ["$watchTime", 0] }, // Ensure default 0 if missing
+          totalEarning: { $ifNull: ["$totalEarning", 0] }, // Ensure default 0 if missing
         },
       },
     ]);
 
     if (!songStats.length) {
-      return res.status(404).json({ message: "No analytics found for the specified song" });
+      return res.status(404).json({ message: "No analytics found for the specified ID" });
     }
 
     res.status(200).json({ message: "Song analytics fetched successfully", data: songStats[0] });

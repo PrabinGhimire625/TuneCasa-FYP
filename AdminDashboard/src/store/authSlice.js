@@ -29,11 +29,20 @@ const authSlice=createSlice({
         },
         setSingleUser(state,action){
             state.singleUser=action.payload
-        }
+        },
+      // Optimistically delete the user
+setDeleteUser(state, action) {
+    const index = state.data.findIndex((user) => user._id === action.payload.id);
+    if (index !== -1) {
+      state.data.splice(index, 1);
+    }
+  }
+  
+        
     }
 })
 
-export const {setUserdata,setStatus, resetStatus,setToken,setProfile,setSingleUser}=authSlice.actions
+export const {setUserdata,setStatus, resetStatus,setToken,setProfile,setSingleUser, setDeleteUser}=authSlice.actions
 export default authSlice.reducer
 
 //login user
@@ -99,4 +108,25 @@ export function fetchSingleUser(id){
             dispatch(setStatus(STATUS.ERROR));
         }
     }
+}
+
+
+
+//delete user
+export function deleteUser(id) {
+    return async function deleteUserThunk(dispatch) {
+        dispatch(setStatus(STATUS.LOADING));
+        try {
+            const response = await APIAuthenticated.delete(`/api/user/${id}`);
+            if (response.status === 200) {
+                dispatch(setDeleteUser({id}));
+                dispatch(setStatus(STATUS.SUCCESS));
+            } else {
+                dispatch(setStatus(STATUS.ERROR));
+            }
+        } catch (err) {
+            console.error(err);
+            dispatch(setStatus(STATUS.ERROR));
+        }
+    };
 }

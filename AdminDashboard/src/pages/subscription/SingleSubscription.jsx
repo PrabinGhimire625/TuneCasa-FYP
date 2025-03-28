@@ -1,15 +1,15 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { getSingleSubscription } from '../../store/subscriptionSlice';
-import { useParams } from 'react-router-dom';
-import { FaUserCircle, FaDollarSign, FaCalendarAlt } from 'react-icons/fa';
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import { FaUserCircle, FaDollarSign, FaCalendarAlt } from "react-icons/fa";
+import { getSingleSubscription } from "../../store/subscriptionSlice";
 
 const SingleSubscription = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
 
   // Fetch single subscription data from the store
-  const { singleSubscription } = useSelector(state => state.subscription);
+  const { singleSubscription, status } = useSelector((state) => state.subscription);
 
   useEffect(() => {
     if (id) {
@@ -17,68 +17,95 @@ const SingleSubscription = () => {
     }
   }, [dispatch, id]);
 
+  if (status === "loading") {
+    return (
+      <div className="flex justify-center items-center h-screen bg-gradient-to-br from-gray-900 to-black">
+        <span className="text-xl font-semibold text-gray-300 animate-pulse">Loading...</span>
+      </div>
+    );
+  }
+
   if (!singleSubscription) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <span className="text-lg font-semibold text-gray-500">Loading...</span>
+      <div className="flex justify-center items-center h-screen bg-gradient-to-br from-gray-900 to-black">
+        <span className="text-xl font-semibold text-red-400">Subscription details not found.</span>
       </div>
     );
   }
 
   return (
-    <div className="flex justify-center  bg-gray-900 py-10">
-      <div className="w-full max-w-lg bg-gray-800 p-8 rounded-lg shadow-xl space-y-6">
-        <h2 className="text-3xl text-center text-white font-bold mb-6">Subscription Details</h2>
+    <div className="flex justify-center  text-white p-6 mt-10">
+      <div className="w-full max-w-3xl bg-opacity-10 backdrop-blur-md p-8 rounded-xl shadow-2xl border border-gray-700">
+        {/* Title */}
+        <h2 className="text-4xl text-center font-extrabold mb-6 text-blue-400 tracking-wide">
+          Subscription Details
+        </h2>
 
-        {/* Subscription Card */}
-        <div className="bg-gray-700 p-6 rounded-lg shadow-lg">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-4">
-              <FaUserCircle className="text-white text-3xl" />
-              <span className="text-xl font-semibold text-white">
-                {singleSubscription?.userId?.username || 'Unknown User'}
+        {/* User Information */}
+        <div className="flex flex-col md:flex-row items-center justify-between bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-700">
+          <div className="flex items-center gap-4">
+            <FaUserCircle className="text-white text-5xl" />
+            <div>
+              <span className="text-xl font-semibold">
+                {singleSubscription?.userId?.username || "Unknown User"}
               </span>
-            </div>
-            <span
-              className={`px-3 py-1 rounded-full text-sm font-bold ${
-                singleSubscription.status === 'active'
-                  ? 'bg-green-500 text-white'
-                  : 'bg-red-500 text-white'
-              }`}
-            >
-              {singleSubscription.status.toUpperCase()}
-            </span>
-          </div>
-
-          {/* Plan Information */}
-          <div className="mt-4">
-            <div className="flex items-center gap-2 text-gray-400">
-              <FaCalendarAlt />
-              <span className="text-sm">{singleSubscription.planName} Plan</span>
-            </div>
-
-            <div className="flex items-center gap-2 mt-2 text-gray-400">
-              <FaDollarSign className="text-green-400" />
-              <span className="text-lg">${singleSubscription.amount.toFixed(2)}</span>
-            </div>
-
-            {/* Date Information */}
-            <div className="flex items-center gap-2 mt-2 text-gray-400">
-              <FaCalendarAlt />
-              <span className="text-sm">
-                Start: {new Date(singleSubscription.startDate).toLocaleDateString()}
-              </span>
-            </div>
-
-            <div className="flex items-center gap-2 mt-1 text-gray-400">
-              <FaCalendarAlt />
-              <span className="text-sm">
-                End: {new Date(singleSubscription.endDate).toLocaleDateString()}
-              </span>
+              <p className="text-gray-400 text-sm">{singleSubscription?.userId?.email || "No Email"}</p>
             </div>
           </div>
 
-      
+          {/* Status Badge */}
+          <span
+            className={`px-4 py-2 rounded-full text-sm font-bold ${
+              singleSubscription.status === "active"
+                ? "bg-green-500 text-white"
+                : "bg-red-500 text-white"
+            }`}
+          >
+            {singleSubscription.status.toUpperCase()}
+          </span>
+        </div>
+
+        {/* Plan Details */}
+        <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="p-4 bg-gray-800 rounded-lg shadow-lg border border-gray-700 text-center">
+            <h4 className="text-blue-400 text-xl font-semibold">Plan</h4>
+            <p className="text-2xl font-bold">{singleSubscription.planName}</p>
+          </div>
+
+          <div className="p-4 bg-gray-800 rounded-lg shadow-lg border border-gray-700 text-center">
+            <h4 className="text-blue-400 text-xl font-semibold">Amount</h4>
+            <p className="text-2xl font-bold text-green-400">
+              ${singleSubscription.amount.toFixed(2)}
+            </p>
+          </div>
+
+          <div className="p-4 bg-gray-800 rounded-lg shadow-lg border border-gray-700 text-center">
+            <h4 className="text-blue-400 text-xl font-semibold">Status</h4>
+            <p className="text-2xl font-bold">
+              {singleSubscription.status.charAt(0).toUpperCase() + singleSubscription.status.slice(1)}
+            </p>
+          </div>
+        </div>
+
+        {/* Date Details */}
+        <div className="mt-6 flex flex-col md:flex-row items-center justify-around gap-6">
+          <div className="p-4 bg-gray-800 rounded-lg shadow-lg border border-gray-700 text-center">
+            <h4 className="text-blue-400 text-xl font-semibold flex items-center gap-2">
+              <FaCalendarAlt /> Start Date
+            </h4>
+            <p className="text-lg font-bold">
+              {new Date(singleSubscription.startDate).toLocaleDateString()}
+            </p>
+          </div>
+
+          <div className="p-4 bg-gray-800 rounded-lg shadow-lg border border-gray-700 text-center">
+            <h4 className="text-blue-400 text-xl font-semibold flex items-center gap-2">
+              <FaCalendarAlt /> End Date
+            </h4>
+            <p className="text-lg font-bold">
+              {new Date(singleSubscription.endDate).toLocaleDateString()}
+            </p>
+          </div>
         </div>
       </div>
     </div>

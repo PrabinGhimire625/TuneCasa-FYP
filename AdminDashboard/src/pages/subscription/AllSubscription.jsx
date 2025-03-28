@@ -33,7 +33,7 @@ const AllSubscription = () => {
             {subscription.map((subItem) => (
               <div
                 key={subItem._id}
-                className="flex items-center justify-between bg-gray-700 p-5 rounded-lg shadow-lg transition-transform transform hover:scale-102"
+                className="flex items-center justify-between bg-gray-800 p-5 rounded-lg shadow-lg transition-transform transform hover:scale-102"
               >
                 <Link
                   to={`/singleSubscription/${subItem._id}`}

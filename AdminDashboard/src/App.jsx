@@ -46,7 +46,7 @@ function App() {
               <Route path='/artistRequest' element={<ArtistRequest />} />
               <Route path='/allSong' element={<AllSong />} />
               <Route path='/songAnalystic' element={<SongAnalystic />} />
-              <Route path='/singleSongAnalytics/:id' element={<SingleSongAnalytics />} />
+              <Route path='/:id' element={<SingleSongAnalytics />} />
               <Route path='/allAlbum' element={<ListAlbum />} />
               <Route path='/allPlaylist' element={<AllPlaylist />} />
               <Route path='/addGenre' element={<AddGenre />} />

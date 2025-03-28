@@ -29,7 +29,7 @@ const AllSong = () => {
               {song.map((songItem, index) => (
                 <div
                   key={index}
-                  className="flex items-center gap-4 bg-gray-800 p-3 rounded-lg shadow-md transition duration-300 hover:bg-gray-700 cursor-pointer"
+                  className="flex items-center gap-4 bg-gray-900 p-3 rounded-lg shadow-md transition duration-300 hover:bg-gray-700 cursor-pointer"
                 >
                   <div className="w-14 h-14 bg-gray-600 rounded-md overflow-hidden">
                     <img src={songItem?.image} alt={songItem?.name} className="w-full h-full object-cover" />

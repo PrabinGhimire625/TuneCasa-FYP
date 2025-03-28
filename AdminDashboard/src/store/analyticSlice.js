@@ -6,6 +6,7 @@ const analyticSlice = createSlice({
     name: "analytics",
     initialState: {
         songDetails:[],
+        singleSongAnalytics:null,
         totalUsers: null,
         totalArtists: null,
         totalSongs: null, 
@@ -17,6 +18,9 @@ const analyticSlice = createSlice({
     reducers: {
         setSongDetails(state, action) {
             state.songDetails = action.payload;
+        },
+        setSingleSongAnalytics(state, action) {
+            state.singleSongAnalytics = action.payload;
         },
         setTotalUsers(state, action) {
             state.totalUsers = action.payload;
@@ -51,7 +55,7 @@ export const {
     setTotalSubscriptionUser, 
     setStatus, 
     setError, 
-    setSongDetails
+    setSongDetails,setSingleSongAnalytics
 } = analyticSlice.actions;
 export default analyticSlice.reducer;
 
@@ -181,3 +185,24 @@ export const fetchSongDetails = () => async (dispatch) => {
         dispatch(setStatus(STATUS.ERROR));
     }
 };
+
+
+//list the single song analytics
+export function fetchSingleSongAnalytics(id){
+    return async function fetchSingleSongAnalyticsThunk(dispatch) {
+        dispatch(setStatus(STATUS.LOADING));
+        try{
+        const response=await API.get(`/api/song-analytics/totalAnalyticsPerSong/${id}`);
+        if(response.status===200){
+            const {data} =response.data;
+            dispatch(setSingleSongAnalytics(data));
+            dispatch(setStatus(STATUS.SUCCESS));
+        }
+        else{
+            dispatch(setStatus(STATUS.ERROR));  
+        }
+        }catch(err){
+        dispatch(setStatus(STATUS.ERROR));  
+        }  
+    }
+}
