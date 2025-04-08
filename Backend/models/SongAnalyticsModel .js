@@ -10,7 +10,7 @@ const songAnalyticsSchema = new mongoose.Schema({
 
 // Pre-save hook to calculate totalEarning before saving the document
 songAnalyticsSchema.pre("save", function (next) {
-  this.totalEarning = this.views * 0.003;
+  this.totalEarning = this.views * 0.3;
   next();
 });
 

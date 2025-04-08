@@ -26,7 +26,7 @@ const SongAnalystic = () => {
   console.log("songDetails", songDetails);
 
   return (
-    <div className="flex flex-col flex-1 overflow-y-auto min-h-screen bg-gray-800 p-6">
+    <div className="flex flex-col flex-1 overflow-y-auto min-h-screen  p-6">
       <div className="w-full p-8 bg-gray-900 rounded-lg shadow-xl">
         <div className="flex justify-between items-center mb-6">
           <h3 className="text-3xl font-semibold text-center text-white flex-1">

@@ -4,6 +4,7 @@ import { resetStatus, userProfile } from "../../../../store/authSlice";
 import { Link } from "react-router-dom";
 import Sidebar from "../../sidebar/Sidebar";
 import { STATUS } from "../../../../globals/components/enumStatus/Status";
+import AllPlaylist from "../../playlist/AllPlaylist";
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -28,7 +29,7 @@ const Profile = () => {
     
 
         <div className="flex items-start justify-center flex-1 bg-stone-900">
-          <div className="w-full flex items-start bg-stone-800 px-12 py-12 rounded-lg shadow-lg ml-10 mt-2 mr-5">
+          <div className="w-full flex items-start px-12 py-12 rounded-lg shadow-lg ml-10 mt-2 mr-5">
             {/* Profile Image */}
             <div className="relative">
               <Link to={`/editProfile/${profile?._id}`}>
@@ -58,6 +59,8 @@ const Profile = () => {
           </div>
         </div>
       </div>
+
+      <AllPlaylist/>
     </div>
   );
 };

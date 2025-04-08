@@ -9,6 +9,7 @@ const artistSchema = new mongoose.Schema({
         enum: ["pending", "approved", "rejected"], 
         default: "pending",
     },
+    followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }] 
 });
 
 // Create and export the Artist model

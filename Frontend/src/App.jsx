@@ -36,6 +36,11 @@ import SingleArtist from "./components/pages/artist/SingleArtist";
 import ListAds from "../../AdminDashboard/src/pages/form/ads/ListAds";
 import GenreDetails from "./components/pages/genre/GenreDetails";
 import ArtistList from "./components/pages/artist/ArtistList";
+import SingleEvent from "./components/pages/artist/SingleEvent";
+import Footer from "./globals/components/footer/Footer";
+import AllAlbum from "./components/pages/Home/AllAlbum";
+import AboutUs from "./components/pages/AboutUs/AboutUs";
+import Settings from "./components/pages/setting/Setting";
 
 
 function App() {
@@ -43,11 +48,17 @@ function App() {
     <>       
       <Provider store={store}>
         <BrowserRouter>
-          <Navbar />
-          <div className="flex items-start min-h-screen">
-            <Sidebar />
-            <div className="flex-1 h-screen overflow-y-scroll bg-[#121212]">
-              <Routes>
+          <div className="flex flex-col min-h-screen">
+            <Navbar />
+            <div className="flex flex-1 relative">
+              {/* Sidebar - hidden on mobile, visible on larger screens */}
+              <div className="hidden md:block">
+                <Sidebar />
+              </div>
+              
+              {/* Main content area */}
+              <div className="flex-1 h-screen overflow-y-auto bg-[#121212] pb-[100px] px-4 md:px-6 flex  justify-center">
+                <Routes>
                 <Route path="/" element={<DisplayHome />} />
                 <Route path="/form" element={<Form />} />
                 <Route path="/register" element={<Register />} />
@@ -57,6 +68,7 @@ function App() {
                 <Route path="/forgetPassword" element={<ForgetPassword />} />
                 <Route path="/verifyOtp" element={<VerifyOtp />} />
                 <Route path="/resetPassword" element={<ResetPassword />} />
+                <Route path="/allAlbum" element={<AllAlbum />} />
                 <Route path="/album/:name" element={<SingleAlbum />} />
                 <Route path="/singleSong/:id" element={<SingleSong />} />
                 <Route path="/artistDetails/:id" element={<ArtistDetails />} />
@@ -77,7 +89,10 @@ function App() {
                 <Route path="/checkout/:planName" element={<Checkout />} />
                 <Route path="/verifyPayment" element={<VerifyPayment />} />
                 <Route path="/singleArtist/:id" element={<SingleArtist />} />
+                <Route path="/singleEvent/:id" element={<SingleEvent />} />
                 <Route path="/listAds" element={<ListAds />} />
+                <Route path="/about" element={<AboutUs />} />
+                <Route path="/setting" element={<Settings />} />
                 
                 {/* GoogleLogin Route */}
                 {/* <Route 
@@ -93,8 +108,15 @@ function App() {
                   } 
                 /> */}
               </Routes>
+              </div>
+              
             </div>
-            <Player />
+          
+            
+            {/* Player fixed at bottom */}
+            <div className="fixed bottom-0 left-0 right-0 z-50">
+              <Player />
+            </div>
           </div>
         </BrowserRouter>
       </Provider>

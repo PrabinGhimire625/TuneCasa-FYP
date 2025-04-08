@@ -7,12 +7,8 @@ const AdSchema = new mongoose.Schema({
   image:{type:String},
   duration: { type: Number, required: true }, 
   isSkippable: { type: Boolean, default: true }, 
-  totalPlays: { type: Number, default: 0 }, 
-  totalClicks: { type: Number, default: 0 }, 
-  totalSkips: { type: Number, default: 0 }, 
-  totalWatchTime: { type: Number, default: 0 }, 
   createdAt: { type: Date, default: Date.now },
-  totalViews: { type: Number, default: 0 }, // Track views
+
 });
 
 const Ad = mongoose.model("Ad", AdSchema);

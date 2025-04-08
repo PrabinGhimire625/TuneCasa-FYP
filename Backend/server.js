@@ -10,6 +10,7 @@ import eventRouter from "./routes/eventRoute.js"
 import likeRouter from "./routes/likeRoute.js"
 import subscriptionRouter from "./routes/subscriptionRoute.js"
 import songAnalyticsRoutes from "./routes/songAnalyticsRoutes.js"
+import AdsTrackingRoutes from "./routes/adTrackingRoute.js"
 import adsRouter from "./routes/adRoutes.js"
 import connectDB from "./config/mongoDb.js";
 import connectCloudinary from "./config/cloudinary.js";
@@ -44,6 +45,7 @@ app.use("/api/like",likeRouter)
 app.use("/api/subscription",subscriptionRouter)
 app.use("/api/ads",adsRouter)
 app.use("/api/song-analytics",songAnalyticsRoutes)
+app.use("/api/ads-tracking",AdsTrackingRoutes)
 
 app.listen(port,()=>{
     console.log(`Server is running on the PORT ${port}`)

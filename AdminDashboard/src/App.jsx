@@ -24,6 +24,8 @@ import SongAnalystic from './pages/form/song/SongAnalystic'
 import AllSubscription from './pages/subscription/AllSubscription'
 import SingleSubscription from './pages/subscription/SingleSubscription'
 import SingleSongAnalytics from './pages/form/song/SingleSongAnalytics'
+import SingleEvent from './pages/form/event/SingleEvent'
+
 
 function App() {
 
@@ -56,6 +58,7 @@ function App() {
               <Route path='/createAds' element={<CreateAds />} />
               <Route path='/listAds' element={<ListAds />} />
               <Route path='/editGenre/:id' element={<EditGenre />} />
+              <Route path='/singleEvent/:id' element={<SingleEvent />} />
             </Routes>
           </div>
         </div>

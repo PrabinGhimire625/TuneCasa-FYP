@@ -4,22 +4,23 @@ import { FaChartLine } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { fetchTotalAlbums, fetchTotalArtists, fetchTotalPlaylists, fetchTotalSongs, fetchTotalSubscriptionUsers, fetchTotalUsers } from "../../store/analyticSlice";
+import DisplayArtist from "../artist/DisplayArtist";
 
 const data = [
-  { year: "2018", listeners: 1000, prevListeners: 800 },
-  { year: "2019", listeners: 5000, prevListeners: 3000 },
-  { year: "2020", listeners: 12000, prevListeners: 7000 },
-  { year: "2021", listeners: 25000, prevListeners: 18000 },
-  { year: "2022", listeners: 40000, prevListeners: 32000 },
-  { year: "2023", listeners: 70000, prevListeners: 55000 },
+  { year: "Jan", listeners: 100, prevListeners: 800 },
+  { year: "Feb", listeners: 500, prevListeners: 3000 },
+  { year: "Mar", listeners: 1200, prevListeners: 7000 },
+  { year: "Apr", listeners: 2500, prevListeners: 18000 },
+  { year: "May", listeners: 4000, prevListeners: 32000 },
+  { year: "Jun", listeners: 7000, prevListeners: 55000 },
 ];
 
 const trendingArtists = [
-  { name: "Aria Melody", plays: 25000, img: "/images/artist1.jpg" },
-  { name: "Skyler Beats", plays: 22000, img: "/images/artist2.jpg" },
-  { name: "Echo Rhythms", plays: 18000, img: "/images/artist3.jpg" },
-  { name: "Neon Vibes", plays: 15000, img: "/images/artist4.jpg" },
-  { name: "Horizon Tunes", plays: 12000, img: "/images/artist5.jpg" },
+  { name: "Aria Melody", plays: 2500, img: "/images/artist1.jpg" },
+  { name: "Skyler Beats", plays: 220, img: "/images/artist2.jpg" },
+  { name: "Echo Rhythms", plays: 180, img: "/images/artist3.jpg" },
+  { name: "Neon Vibes", plays: 1500, img: "/images/artist4.jpg" },
+  { name: "Horizon Tunes", plays: 1200, img: "/images/artist5.jpg" },
 ];
 
 export default function Dashboard() {
@@ -75,17 +76,9 @@ export default function Dashboard() {
       </div>
 
       {/* Trending Artists */}
-      <div className="bg-gray-800 p-6 rounded-lg mt-6">
-        <h3 className="text-lg font-semibold">🔥 Trending Artists</h3>
-        <div className="grid grid-cols-5 gap-4 mt-4">
-          {trendingArtists.map((artist, index) => (
-            <div key={index} className="bg-gray-700 p-3 rounded-lg text-center">
-              <img src={artist.img} alt={artist.name} className="w-20 h-20 mx-auto rounded-full border-2 border-green-400" />
-              <p className="mt-2 font-semibold">{artist.name}</p>
-              <p className="text-sm text-gray-400">{artist.plays.toLocaleString()} plays</p>
-            </div>
-          ))}
-        </div>
+      <div className="bg-gray-800 p-6 rounded-lg mt-6">      
+         <DisplayArtist/>
+        
       </div>
       
     </div>

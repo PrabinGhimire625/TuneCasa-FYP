@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { STATUS } from "../globals/enumStatus/Status";
-import { APIAuthenticated } from "../http/index";
+import { API, APIAuthenticated } from "../http/index";
 
 const eventSlice = createSlice({
     name: "event",
@@ -88,7 +88,7 @@ export function listSingleEvent(id) {
     return async function listSingleEventThunk(dispatch) {
         dispatch(setStatus(STATUS.LOADING));
         try {
-            const response = await APIAuthenticated.get(`/api/event/${id}`);
+            const response = await API.get(`/api/event/${id}`);
             if (response.status === 200) {
                 const { data } = response.data;
                 dispatch(setSingleEvent(data));

@@ -4,7 +4,7 @@ import {Link} from "react-router-dom"
 const SubscriptionInfo = () => {
   return (
     <>
-    <div className="flex items-center justify-center bg-gradient-to-r from-black via-gray-900 to-purple-700 text-white py-12">
+    <div className="flex items-center justify-center text-white py-12">
         <div className="text-center">
         
             <h2 className="text-5xl font-bold text-center max-w-6xl">

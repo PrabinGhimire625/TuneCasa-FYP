@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { fetchSingleUser, sendMessageToArtist, userProfile } from '../../../store/authSlice';
 import { listEventForSpecificArtist } from '../../../store/eventSlice';
+import { Link } from 'react-router-dom';
 
 const SingleArtist = () => {
   const { id } = useParams(); // Artist ID from URL
@@ -65,46 +66,52 @@ const SingleArtist = () => {
           </h4>
         </div>
 
+      
+      </div>
+
         {/* Button to open modal */}
         <button
           onClick={() => setIsModalOpen(true)}
-          className="px-4  ml-48 py-2 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400"
+          className="px-4   ml-[850px] py-2 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400"
         >
           Message to the artist
         </button>
-      </div>
 
       {/* Events Section */}
-      <div className="py-10 px-5 bg-[#121212] text-white">
-        <h3 className="text-3xl font-bold mb-6">Upcoming Events</h3>
-        {eventOfArtist && eventOfArtist.length > 0 ? (
-  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    {eventOfArtist
-      .filter((event) => new Date(event.eventDate) > new Date()) // Filter future events
-      .map((event) => (
-        <div key={event.id} className="bg-neutral-900 p-5 rounded-lg shadow-lg border border-gray-700 flex items-center gap-4">
-          <img
-            src={event.image || "https://via.placeholder.com/150"}
-            alt={event.title}
-            className="w-24 h-24 object-cover rounded-lg"
-          />
-          <div>
-            <h4 className="text-xl font-semibold">{event.title}</h4>
-            <p className="text-gray-300">{event.description}</p>
-            <p className="text-sm text-gray-400 mt-2">Date: {event.eventDate}</p>
-            <p className="text-sm text-gray-400">Location: {event.location}</p>
-          </div>
-        </div>
-      ))
-    }
-  </div>
-) : (
-  <p className="text-gray-400">No upcoming events.</p>
-)}
+            {/* Events Section */}
+<div className="py-10 px-5 bg-[#121212] text-white">
+  <h3 className="text-3xl font-bold mb-6">Upcoming Events</h3>
+  {eventOfArtist && eventOfArtist.length > 0 ? (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {eventOfArtist
+        .filter((event) => new Date(event.eventDate) > new Date()) // Filter future events
+        .map((event) => (
+          <Link 
+            key={event._id} 
+            to={`/singleEvent/${event._id}`} // Link to the single event page
+            className="bg-neutral-900 p-5 rounded-lg shadow-lg border border-gray-700 flex items-center gap-4"
+          >
+            <img
+              src={event.image || "https://via.placeholder.com/150"}
+              alt={event.title}
+              className="w-24 h-24 object-cover rounded-lg"
+            />
+            <div>
+              <h4 className="text-xl font-semibold">{event.title}</h4>
+              <p className="text-gray-300">{event.description}</p>
+              <p className="text-sm text-gray-400 mt-2">Date: {event.eventDate}</p>
+              <p className="text-sm text-gray-400">Location: {event.location}</p>
+            </div>
+          </Link>
+        ))
+      }
+    </div>
+  ) : (
+    <p className="text-gray-400">No upcoming events.</p>
+  )}
+</div>
 
-      </div>
-
-      {/* Modal Popup */}
+   
          {/* Modal Popup */}
          {isModalOpen && (
         <div className="fixed inset-0 bg-opacity-90 flex justify-center items-center z-50">

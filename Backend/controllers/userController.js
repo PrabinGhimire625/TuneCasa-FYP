@@ -453,7 +453,6 @@ export const artistProfile = async (req, res) => {
 };
 
 
-
 // Fetch all artist
 export const fetchAllArtists = async (req, res) => {
   try {
@@ -563,3 +562,107 @@ export const countUserOnly = async (req, res) => {
   // Send the count as a response
   res.status(200).json({ message: "userCount count fetched successfully", data: userCount });
 };
+
+//follow artist
+export const followArtist = async (req, res) => {
+  try {
+    const artist = await Artist.findOne({ userId: req.params.id }); // userId, not _id
+    if (!artist) return res.status(404).json({ message: "Artist not found" });
+
+    const userId = req.user.id;
+
+    const alreadyFollowing = artist.followers.some(
+      (followerId) => followerId.toString() === userId
+    );
+
+    if (alreadyFollowing) {
+      return res.status(400).json({ message: "Already following this artist" });
+    }
+
+    artist.followers.push(userId);
+    await artist.save();
+
+    res.status(200).json({ message: "Successfully followed the artist" });
+  } catch (error) {
+    console.error("Follow error:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+//unfollow artist
+export const unfollowArtist = async (req, res) => {
+  try {
+    const artist = await Artist.findOne({ userId: req.params.id });
+    if (!artist) return res.status(404).json({ message: "Artist not found" });
+
+    const userId = req.user.id;
+
+    const wasFollowing = artist.followers.some(
+      (followerId) => followerId.toString() === userId
+    );
+
+    if (!wasFollowing) {
+      return res.status(400).json({ message: "You are not following this artist" });
+    }
+
+    artist.followers = artist.followers.filter(
+      (followerId) => followerId.toString() !== userId
+    );
+    await artist.save();
+
+    res.status(200).json({ message: "Successfully unfollowed the artist" });
+  } catch (error) {
+    console.error("Unfollow error:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// Get total followers of an artist
+export const getArtistFollowersCount = async (req, res) => {
+  try {
+    const artist = await Artist.findOne({ userId: req.params.id })
+      .populate({
+        path: "followers",
+        select: "username", // select fields you want to return
+      });
+
+    if (!artist) {
+      return res.status(404).json({ message: "Artist not found" });
+    }
+
+    const followerCount = artist.followers.length;
+
+    res.status(200).json({
+      message: "Followers fetched successfully",
+      totalFollowers: followerCount,
+      followers: artist.followers, // List of follower user details
+    });
+  } catch (error) {
+    console.error("Fetch followers error:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+
+// Get list of artists that the user is following
+export const getArtistsUserIsFollowing = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // Find all artists where the current user is in the followers list
+    const artists = await Artist.find({
+      followers: { $in: [userId] },   // Only artists the user is following
+      status: "approved"              // Only approved artists
+    }).populate("userId", "username email image"); // Populate artist's user info
+
+    res.status(200).json({
+      message: "Artists user is following fetched successfully",
+      artists
+    });
+  } catch (error) {
+    console.error("Fetch artists user is following error:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+

@@ -39,7 +39,7 @@ export const createSubscription = async (req, res) => {
       return_url: "http://localhost:5173/verifyPayment/", 
       purchase_order_id: subscription._id.toString(), 
       amount: PLAN_PRICES[planName] * 100, 
-      website_url: "http://localhost:5174/", 
+      website_url: "http://localhost:5173/", 
       purchase_order_name: `orderName_${subscription._id}`, 
     };
 

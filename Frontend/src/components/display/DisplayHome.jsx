@@ -5,57 +5,86 @@ import AllSong from '../pages/Home/AllSong'
 import AllAlbum from '../pages/Home/AllAlbum'
 import DisplayArtist from '../pages/artist/DisplayArtist'
 import ArtistBook from '../pages/artistBooking/ArtistBook'
-import {Link} from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import Footer from '../../globals/components/footer/Footer'
+import DisplayAlbum from '../pages/album/DisplayAlbum'
 
 const DisplayHome = () => {
+  const navigate = useNavigate();
+
   return (
     <>
-     <div className='w-[100%]  px-6 pt-4 rounded bg-[#121212] text-white overflow-auto lg:w-[100%] lg:ml-0'>
+      <div className='w-full px-4 md:px-6 pt-4 rounded bg-[#121212] text-white overflow-auto'>
+        {/* Navigation arrows */}
 
-      <div className='flex items-center gap-2'>
-               <img
-                 className='w-8 bg-black p-2 rounded-2xl cursor-pointer'
-                 src={assets.arrow_left}
-                 alt=''
-                 onClick={() => navigate(-1)} 
-               />
-               <img
-                 className='w-8 bg-black p-2 rounded-2xl cursor-pointer'
-                 src={assets.arrow_right}
-                 alt=''
-                 onClick={() => navigate(1)}
-               />
-      </div>
 
-      <div className=" p-4 flex space-x-4 mt-2">
-        <Link to={`/allPlaylist`}> <div className="px-4 py-2 bg-stone-950 text-white rounded-md hover:bg-gray-900 focus:outline-none">Playlists</div></Link>
-        <div className="px-4 py-2 bg-stone-950 text-white rounded-md hover:bg-gray-900 focus:outline-none">Songs</div>
-        <div className="px-4 py-2 bg-stone-950 text-white rounded-md hover:bg-gray-900 focus:outline-none">Albums</div>
-        <Link to="artistList"> <div className="px-4 py-2 bg-stone-950 text-white rounded-md hover:bg-gray-900 focus:outline-none">Artists</div></Link>
-       <Link to="/allGenre"> <div className="px-4 py-2 bg-stone-950 text-white rounded-md hover:bg-gray-900 focus:outline-none">Genre</div></Link>
-      </div>
+        {/* Navigation menu */}
+        <div className="w-full px-4 md:px-6 pt-4 rounded bg-[#121212] text-white overflow-auto">
 
-      <div className="flex gap-6">
-            {/* Book The Artist - 40% */}
-            <div className="relative w-[40%] bg-gradient-to-br from-[#1e1e1e] to-[#292929] p-6 rounded-lg shadow-lg backdrop-blur-md border border-gray-700 flex justify-center items-center">
-              <ArtistBook />
+
+          {/* Navigation menu with left gap */}
+          <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10">
+            <div className="p-2 sm:p-4 flex flex-wrap justify-start items-center gap-2 sm:gap-4 mt-2 mx-auto max-w-7xl">
+              <Link to={`/allPlaylist`}>
+                <div className="px-3 py-1.5 sm:px-4 sm:py-2 bg-stone-950 text-white text-xs sm:text-sm md:text-base rounded-md hover:bg-gray-900 transition-colors">
+                  Playlists
+                </div>
+              </Link>
+
+
+              <div className="px-3 py-1.5 sm:px-4 sm:py-2 bg-stone-950 text-white text-xs sm:text-sm md:text-base rounded-md hover:bg-gray-900 transition-colors">
+                Songs
+              </div>
+
+              <div className="px-3 py-1.5 sm:px-4 sm:py-2 bg-stone-950 text-white text-xs sm:text-sm md:text-base rounded-md hover:bg-gray-900 transition-colors">
+                Albums
+              </div>
+
+              <Link to="/artistList">
+                <div className="px-3 py-1.5 sm:px-4 sm:py-2 bg-stone-950 text-white text-xs sm:text-sm md:text-base rounded-md hover:bg-gray-900 transition-colors">
+                  Artists
+                </div>
+              </Link>
+
+              <Link to="/allGenre">
+                <div className="px-3 py-1.5 sm:px-4 sm:py-2 bg-stone-950 text-white text-xs sm:text-sm md:text-base rounded-md hover:bg-gray-900 transition-colors">
+                  Genre
+                </div>
+              </Link>
             </div>
+          </div>
+        </div>
 
-            {/* Popular and Trending songs - 60% */}
-            <div className="w-[60%] bg-[#1e1e1e] p-4 rounded-lg shadow-md">
-              <AllSong/>
-            </div>
+
+        {/* Main content section */}
+        <div className="">
+
+          {/* Book The Artist */}
+          {/* <div className="flex-1">
+    <ArtistBook />
+  </div> */}
+
+          {/* Popular and Trending songs */}
+          <div className="">
+            <AllSong />
+          </div>
+        </div>
+
+        {/* Albums section */}
+        <div className='mb-6'>
+          <DisplayAlbum />
+        </div>
+
+        {/* Artists section */}
+        <div className='mb-6'>
+          <DisplayArtist />
+        </div>
+
+        <div className='mb-6'>
+          <Footer />
+        </div>
+
       </div>
-
-     <div className=''>
-        <AllAlbum/>
-      </div>
-
-      <div>
-        <DisplayArtist/>
-      </div>
-
-    </div>
     </>
   )
 }

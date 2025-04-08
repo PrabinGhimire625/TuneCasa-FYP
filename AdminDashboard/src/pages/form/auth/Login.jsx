@@ -56,7 +56,7 @@ const Login = () => {
 
   return (
     <div className="flex  justify-center  h-screen bg-gray-900">
-      <div className="w-full max-w-md p-6 mt-16 bg-white rounded-lg shadow dark:border dark:bg-gray-800 dark:border-gray-700 h-[500px]">
+      <div className="w-full max-w-md p-6 mt-16 bg-white rounded-lg shadow dark:border dark:bg-gray-800 dark:border-gray-700 h-[480px]">
         <div className="text-center mb-6">
           <img
             src={tunecasaLogo}

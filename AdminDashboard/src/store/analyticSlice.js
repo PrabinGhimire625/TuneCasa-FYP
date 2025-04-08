@@ -7,12 +7,14 @@ const analyticSlice = createSlice({
     initialState: {
         songDetails:[],
         singleSongAnalytics:null,
+        artistSongAnalytics:[],
         totalUsers: null,
         totalArtists: null,
         totalSongs: null, 
         totalAlbums: null,
         totalPlaylist: null,
         totalSubscriptionUser: null,
+        artistMonthlyEarning:null,
         status: STATUS.LOADING,
     },
     reducers: {
@@ -21,6 +23,9 @@ const analyticSlice = createSlice({
         },
         setSingleSongAnalytics(state, action) {
             state.singleSongAnalytics = action.payload;
+        },
+        setArtistSongAnalytics(state, action) {
+            state.artistSongAnalytics = action.payload;
         },
         setTotalUsers(state, action) {
             state.totalUsers = action.payload;
@@ -40,6 +45,9 @@ const analyticSlice = createSlice({
         setTotalSubscriptionUser(state, action) {
             state.totalSubscriptionUser = action.payload;
         },
+        setArtistMonthlyEarning(state, action) {
+            state.artistMonthlyEarning = action.payload;
+        },
         setStatus(state, action) {
             state.status = action.payload;
         },
@@ -55,7 +63,9 @@ export const {
     setTotalSubscriptionUser, 
     setStatus, 
     setError, 
-    setSongDetails,setSingleSongAnalytics
+    setArtistSongAnalytics,
+    setSongDetails,setSingleSongAnalytics,
+    setArtistMonthlyEarning
 } = analyticSlice.actions;
 export default analyticSlice.reducer;
 
@@ -196,6 +206,47 @@ export function fetchSingleSongAnalytics(id){
         if(response.status===200){
             const {data} =response.data;
             dispatch(setSingleSongAnalytics(data));
+            dispatch(setStatus(STATUS.SUCCESS));
+        }
+        else{
+            dispatch(setStatus(STATUS.ERROR));  
+        }
+        }catch(err){
+        dispatch(setStatus(STATUS.ERROR));  
+        }  
+    }
+}
+
+
+//list the single song analytics
+export function fetchArtistSongAnalytics(id){
+    return async function fetchArtistSongAnalyticsThunk(dispatch) {
+        dispatch(setStatus(STATUS.LOADING));
+        try{
+        const response=await API.get(`/api/song-analytics/artistSong/${id}`);
+        if(response.status===200){
+            const {data} =response.data;
+            dispatch(setArtistSongAnalytics(data));
+            dispatch(setStatus(STATUS.SUCCESS));
+        }
+        else{
+            dispatch(setStatus(STATUS.ERROR));  
+        }
+        }catch(err){
+        dispatch(setStatus(STATUS.ERROR));  
+        }  
+    }
+}
+
+//calculate the artist monthly based earning from song
+export function calculateArtistMonthlyEarning(id){
+    return async function calculateArtistMonthlyEarningThunk(dispatch) {
+        dispatch(setStatus(STATUS.LOADING));
+        try{
+        const response=await API.get(`/api/song-analytics/artist/monthly-earnings/${id}`);
+        if(response.status===200){
+            const {data} =response.data;
+            dispatch(setArtistMonthlyEarning(data));
             dispatch(setStatus(STATUS.SUCCESS));
         }
         else{

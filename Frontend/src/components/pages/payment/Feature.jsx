@@ -1,9 +1,10 @@
 import React from 'react'
+import Footer from '../../../globals/components/footer/Footer'
 
 const Feature = () => {
   return (
     <>
-        <div className="bg-gradient-to-r from-black via-gray-900 to-purple-700 text-white text-white py-16 flex flex-col items-center">
+        <div className=" text-white text-white py-16 flex flex-col items-center">
       <h2 className="text-4xl font-bold text-center max-w-2xl">
         Over many songs, contact artist for live performances and more at your fingertips
       </h2>
@@ -40,6 +41,7 @@ const Feature = () => {
         </div>
       </div>
     </div>
+    <Footer/>
     </>
   )
 }

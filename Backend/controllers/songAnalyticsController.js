@@ -121,27 +121,25 @@ export const getTotalSongAnalyticsPerSong = async (req, res) => {
     const songStats = await songAnalyticsModel.aggregate([
       {
         $group: {
-          _id: { songId: "$songId", analyticsId: "$_id" }, // Keep both songId and analytics _id
-          totalViews: { $sum: "$views" }, // Sum total views
-          totalWatchTime: { $sum: "$watchTime" }, // Sum total watch time
-          totalEarning: { $sum: "$totalEarning" }, // Sum total earnings (if applicable)
+          _id: { songId: "$songId", analyticsId: "$_id" },
+          totalViews: { $sum: "$views" },
+          totalWatchTime: { $sum: "$watchTime" },
+          totalEarning: { $sum: "$totalEarning" },
         },
       },
       {
         $lookup: {
-          from: "songs", // Assuming songs collection is named "songs"
-          localField: "_id.songId", // Matching songId with _id in songs collection
+          from: "songs",
+          localField: "_id.songId",
           foreignField: "_id",
           as: "song",
         },
       },
-      {
-        $unwind: { path: "$song", preserveNullAndEmptyArrays: true }, // Unwind the song data
-      },
+      { $unwind: { path: "$song", preserveNullAndEmptyArrays: true } },
       {
         $project: {
-          _id: "$_id.analyticsId", // Use analytics _id
-          songId: "$_id.songId", // Use songId separately
+          _id: "$_id.analyticsId",
+          songId: "$_id.songId",
           songName: { $ifNull: ["$song.name", "Unknown"] },
           album: { $ifNull: ["$song.album", "Unknown"] },
           desc: { $ifNull: ["$song.desc", "Unknown"] },
@@ -152,14 +150,19 @@ export const getTotalSongAnalyticsPerSong = async (req, res) => {
           totalEarning: 1,
         },
       },
+      { $sort: { totalEarning: -1 } }, // Sort by highest earning first
     ]);
 
-    res.status(200).json({ message: "Total views, watch time, and earnings per song", data: songStats });
+    res.status(200).json({
+      message: "Songs sorted by total earnings",
+      data: songStats,
+    });
   } catch (error) {
-    console.error("Error fetching total views, watch time, and earnings:", error);
+    console.error("Error fetching song analytics:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
 
 
 export const getSingleTotalSongAnalyticsById = async (req, res) => {
@@ -208,6 +211,134 @@ export const getSingleTotalSongAnalyticsById = async (req, res) => {
     res.status(200).json({ message: "Song analytics fetched successfully", data: songStats[0] });
   } catch (error) {
     console.error("Error fetching song analytics:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+
+export const fetchArtistSongAnalytics = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Validate ObjectId format for userId
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "Invalid artist ID format." });
+    }
+
+    // Find all songs created by the given artist (userId)
+    const artistSongs = await songModel.find(
+      { userId: new mongoose.Types.ObjectId(userId) }, 
+      { _id: 1 } // Only fetch the _id (songId)
+    );
+
+    if (!artistSongs.length) {
+      return res.status(404).json({ message: "No songs found for this artist." });
+    }
+
+    const songIds = artistSongs.map(song => song._id); // Extract song IDs
+
+    // Fetch analytics for these songs
+    const artistSongStats = await songAnalyticsModel.aggregate([
+      {
+        $match: { 
+          songId: { $in: songIds.map(id => new mongoose.Types.ObjectId(id)) } // Cast songId to ObjectId
+        }
+      },
+      {
+        $group: {
+          _id: { songId: "$songId", analyticsId: "$_id" },
+          totalViews: { $sum: "$views" },
+          totalWatchTime: { $sum: "$watchTime" },
+          totalEarning: { $sum: "$totalEarning" }
+        }
+      },
+      {
+        $lookup: {
+          from: "songs", // Join with the songs collection
+          localField: "_id.songId",
+          foreignField: "_id",
+          as: "song"
+        }
+      },
+      {
+        $unwind: { path: "$song", preserveNullAndEmptyArrays: true }
+      },
+      {
+        $project: {
+          _id: "$_id.analyticsId",
+          songId: "$_id.songId",
+          songName: { $ifNull: ["$song.name", "Unknown"] },
+          album: { $ifNull: ["$song.album", "Unknown"] },
+          desc: { $ifNull: ["$song.desc", "Unknown"] },
+          image: { $ifNull: ["$song.image", "Unknown"] },
+          file: { $ifNull: ["$song.file", "Unknown"] },
+          totalViews: 1,
+          totalWatchTime: 1,
+          totalEarning: 1
+        }
+      }
+    ]);
+
+    if (!artistSongStats.length) {
+      return res.status(404).json({ message: "No analytics found for this artist's songs." });
+    }
+
+    res.status(200).json({
+      message: "Artist song analytics fetched successfully",
+      data: artistSongStats
+    });
+
+  } catch (error) {
+    console.error("Error fetching artist song analytics:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+export const fetchMonthlyArtistEarnings = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Validate ObjectId format for userId
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "Invalid artist ID format." });
+    }
+
+    // Find all songs created by the given artist (userId)
+    const artistSongs = await songModel.find(
+      { userId: new mongoose.Types.ObjectId(userId) },
+      { _id: 1 } // Only fetch the _id (songId)
+    );
+
+    if (!artistSongs.length) {
+      return res.status(404).json({ message: "No songs found for this artist." });
+    }
+
+    const songIds = artistSongs.map(song => song._id); // Extract song IDs
+
+    // Fetch total earnings for these songs (sum all earnings)
+    const totalEarnings = await songAnalyticsModel.aggregate([
+      {
+        $match: {
+          songId: { $in: songIds.map(id => new mongoose.Types.ObjectId(id)) } // Match songId
+        }
+      },
+      {
+        $group: {
+          _id: null, // No grouping by song, just sum all earnings
+          totalEarnings: { $sum: "$totalEarning" } // Sum all totalEarnings
+        }
+      }
+    ]);
+
+    const total = totalEarnings.length ? totalEarnings[0].totalEarnings : 0;
+
+    res.status(200).json({
+      message: "Total earnings for the artist fetched successfully",
+     data:{ userId,
+      totalEarnings: total}
+    });
+  } catch (error) {
+    console.error("Error fetching total earnings for the artist:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };

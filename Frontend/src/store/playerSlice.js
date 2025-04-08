@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { STATUS } from "../globals/components/enumStatus/Status";
 import { setStatus } from "./adsSlice";
-import { APIAuthenticated } from "../http";
+import { API, APIAuthenticated } from "../http";
 
 const initialState = {
   currentSong: null,
@@ -14,7 +14,8 @@ const initialState = {
   songCounter: 0, // Track number of songs before showing an ad
   adWatchTime: 0, // Track current ad watch time
   totalAdWatchTime: 0, // Accumulate total watch time of ads
-  songAnalytics:null
+  songAnalytics:null,
+  adsAnalytics:null
 };
 
 const playerSlice = createSlice({
@@ -97,13 +98,16 @@ const playerSlice = createSlice({
     setSongAnalytics(state, action) {
       state.songAnalytics = action.payload;
     },
+    setAdsAnalytics(state, action) {
+      state.adsAnalytics = action.payload;
+    },
   }
 });
 
 export const { 
   setCurrentSong, playPause, updateProgress, stopPlayer, setSongList, 
   playNextSong, playPrev, setAd, playAd, stopAd, resetSongCounter, 
-  setTrackAdWatchTime, setTrackAdsSkips, setTrackAdsClick,setSongAnalytics
+  setTrackAdWatchTime, setTrackAdsSkips, setTrackAdsClick,setSongAnalytics, setAdsAnalytics
 } = playerSlice.actions;
 
 export default playerSlice.reducer;
@@ -258,6 +262,51 @@ export function trackSongView({songId }) {
       }
     } catch (err) {
       console.error(err);
+      dispatch(setStatus(STATUS.ERROR));
+    }
+  };
+}
+
+//track the trackSongAnalytics
+export function trackAdsAnalytic({adId, watchTime }) {
+  return async function trackSongAnalyticThunk(dispatch) {
+    dispatch(setStatus(STATUS.LOADING));  // Set loading status
+
+    try {
+      const response = await API.post('/api/ads-tracking', {
+        adId,
+        watchTime,
+      });
+      console.log("response on the song analytics", response)
+
+      if (response.status === 200) {
+        dispatch(setAdsAnalytics(response.data));  // Update Redux store with response data
+        dispatch(setStatus(STATUS.SUCCESS));  // Set success status
+      } else {
+        dispatch(setStatus(STATUS.ERROR));
+      }
+    } catch (err) {
+      console.error(err);
+      dispatch(setStatus(STATUS.ERROR));
+    }
+  };
+}
+
+
+export function trackAdView({ adId }) {
+  return async function trackAdViewThunk(dispatch) {
+    dispatch(setStatus(STATUS.LOADING));  // optional: to show loading state
+    try {
+      const response = await API.post("/api/ads-tracking/view", { adId });
+
+      if (response.status === 200) {
+        dispatch(setStatus(STATUS.SUCCESS));
+        console.log("Ad view tracked successfully.");
+      } else {
+        dispatch(setStatus(STATUS.ERROR));
+      }
+    } catch (err) {
+      console.error("Error tracking ad view:", err);
       dispatch(setStatus(STATUS.ERROR));
     }
   };

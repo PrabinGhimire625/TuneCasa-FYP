@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { playPause, updateProgress, playPrev, handlePlayNext, playAd, stopAd, trackSongAnalytic, trackSongView } from "../../../store/playerSlice";
+import { playPause, updateProgress, playPrev, handlePlayNext, playAd, stopAd, trackSongAnalytic, trackSongView, trackAdView } from "../../../store/playerSlice";
 import { assets } from "../../../assets/frontend-assets/assets";
+import { trackAdAnalytics } from "../../../../../Backend/controllers/adsAnalyticsController";
 
 const Player = () => {
   const dispatch = useDispatch();
@@ -13,6 +14,8 @@ const Player = () => {
   const [localProgress, setLocalProgress] = useState(progress || 0);
   const [duration, setDuration] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+  const [showSkipButton, setShowSkipButton] = useState(false);
+
 
   console.log("Tracksong analytics", songAnalytics)
 
@@ -42,7 +45,6 @@ const Player = () => {
         audioElement.load();
         audioElement.play();
       }
-
       // Set the song's duration after metadata is loaded
       audioElement.onloadedmetadata = () => {
         setDuration(audioElement.duration);
@@ -79,10 +81,8 @@ useEffect(() => {
 const [hasViewed, setHasViewed] = useState(false);
 
 useEffect(() => {
-  if (!currentSong) return;
-
   let totalWatchTime = 0;
-  let watchTimeThreshold = 1;
+  const watchTimeThreshold = 1; // Track every 1 second of ad watch time
   const duration = audioRef.current.duration;
   const midPoint = duration * 0.5;
   const lastTenSeconds = duration - 10;
@@ -93,6 +93,29 @@ useEffect(() => {
       setLocalProgress(currentTime);
       dispatch(updateProgress(currentTime));
 
+      // ✅ Only for Ad: Show skip button after 5 seconds
+      if (isAdPlaying && currentTime >= 5 && !showSkipButton) {
+        setShowSkipButton(true);
+      }
+
+      // Track ad views and analytics
+      if (isAdPlaying) {
+        totalWatchTime += 0.5;
+
+        // Track ad view once at the mid-point or last 10 seconds
+        if (!hasViewed && (currentTime >= midPoint || currentTime >= lastTenSeconds)) {
+          dispatch(trackAdView({ adId: currentAd._id }));  // Track ad view
+          setHasViewed(true);  // Mark ad as viewed
+        }
+
+        // Track total watch time for the ad
+        if (totalWatchTime >= watchTimeThreshold) {
+          dispatch(trackAdAnalytics({ adId: currentAd._id, watchTime: totalWatchTime }));
+          totalWatchTime = 0;
+        }
+      }
+
+      // Track song views (for songs only)
       if (!isAdPlaying) {
         totalWatchTime += 0.5;
 
@@ -110,8 +133,7 @@ useEffect(() => {
   }, 500);
 
   return () => clearInterval(interval);
-}, [isPlaying, isDragging, isAdPlaying, currentSong?._id, hasViewed]);
-
+}, [isPlaying, isDragging, isAdPlaying, currentSong?._id, currentAd?._id, hasViewed, showSkipButton]);
 
   // ✅ Handle Song/Ad End & Auto-Next
   useEffect(() => {
@@ -214,19 +236,22 @@ useEffect(() => {
       </div>
 
       <div className="flex flex-col items-center gap-1 m-auto">
-        {isAdPlaying ? (
-          <div className="flex flex-col items-center gap-4">
-            <button onClick={handleSkipAd} className="bg-red-500 text-white py-1 px-4 rounded">Skip Ad</button>
-            <div className="flex gap-5">
-              <p>{Math.floor(localProgress / 60)}:{String(Math.floor(localProgress % 60)).padStart(2, "0")}</p>
-              <div className="w-[60vw] max-w-[500px] bg-gray-500 rounded-full h-1.5 relative">
-                {/* The progress bar will visually update, but no interaction */}
-                <div className="h-1.5 bg-white rounded-full" style={{ width: `${(localProgress / (duration || 1)) * 100}%` }} />
-              </div>
-              <p>{Math.floor(duration / 60)}:{String(Math.floor(duration % 60)).padStart(2, "0")}</p>
-            </div>
-          </div>
-        ) : (
+      {isAdPlaying ? (
+  <div className="flex flex-col items-center gap-4">
+    {showSkipButton && (
+      <button onClick={handleSkipAd} className="bg-red-500 text-white py-1 px-4 rounded">
+        Skip Ad
+      </button>
+    )}
+    <div className="flex gap-5">
+      <p>{Math.floor(localProgress / 60)}:{String(Math.floor(localProgress % 60)).padStart(2, "0")}</p>
+      <div className="w-[60vw] max-w-[500px] bg-gray-500 rounded-full h-1.5 relative">
+        <div className="h-1.5 bg-white rounded-full" style={{ width: `${(localProgress / (duration || 1)) * 100}%` }} />
+      </div>
+      <p>{Math.floor(duration / 60)}:{String(Math.floor(duration % 60)).padStart(2, "0")}</p>
+    </div>
+  </div>
+) : (
           <>
             <div className="flex gap-4">
               <img className="w-4 cursor-pointer" src={assets.prev_icon} alt="" onClick={handlePrev} />

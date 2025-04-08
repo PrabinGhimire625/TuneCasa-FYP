@@ -65,7 +65,7 @@ const CreateAds = () => {
           <div className="flex gap-6 items-center justify-between">
             {/* Upload Audio */}
             <div className="flex flex-col gap-4 items-center w-1/2">
-              <label className="text-lg text-gray-800" htmlFor="audio">
+              <label className="text-lg text-gray-400" htmlFor="audio">
                 Upload Ad Audio
               </label>
               <input
@@ -87,7 +87,7 @@ const CreateAds = () => {
             
             {/* Upload Image */}
             <div className="flex flex-col gap-4 items-center w-1/2">
-              <label className="text-lg text-gray-800" htmlFor="image">
+              <label className="text-lg text-gray-400" htmlFor="image">
                 Upload Image
               </label>
               <input
