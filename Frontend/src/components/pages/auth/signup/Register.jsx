@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { register, resetStatus } from '../../../../store/authSlice';
 import { STATUS } from '../../../../globals/components/enumStatus/Status';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const Register = () => {
   const dispatch = useDispatch();
@@ -17,11 +18,11 @@ const Register = () => {
 
   useEffect(() => {
     if (status === STATUS.SUCCESS) {
-      alert("User successfully registered!");
+      toast.success("Successfully Register!");
       dispatch(resetStatus()); 
       navigate("/login"); 
     } else if (status === STATUS.ERROR) {
-      alert("An error occurred during registration.");
+      toast.error("Registration failed");
       dispatch(resetStatus()); 
     }
   }, [status, dispatch, navigate]);

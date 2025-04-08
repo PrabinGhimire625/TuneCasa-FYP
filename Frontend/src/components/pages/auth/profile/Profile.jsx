@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { resetStatus, userProfile } from "../../../../store/authSlice";
+import { getArtistsUserIsFollowing, resetStatus, userProfile } from "../../../../store/authSlice";
 import { Link } from "react-router-dom";
 import Sidebar from "../../sidebar/Sidebar";
 import { STATUS } from "../../../../globals/components/enumStatus/Status";
@@ -9,7 +9,12 @@ import AllPlaylist from "../../playlist/AllPlaylist";
 const Profile = () => {
   const dispatch = useDispatch();
   const { profile, status } = useSelector((state) => state.auth);
-  console.log("Status is printing : " , status)
+  const { artistOfUserFollow, followingCount } = useSelector((state) => state.auth); // Accessing the followed artists
+  
+  useEffect(() => {
+      dispatch(getArtistsUserIsFollowing()); 
+  }, [dispatch, followingCount]);
+
   
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -24,11 +29,10 @@ const Profile = () => {
   }
 
   return (
-    <div className="h-screen bg-black ">
-      <div className="h-[90%] flex">
+
     
 
-        <div className="flex items-start justify-center flex-1 bg-stone-900">
+        <div className="flex items-start justify-center flex-1 ">
           <div className="w-full flex items-start px-12 py-12 rounded-lg shadow-lg ml-10 mt-2 mr-5">
             {/* Profile Image */}
             <div className="relative">
@@ -53,15 +57,15 @@ const Profile = () => {
                 <h3 className="text-4xl md:text-xl text-gray-200 font-bold mt-3">
                   {profile?.email || "Guest"}
                 </h3>
+                <h3 className="text-4xl md:text-xl text-gray-200 font-bold mt-3">
+                  .{followingCount || "0"} follwing
+                </h3>
               </Link>
              
             </div>
           </div>
         </div>
-      </div>
-
-      <AllPlaylist/>
-    </div>
+    
   );
 };
 

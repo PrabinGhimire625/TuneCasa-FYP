@@ -11,8 +11,6 @@ const LatestAlbum = () => {
         dispatch(listLatestAlbum());
     }, [dispatch]);
 
-  console.log("Latest album", latestAlbum)
-
   return (
     <>
        <h1 className="text-white text-2xl font-bold my-5 mx-5 capitalize">New album and song</h1>

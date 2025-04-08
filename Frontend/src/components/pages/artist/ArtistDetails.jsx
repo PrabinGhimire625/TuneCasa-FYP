@@ -4,7 +4,7 @@ import { getArtistSong } from '../../../store/songSlice';
 import { Link, useParams } from 'react-router-dom';
 import Player from '../player/Player';
 import DisplayArtist from "./DisplayArtist";
-import { fetchSingleUser } from '../../../store/authSlice';
+import { fetchSingleUser, followArtist, getArtistFollowersCount, UnfollowArtist } from '../../../store/authSlice';
 import { setCurrentSong, playPause, setSongList } from '../../../store/playerSlice';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlay, faPlus, faEllipsisV } from "@fortawesome/free-solid-svg-icons";
@@ -13,7 +13,7 @@ const ArtistDetails = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const { artistSong } = useSelector((state) => state.song);
-  const { singleUser } = useSelector((state) => state.auth);
+  const { singleUser, followersCount } = useSelector((state) => state.auth);
   const { currentSong, isPlaying } = useSelector((state) => state.player);
   const [isFollowing, setIsFollowing] = useState(false);
   const [showAllSongs, setShowAllSongs] = useState(false);
@@ -23,6 +23,7 @@ const ArtistDetails = () => {
     if (id) {
       dispatch(fetchSingleUser(id));
       dispatch(getArtistSong(id));
+      dispatch(getArtistFollowersCount(id))
     }
   }, [dispatch, id]);
 
@@ -42,6 +43,19 @@ const ArtistDetails = () => {
     }
   };
 
+  // Handle follow/unfollow
+  const handleFollowUnfollow = () => {
+    if (isFollowing) {
+      dispatch(UnfollowArtist(id));  // Dispatch unfollow
+    } else {
+      dispatch(followArtist(id));  // Dispatch follow
+    }
+    setIsFollowing(!isFollowing);  // Toggle follow/unfollow state
+  };
+
+
+
+
 
   return (
     <div className="w-full h-full">
@@ -57,7 +71,9 @@ const ArtistDetails = () => {
         <div className="flex flex-col text-white">
           <p className='text-yellow-700'>Artist</p>
           <h2 className="text-5xl font-bold mb-4 md:text-7xl">{singleUser?.user?.username || "Unknown Artist"}</h2>
-          <h4 className="text-lg text-gray-400">{singleUser?.bio || "No bio available"}</h4>
+          {/* <h4 className="text-lg text-gray-400">{singleUser?.bio || "No bio available"}</h4> */}
+         <h4 className="text-lg text-gray-400 hover:underline hover:underline-white text-white">. {followersCount || "0"} follower</h4>
+
         </div>
 
             {singleUser?.user?._id && (
@@ -86,12 +102,14 @@ const ArtistDetails = () => {
         </button>
 
         {/* Follow Button */}
-        <button
-          onClick={() => setIsFollowing(!isFollowing)}
+               {/* Follow Button */}
+               <button
+          onClick={handleFollowUnfollow}  // Call the follow/unfollow function
           className={`py-1 px-5 text-sm font-semibold rounded-full border-2 border-white transition duration-300 ${isFollowing ? 'bg-transparent text-white' : 'bg-transparent text-white'} hover:bg-[#e63127]`}
         >
           {isFollowing ? 'Unfollow' : 'Follow'}
         </button>
+
       </div>
 
       {/* List Song Section */}
@@ -115,41 +133,6 @@ const ArtistDetails = () => {
         ))}
       </div>
 
-      {/* See More Button
-      {artistSong && artistSong.length > 4 && (
-        <div className="mb-5 ml-7">
-          <button onClick={toggleShowAllSongs} className="text-gray-400 px-4 py-1 rounded-full hover:bg-gray-700 transition">
-            {showAllSongs ? "Show Less" : "See More"}
-          </button>
-        </div>
-      )} */}
-
-      {/* Suggest for You */}
-      {/* <div className="ml-5">
-        <h1 className="my-3 text-white font-bold text-2xl">Suggest for You</h1>
-        <div className="flex overflow-auto gap-4">
-          {artistSong && artistSong.length > 0 ? (
-            artistSong.map((item) => (
-              <div key={item.id} className="py-2 px-2 flex flex-col items-center relative hover:bg-neutral-800 transition duration-300">
-                <div
-                  className="relative w-32 h-32 rounded-lg overflow-hidden cursor-pointer"
-                  onClick={() => handleSelectSong(item)}
-                >
-                  <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
-                  <button className={`absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300 text-4xl ${currentSong?._id === item._id && isPlaying ? "opacity-100" : "opacity-0 hover:opacity-100"}`}>
-                    {currentSong?._id === item._id && isPlaying ? "⏸" : "▶"}
-                  </button>
-                </div>
-                <Link to={`/singleSong/${item._id}`}>
-                  <p className="mt-2 text-white font-medium hover:underline">{item.name}</p>
-                </Link>
-              </div>
-            ))
-          ) : (
-            <p className="text-gray-400">No albums available</p>
-          )}
-        </div>
-      </div> */}
 
       {/* Artist Section */}
       <div className="#">

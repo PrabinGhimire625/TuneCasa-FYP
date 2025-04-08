@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { STATUS } from "../../../globals/components/enumStatus/Status";
-import { assets } from '../../../assets/frontend-assets/assets';
+import { assets } from "../../../assets/frontend-assets/assets";
 
 const Form = ({ type, onSubmit }) => {
   const [userData, setUserData] = useState({
@@ -14,7 +14,6 @@ const Form = ({ type, onSubmit }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const { status } = useSelector((state) => state.auth);
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -40,30 +39,25 @@ const Form = ({ type, onSubmit }) => {
     }
   }, [status, navigate]);
 
-  const errorMessageStyle = {
-    color: "red",
-    marginLeft: "50px",
-    marginTop: "10px",
-  };
-
   return (
-    <div className="flex justify-center items-center min-h-screen bg-stone-900">
-      <div className="max-w-md w-full mt-[-110px] bg-white shadow-lg rounded-lg p-5">
+    <div className="w-full max-w-2xl   p-8 sm:p-10 mx-auto">
+
+      <div className="w-full max-w-3xl bg-[#111] shadow-2xl rounded-2xl p-8 sm:p-10 mx-auto">
         <div className="text-center">
           <img
             src={assets.tunecasaLogo}
-            className="w-20 h-20 mx-auto mb-2 rounded-full object-cover"
+            className="w-24 h-24 mx-auto mb-6 rounded-full object-cover border border-gray-600"
             alt="Logo"
           />
-          <h1 className="text-3xl font-bold mb-4 text-gray-800">
-            {type === "register" ? "Sign Up" : "Log in"}
+          <h1 className="text-4xl font-extrabold mb-4 text-white">
+            {type === "register" ? "Sign Up" : "Log In"}
           </h1>
         </div>
 
-        <div className="flex flex-col items-center">
-          <button className="w-full max-w-xs font-bold shadow-sm rounded-lg py-3 bg-indigo-100 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out focus:outline-none hover:shadow focus:shadow-sm focus:shadow-outline">
-            <div className="bg-white p-2 rounded-full">
-              <svg className="w-4" viewBox="0 0 533.5 544.3">
+        <div className="flex flex-col items-center mt-4">
+          <button className="w-full font-semibold shadow-sm rounded-lg py-4 bg-gray-800 text-white flex items-center justify-center gap-3 transition-all duration-300 hover:bg-gray-700">
+            <div className="bg-black p-2 rounded-full">
+              <svg className="w-5" viewBox="0 0 533.5 544.3">
                 <path
                   d="M533.5 278.4c0-18.5-1.5-37.1-4.7-55.3H272.1v104.8h147c-6.1 33.8-25.7 63.7-54.4 82.7v68h87.7c51.5-47.4 81.1-117.4 81.1-200.2z"
                   fill="#4285f4"
@@ -82,26 +76,26 @@ const Form = ({ type, onSubmit }) => {
                 />
               </svg>
             </div>
-            <span className="ml-4">
+            <span>
               {type === "register" ? "Sign Up" : "Login"} with Google
             </span>
           </button>
         </div>
 
-        <div className="my-2 border-b text-center">
-          <div className="leading-none px-2 inline-block text-sm text-black tracking-wide font-bold bg-white transform translate-y-1/2">
-            Or {type === "register" ? "sign up" : "login"} with e-mail
-          </div>
+        <div className="my-8 border-b border-gray-700 text-center">
+          <span className="px-4 text-base text-gray-400 tracking-wide bg-[#111]">
+            Or {type === "register" ? "sign up" : "login"} with email
+          </span>
         </div>
 
-        <form className="flex flex-col gap-4 mt-5" onSubmit={handleSubmit}>
+        <form className="w-full flex flex-col gap-6" onSubmit={handleSubmit}>
           {type === "register" && (
             <input
               onChange={handleChange}
               name="username"
               type="text"
               placeholder="Username"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
+              className="w-full bg-black text-white placeholder-gray-400 text-lg px-5 py-4 border border-gray-600 rounded-lg focus:outline-none focus:border-white"
               required
             />
           )}
@@ -110,52 +104,62 @@ const Form = ({ type, onSubmit }) => {
             type="email"
             name="email"
             placeholder="Email"
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
+            className="w-full bg-black text-white placeholder-gray-400 text-lg px-5 py-4 border border-gray-600 rounded-lg focus:outline-none focus:border-white"
             required
           />
-          <div className="relative">
+          <div className="relative w-full">
             <input
               onChange={handleChange}
               type={showPassword ? "text" : "password"}
               name="password"
               placeholder="Password"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
+              className="w-full bg-black text-white placeholder-gray-400 text-lg px-5 py-4 border border-gray-600 rounded-lg focus:outline-none focus:border-white"
               required
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute inset-y-0 right-4 flex items-center text-gray-600"
+              className="absolute inset-y-0 right-4 flex items-center text-gray-400 text-sm"
             >
               {showPassword ? "Hide" : "Show"}
             </button>
           </div>
           <button
             type="submit"
-            className="w-full py-3 bg-indigo-500 text-white rounded-lg font-semibold hover:bg-indigo-600 transition-all"
+            className="w-full py-4 bg-white text-black text-lg font-semibold rounded-lg hover:bg-gray-200 transition-all"
           >
-            {type === "register" ? "Sign Up" : "Log in"}
+            {type === "register" ? "Sign Up" : "Log In"}
           </button>
         </form>
 
-        <p className="mt-3 text-center text-sm text-gray-500 underline">
-          {type === "login" && <Link to="/forgetPassword">Forgot password?</Link>}
-        </p>
+        {type === "login" && (
+          <p className="mt-4 text-center text-sm text-gray-400 underline">
+            <Link to="/forgetPassword">Forgot password?</Link>
+          </p>
+        )}
 
-        <p className="mt-4 text-center text-base text-black">
+        <p className="mt-6 text-center text-sm text-gray-300">
           {type === "register" ? (
             <>
-              Already have an account? <Link className="text-blue-600 hover:underline" to="/login">Sign in here</Link>
+              Already have an account?{" "}
+              <Link className="text-white underline" to="/login">
+                Sign in here
+              </Link>
             </>
           ) : (
             <>
-              Not a member? <Link className="text-blue-600 hover:underline" to="/register">Register now</Link>
+              Not a member?{" "}
+              <Link className="text-white underline" to="/register">
+                Register now
+              </Link>
             </>
           )}
         </p>
 
         {type === "login" && errorMessage && (
-          <p className="error-message" style={errorMessageStyle}>{errorMessage}</p>
+          <p className="text-red-500 mt-4 text-center text-sm">
+            {errorMessage}
+          </p>
         )}
       </div>
     </div>

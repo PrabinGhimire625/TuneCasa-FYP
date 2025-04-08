@@ -11,7 +11,11 @@ const authSlice=createSlice({
         token:"",
         profile:"",
         artist:[],
-        singleUser:null
+        singleUser:null,
+        artistOfUserFollow: [], 
+        followersCount: 0, 
+        followersList: [], 
+        followingCount:0,
     },
     reducers:{
         setUserData(state,action){
@@ -44,11 +48,25 @@ const authSlice=createSlice({
                     ...action.payload.data
                 }
             }
-        }
+        },
+        setArtistOfUserFollow: (state, action) => {
+            state.artistOfUserFollow = action.payload; // Updated to store the artists user follows
+          },
+          setFollowersCount: (state, action) => {
+            state.followersCount = action.payload;
+          },
+          setFollowersList: (state, action) => {
+            state.followersList = action.payload;
+          },
+          setFollowingCount: (state, action) => {
+            state.followingCount = action.payload;
+          },
+
     }
 })
 
-export const {setUserData,setArtistData,setStatus,resetStatus,setToken,setProfile,setUpdateUserProfile, setSingleUser}=authSlice.actions
+
+export const {setUserData,setArtistData,setStatus,resetStatus,setToken,setProfile,setUpdateUserProfile, setSingleUser, setArtistOfUserFollow, setFollowersCount, setFollowersList, setFollowingCount}=authSlice.actions
 export default authSlice.reducer
 
 //signup
@@ -183,6 +201,7 @@ export function fetchSingleUser(id){
 export function sendMessageToArtist(artistId, message, phone, address) {
     return async function (dispatch) {
       dispatch(setStatus(STATUS.LOADING));
+      
       try {
         const response = await APIAuthenticated.post(`/api/messages/send-message-to-artist`, {
           artistId,
@@ -204,5 +223,92 @@ export function sendMessageToArtist(artistId, message, phone, address) {
       }
     };
   }
+  
+
+
+
+  //follow artist
+export function followArtist(id){
+    return async function followArtistThunk(dispatch) {
+        dispatch(setStatus(STATUS.LOADING));
+        try{
+            const response=await APIAuthenticated.post(`/api/follow/${id}`);
+            if(response.status===200){
+                dispatch(setStatus(STATUS.SUCCESS));
+            }else{
+                dispatch(setStatus(STATUS.ERROR));
+            }
+        }catch(err){
+            dispatch(setStatus(STATUS.ERROR));
+        }
+    }
+}
+
+
+
+  //follow artist
+  export function UnfollowArtist(id){
+    return async function UnfollowArtistThunk(dispatch) {
+        dispatch(setStatus(STATUS.LOADING));
+        try{
+            const response=await APIAuthenticated.post(`/api/unfollow/${id}`);
+            if(response.status===200){
+                dispatch(setStatus(STATUS.SUCCESS));
+            }else{
+                dispatch(setStatus(STATUS.ERROR));
+            }
+        }catch(err){
+            dispatch(setStatus(STATUS.ERROR));
+        }
+    }
+}
+
+
+// get artist followers count
+export function getArtistFollowersCount(id) {
+    return async function getArtistFollowersCountThunk(dispatch) {
+      dispatch(setStatus(STATUS.LOADING)); // Set loading state
+      try {
+        const response = await APIAuthenticated.get(`/api/followers/${id}`);
+        if (response.status === 200) {
+          const { totalFollowers, followers } = response.data; // Destructure data from response
+          console.log("Response from the baceked",totalFollowers)
+          dispatch(setFollowersCount(totalFollowers)); 
+          dispatch(setFollowersList(followers)); 
+          dispatch(setStatus(STATUS.SUCCESS));
+        } else {
+          dispatch(setStatus(STATUS.ERROR));
+        }
+      } catch (err) {
+        dispatch(setStatus(STATUS.ERROR));
+        console.log(error)
+      }
+    };
+  }
+  
+  
+export function getArtistsUserIsFollowing() {
+  return async function getArtistsUserIsFollowingThunk(dispatch) {
+    dispatch(setStatus(STATUS.LOADING)); // Set loading state
+    try {
+      const response = await APIAuthenticated.get('/api/suggested-artists');
+      if (response.status === 200) {
+        dispatch(setArtistOfUserFollow(response.data.data)); // Updated to set artistOfUserFollow
+        dispatch(setFollowingCount(response.data.count)); // Updated to set artistOfUserFollow
+        console.log(response.data.count)
+        dispatch(setStatus(STATUS.SUCCESS));
+      } else {
+        dispatch(setStatus(STATUS.ERROR));
+        console.error("Error response:", response);
+      }
+    } catch (err) {
+      dispatch(setStatus(STATUS.ERROR));
+      console.error("Error fetching data:", err);
+    }
+  };
+}
+
+
+
   
 

@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createPlaylist } from '../../../store/playlistSlice';
 import { STATUS } from '../../../globals/components/enumStatus/Status';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const Playlist = ({ onClose }) => {
   const dispatch = useDispatch();
@@ -34,7 +35,7 @@ const Playlist = ({ onClose }) => {
       navigate('/');
       onClose(); // Close the form
     } else if (status === STATUS.ERROR) {
-      alert('Failed to create playlist. Try again!');
+       toast.error("Login failed! Playlist is not created.");
     }
   };
 

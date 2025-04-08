@@ -1,4 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import ProtectedRoute from './components/ProtectedRoute'; // Correct path to your ProtectedRoute component
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Sidebar from "./components/pages/sidebar/Sidebar";
 import Navbar from "./globals/components/navbar/Navbar";
 import SingleAlbum from "./components/pages/singleAlbum/SingleAlbum";
@@ -41,6 +44,7 @@ import Footer from "./globals/components/footer/Footer";
 import AllAlbum from "./components/pages/Home/AllAlbum";
 import AboutUs from "./components/pages/AboutUs/AboutUs";
 import Settings from "./components/pages/setting/Setting";
+import Following from "./components/pages/artist/Following";
 
 
 function App() {
@@ -48,6 +52,7 @@ function App() {
     <>       
       <Provider store={store}>
         <BrowserRouter>
+        <ToastContainer position="top-right" autoClose={3000} />
           <div className="flex flex-col min-h-screen">
             <Navbar />
             <div className="flex flex-1 relative">
@@ -63,26 +68,30 @@ function App() {
                 <Route path="/form" element={<Form />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
-                <Route path="/profile" element={<Profile />} />
+                <Route path="/profile" element={<Profile /> } />
+
                 <Route path="/editProfile/:id" element={<EditProfile />} />
                 <Route path="/forgetPassword" element={<ForgetPassword />} />
                 <Route path="/verifyOtp" element={<VerifyOtp />} />
                 <Route path="/resetPassword" element={<ResetPassword />} />
                 <Route path="/allAlbum" element={<AllAlbum />} />
-                <Route path="/album/:name" element={<SingleAlbum />} />
+                <Route path="/album/:name" element={<ProtectedRoute> <SingleAlbum /></ProtectedRoute>} />
                 <Route path="/singleSong/:id" element={<SingleSong />} />
-                <Route path="/artistDetails/:id" element={<ArtistDetails />} />
+                <Route path="/artistDetails/:id"  element={ <ProtectedRoute> <ArtistDetails /></ProtectedRoute>}/>
+
                 <Route path="/artistList" element={<ArtistList />} />
                 <Route path="/displayArtist" element={<DisplayArtist />} />
-                <Route path="/singlePlaylist/:id" element={<SinglePlaylist />} />
+                <Route path="/singlePlaylist/:id" element={<ProtectedRoute> <SinglePlaylist /></ProtectedRoute>} />
                 <Route path="/editplaylist/:id" element={<EditPlaylist />} />
-                <Route path="/playlist" element={<Playlist />} />
+                {/* <Route path="/playlist" element={<Playlist />} /> */}
+                <Route path="/playlist" element={<ProtectedRoute> <Playlist /></ProtectedRoute>}/>
                 <Route path="/allPlaylist" element={<AllPlaylist />} />
+                
                 <Route path="/allGenre" element={<Genre />} />
                 <Route path="/genreDetails/:genre" element={<GenreDetails />} />
                 <Route path="/genreBasedSong/:genre" element={<GenreBasedSong />} />
-                <Route path="/library" element={<Library />} />
-                <Route path="/likeSong" element={<LikeSong />} />
+                <Route path="/library" element={<ProtectedRoute> <Library /></ProtectedRoute>} />
+                <Route path="/likeSong"  element={<ProtectedRoute> <LikeSong /></ProtectedRoute>}/>
                 <Route path="/payment" element={<Payment />} />
                 <Route path="/mainSubcription" element={<MainSubscription />} />
                 <Route path="/plan" element={<Plan />} />
@@ -93,6 +102,7 @@ function App() {
                 <Route path="/listAds" element={<ListAds />} />
                 <Route path="/about" element={<AboutUs />} />
                 <Route path="/setting" element={<Settings />} />
+                <Route path="/following" element={<Following />} />
                 
                 {/* GoogleLogin Route */}
                 {/* <Route 

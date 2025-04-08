@@ -644,7 +644,6 @@ export const getArtistFollowersCount = async (req, res) => {
 };
 
 
-// Get list of artists that the user is following
 export const getArtistsUserIsFollowing = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -655,9 +654,13 @@ export const getArtistsUserIsFollowing = async (req, res) => {
       status: "approved"              // Only approved artists
     }).populate("userId", "username email image"); // Populate artist's user info
 
+    // Count the number of artists the user is following
+    const followCount = artists.length;
+
     res.status(200).json({
       message: "Artists user is following fetched successfully",
-      artists
+      data: artists,
+      count: followCount  // Add count to the response
     });
   } catch (error) {
     console.error("Fetch artists user is following error:", error);

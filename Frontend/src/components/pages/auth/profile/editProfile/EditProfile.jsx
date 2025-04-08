@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { resetStatus, updateUserProfile, userProfile } from "../../../../../store/authSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import { STATUS } from "../../../../../globals/components/enumStatus/Status";
+import { toast } from "react-toastify";
 
 const EditProfile = () => {
   const { id } = useParams();
@@ -49,17 +50,16 @@ const EditProfile = () => {
   
     dispatch(updateUserProfile({ id, userData: formData })).then(() => {
       if (status === STATUS.SUCCESS) {
-        alert("User is updated successfully!");
+          toast.success("Profile updated");
       } else {
-        alert("User is not updated successfully!");
+          toast.error("Profile not update");
       }
     });
   };
   
 
   return (
-    <div className="h-screen bg-black">
-      <div className="h-[90%] flex">
+
 
         <div className="flex items-start justify-center flex-1 bg-stone-900">
           <form
@@ -110,18 +110,17 @@ const EditProfile = () => {
               Save
             </button>
 
-            {/* Delete Button */}
-            <button
+     
+            {/* <button
               type="button"
               className="absolute bottom-4 right-4 bg-red-600 hover:bg-red-800 text-white font-bold py-2 px-6 rounded-lg shadow-lg transition"
             >
               Request to be a artist
-            </button>
+            </button> */}
             
           </form>
         </div>
-      </div>
-    </div>
+
   );
 };
 

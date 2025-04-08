@@ -4,31 +4,31 @@ import { useDispatch, useSelector } from 'react-redux'
 import { login, resetStatus } from '../../../../store/authSlice';
 import { STATUS } from '../../../../globals/components/enumStatus/Status';
 import { useNavigate } from 'react-router-dom';
-const Login = () => {
-  const dispatch=useDispatch();
-  const  {status}=useSelector((state)=>state.auth);
-  console.log(status)
-  const navigate=useNavigate();
+import { toast } from 'react-toastify';
 
-  const handleLogin=(data)=>{
-    console.log(data);
+const Login = () => {
+  const dispatch = useDispatch();
+  const { status } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+
+  const handleLogin = (data) => {
     dispatch(login(data));
-  }
+  };
 
   useEffect(() => {
     if (status === STATUS.SUCCESS) {
-      console.log(status)
-      alert("Successfully login to the system!")
-      dispatch(resetStatus())
+      toast.success("Successfully logged in!");
+      dispatch(resetStatus());
       navigate('/');
     } 
+    // Optional: handle error as well
+    else if (status === STATUS.ERROR) {
+      toast.error("Login failed! Check your email or password.");
+      dispatch(resetStatus());
+    }
   }, [status, navigate, dispatch]);
 
-  return (
-    <>
-    <Form type='login' onSubmit={handleLogin}/>
-    </>
-  )
-}
+  return <Form type="login" onSubmit={handleLogin} />;
+};
 
-export default Login
+export default Login;
