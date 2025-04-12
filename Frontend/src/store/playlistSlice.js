@@ -8,7 +8,8 @@ const playlistSlice = createSlice({
   initialState: {
     playlist: [],
     status: STATUS.LOADING,
-    singleplaylist:null
+    singleplaylist:null,
+    publicPlaylist:[],
   },
   reducers: {
     setPlaylistData(state, action) {
@@ -19,6 +20,9 @@ const playlistSlice = createSlice({
     },
     setSinglePlaylist(state, action){
       state.singleplaylist=action.payload;
+    },
+    setPublicPlaylist(state, action){
+      state.publicPlaylist=action.payload;
     },
     setUpdateplaylist(state, action) {
       const index = state.playlist.findIndex(item => item._id === action.payload.id); 
@@ -41,7 +45,7 @@ const playlistSlice = createSlice({
   },
 });
 
-export const { setPlaylistData, setStatus, setSinglePlaylist, setUpdateplaylist, setDeletePlaylist} = playlistSlice.actions;
+export const { setPlaylistData, setStatus, setSinglePlaylist, setUpdateplaylist, setDeletePlaylist, setPublicPlaylist} = playlistSlice.actions;
 export default playlistSlice.reducer;
 
 
@@ -96,7 +100,7 @@ export function listAllPlaylist(){
     return async function listAllPlaylistThunk(dispatch) {
         dispatch(setStatus(STATUS.LOADING));
         try{
-        const response=await API.get("/api/playlist");
+        const response=await APIAuthenticated.get("/api/playlist/userPlaylist");
         if(response.status===200){
             const {data} =response.data;
             dispatch(setPlaylistData(data));
@@ -109,6 +113,26 @@ export function listAllPlaylist(){
         dispatch(setStatus(STATUS.ERROR));  
         }  
     }
+}
+
+//list all the playlists
+export function listPublicPlaylist(){
+  return async function listPublicPlaylistThunk(dispatch) {
+      dispatch(setStatus(STATUS.LOADING));
+      try{
+      const response=await APIAuthenticated.get("/api/playlist/public");
+      if(response.status===200){
+          const {data} =response.data;
+          dispatch(setPublicPlaylist(data));
+          dispatch(setStatus(STATUS.SUCCESS));
+      }else{
+          dispatch(setStatus(STATUS.ERROR)); 
+      }
+      }catch(err){
+          console.log(err)
+      dispatch(setStatus(STATUS.ERROR));  
+      }  
+  }
 }
 
 //fetch single playlist

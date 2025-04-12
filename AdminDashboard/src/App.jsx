@@ -1,5 +1,8 @@
 import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import ProtectedRoute from './pages/ProtectedRoutes';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Landing from './pages/landing/Landing'
 import store from './store/store'
 import { Provider } from 'react-redux'
@@ -25,6 +28,10 @@ import AllSubscription from './pages/subscription/AllSubscription'
 import SingleSubscription from './pages/subscription/SingleSubscription'
 import SingleSongAnalytics from './pages/form/song/SingleSongAnalytics'
 import SingleEvent from './pages/form/event/SingleEvent'
+import SingleAds from './pages/form/ads/SingleAds'
+import Notification from './pages/notification/Notification';
+import SingleAlbum from './pages/form/album/SingleAlbum';
+import Settings from './pages/setting/Settings';
 
 
 function App() {
@@ -32,33 +39,38 @@ function App() {
   return (
     <Provider store={store}>
       <BrowserRouter>
+       <ToastContainer position="top-right" autoClose={3000} />
         <div className="flex items-start min-h-screen ">
           <Sidebar />
           <div className="flex-1 h-screen overflow-y-scroll bg-gray-900">
             <Navbar />
             <Routes>
               <Route path='/' element={<Landing />} />
-              <Route path='/dashboard' element={<Dashboard />} />
-
+              <Route path='/dashboard'element={<ProtectedRoute> <Dashboard /></ProtectedRoute>} />
               <Route path='/login' element={<Login />} />
               <Route path='/profile' element={<Profile />} />
-              <Route path='/users' element={<Users />} />
-              <Route path='/displayArtist' element={<DisplayArtist />} />
-              <Route path='/singleArtist/:id' element={<SingleArtist />} />
-              <Route path='/artistRequest' element={<ArtistRequest />} />
-              <Route path='/allSong' element={<AllSong />} />
-              <Route path='/songAnalystic' element={<SongAnalystic />} />
-              <Route path='/:id' element={<SingleSongAnalytics />} />
-              <Route path='/allAlbum' element={<ListAlbum />} />
-              <Route path='/allPlaylist' element={<AllPlaylist />} />
-              <Route path='/addGenre' element={<AddGenre />} />
-              <Route path='/allGenre' element={<ListGenre />} />
-              <Route path='/allSubscription' element={<AllSubscription />} />
-              <Route path='/singleSubscription/:id' element={<SingleSubscription />} />
-              <Route path='/createAds' element={<CreateAds />} />
-              <Route path='/listAds' element={<ListAds />} />
-              <Route path='/editGenre/:id' element={<EditGenre />} />
-              <Route path='/singleEvent/:id' element={<SingleEvent />} />
+              <Route path="/users" element={<ProtectedRoute> <Users /></ProtectedRoute>} />
+              <Route path='/displayArtist' element={<ProtectedRoute><DisplayArtist /></ProtectedRoute>} />
+              <Route path='/singleArtist/:id' element={<ProtectedRoute> <SingleArtist /></ProtectedRoute>} />
+              <Route path='/artistRequest' element={<ProtectedRoute> <ArtistRequest /></ProtectedRoute>} />
+              <Route path='/allSong' element={<ProtectedRoute> <AllSong /></ProtectedRoute>} />
+              <Route path='/songAnalystic' element={<ProtectedRoute> <SongAnalystic /></ProtectedRoute>} />
+              <Route path='/:id' element={<ProtectedRoute> <SingleSongAnalytics /></ProtectedRoute>} />
+              <Route path='/allAlbum' element={<ProtectedRoute> <ListAlbum /></ProtectedRoute>} />
+              <Route path='/album/:name' element={<ProtectedRoute> <SingleAlbum /></ProtectedRoute>} />
+
+              <Route path='/allPlaylist' element={<ProtectedRoute> <AllPlaylist /></ProtectedRoute>} />
+              <Route path='/addGenre' element={<ProtectedRoute> <AddGenre /></ProtectedRoute>} />
+              <Route path='/allGenre' element={<ProtectedRoute> <ListGenre /></ProtectedRoute>} />
+              <Route path='/allSubscription' element={<ProtectedRoute> <AllSubscription /></ProtectedRoute>} />
+              <Route path='/singleSubscription/:id' element={<ProtectedRoute> <SingleSubscription /></ProtectedRoute>} />
+              <Route path='/createAds' element={<ProtectedRoute> <CreateAds /></ProtectedRoute>} />
+              <Route path='/listAds' element={<ProtectedRoute> <ListAds /></ProtectedRoute>} />
+              <Route path='/singleAds/:id' element={<ProtectedRoute> <SingleAds /></ProtectedRoute>} />
+              <Route path='/editGenre/:id' element={<ProtectedRoute> <EditGenre /></ProtectedRoute>} />
+              <Route path='/singleEvent/:id' element={<ProtectedRoute> <SingleEvent /></ProtectedRoute>} />
+              <Route path='/notification' element={<ProtectedRoute> <Notification /></ProtectedRoute>} />
+              <Route path='/settings' element={<ProtectedRoute> <Settings /></ProtectedRoute>} />
             </Routes>
           </div>
         </div>

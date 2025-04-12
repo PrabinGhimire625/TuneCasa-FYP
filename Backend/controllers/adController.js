@@ -50,7 +50,7 @@ import subscriptionModel from "../models/subscriptionModel.js";
 //   };
 
 export const createAds = async (req, res) => {
-  const { name } = req.body; // Only the name is required from the body
+  const { name, totalPlays} = req.body; // Only the name is required from the body
   const audioFile = req?.files?.audio[0];
   const imageFile = req?.files?.image[0];
   const userId = req.user.id; // Ensure userId is extracted correctly from authenticated user
@@ -79,11 +79,12 @@ export const createAds = async (req, res) => {
   const adData = {
     name,
     userId, // Make sure userId is passed here
+    totalPlays,
     file: audioUpload.secure_url, // URL of the uploaded video
     image: imageUpload.secure_url,
     duration,
     isSkippable: true, // Default value is true
-    totalPlays: 0, // Default value
+    totalPlays: totalPlays, // Default value
     totalClicks: 0, // Default value
     totalSkips: 0, // Default value
     totalWatchTime: 0, // Default value
@@ -182,62 +183,75 @@ export const updateAds = async (req, res) => {
 //get the random ads for the free user
 export const getAdsForFreeUsers = async (req, res) => {
   try {
-      const userId = req.user.id;
-      console.log("User ID: ", userId);
-      
-      // Check if user has an active subscription
-      const activeSubscription = await subscriptionModel.findOne({ userId, status: "active" });
+    const userId = req.user.id;
+    console.log("User ID: ", userId);
 
-      if (activeSubscription) {
-          return res.status(200).json({ message: "User is subscribed, no ads shown", data: null });
-      }
+    // Check if user has an active subscription
+    const activeSubscription = await subscriptionModel.findOne({ userId, status: "active" });
 
-      // Fetch a single random ad
-      const ad = await Ads.aggregate([{ $sample: { size: 1 } }]);
+    if (activeSubscription) {
+      return res.status(200).json({ message: "User is subscribed, no ads shown", data: null });
+    }
 
-      if (ad.length === 0) {
-          return res.status(404).json({ message: "No ads available" });
-      }
+    // Fetch a single random ad with status 'active'
+    const ad = await Ads.aggregate([
+      { $match: { status: "active" } },
+      { $sample: { size: 1 } }
+    ]);
 
-      res.status(200).json({ message: "Fetched a random ad successfully", data: ad[0] });
+    if (ad.length === 0) {
+      return res.status(404).json({ message: "No active ads available" });
+    }
+
+    res.status(200).json({ message: "Fetched a random active ad successfully", data: ad[0] });
   } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Error fetching ad", errorMessage: error.message });
+    console.error(error);
+    res.status(500).json({ message: "Error fetching ad", errorMessage: error.message });
   }
 };
 
 //track ad view
-export const trackAdWatchTime = async (req, res) => {
+export const trackAdView = async (req, res) => {
   try {
-    const { id, watchTime } = req.body;
-    const userId = req.user.id;  // Get the user ID from the authenticated request
+    const { id, watchTime } = req.body;  // Get the ad ID and watch time from the request body
 
     if (!id || typeof watchTime !== 'number' || watchTime <= 0) {
       return res.status(400).json({ message: "Valid Ad ID and watch time are required" });
     }
 
-    const updatedAd = await Ads.findByIdAndUpdate(
-      id,
-      { 
-        $inc: { 
-          totalWatchTime: watchTime,
-          totalViews: 1,    // Increment view count
-          totalPlays: 1     // Increment play count
-        }
-      },
-      { new: true }
-    );
+    // Find the ad by its ID
+    const ad = await Ads.findById(id);
 
-    if (!updatedAd) {
+    if (!ad) {
       return res.status(404).json({ message: "Ad not found" });
     }
 
-    res.status(200).json({ message: "Ad watch time updated successfully", data: updatedAd });
+    // Check if watchTime is greater than 5 seconds before updating the view count
+    if (watchTime > 5) {
+      // Increment the totalViews by 1
+      ad.totalViews += 1;
+
+      // Check if the totalPlays equals totalViews, and set status to expired if true
+      if (ad.totalPlays === ad.totalViews) {
+        ad.status = "expired";  // Change status to expired
+      }
+
+      // Save the updated ad
+      await ad.save();
+
+      res.status(200).json({
+        message: "Ad view updated successfully",
+        data: ad
+      });
+    } else {
+      res.status(400).json({ message: "Ad view not tracked: watch time must be greater than 5 seconds" });
+    }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Error tracking ad watch time" });
+    res.status(500).json({ message: "Error tracking ad view" });
   }
 };
+
 
 
 export const trackAdSkip = async (req, res) => {
@@ -289,6 +303,15 @@ export const trackAdClick = async (req, res) => {
       console.error(error);
       res.status(500).json({ message: "Error tracking ad click" });
   }
+};
+
+//get ads revenue calculation
+export const getAdsRevenue = async (req, res) => {
+  const allAds = await Ads.find();
+  if (allAds.length < 1) {
+    return res.status(404).json({ message: "Ads not found" });
+  }
+  res.status(200).json({ message: "Successfully fetched all ads", data: allAds });
 };
 
 

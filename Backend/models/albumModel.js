@@ -6,6 +6,7 @@ const albumSchema= new mongoose.Schema({
     bgColour:{type:String,required:true},
     image:{type:String,required:true},
     genre: { type: String},
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "Artist", required: true },
 }, { timestamps: true }
 );
 

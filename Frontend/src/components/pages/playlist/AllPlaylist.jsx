@@ -30,7 +30,7 @@ const AllPlaylist = () => {
               />
               <div className="ml-4">
                 <p className="text-md font-semibold text-gray-400">{item?.title}</p>
-                <p className="text-sm text-gray-400">Prabin Ghimire</p>
+                <p className="text-sm text-gray-400">{item?.userId?.username}</p>
               </div>
            </div>
             </Link>

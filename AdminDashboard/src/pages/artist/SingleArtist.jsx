@@ -86,7 +86,7 @@ const SingleArtist = () => {
     </div>
 
       {/* Events Section */}
-      <div className="py-4 px-7 bg-gray-900 text-white">
+      <div className="py-4 px-7 bg-gray-900 text-white mt-5">
         <h3 className="text-3xl font-bold mb-6">Upcoming Events</h3>
         {eventOfArtist && eventOfArtist.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

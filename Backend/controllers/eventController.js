@@ -1,60 +1,137 @@
 import { v2 as cloudinary } from "cloudinary";
 import Event from "../models/eventModel.js";
 import User from "../models/userModel.js";
+import Artist from "../models/artistModel.js"
+import notifiactionModel from "../models/notifiactionModel.js";
 
 // Add Event
+// export const addEvent = async (req, res) => {
+//     const { title, description, eventDate, location } = req.body;
+//     const imageFile = req.file;
+//     console.log("Uploaded Image:", imageFile); // Debugging
+  
+//     const userId = req.user.id;
+//     const artist = await User.findById(userId);
+//     if (!artist) {
+//       return res.status(400).json({ message: "Invalid artistId, artist not found" });
+//     }
+  
+//     // Ensure necessary fields are provided
+//     if (!title || !eventDate || !location) {
+//       return res.status(400).json({ message: "Please provide title, eventDate, and location." });
+//     }
+  
+//     // Check if an Event with the same title already exists
+//     const existingEvent = await Event.findOne({ title });
+//     if (existingEvent) {
+//       return res.status(400).json({ message: "Event title must be unique." });
+//     }
+  
+//     // Upload image if available
+//     let imageUrl = "";
+//     if (imageFile) {
+//       try {
+//         const imageUpload = await cloudinary.uploader.upload(imageFile.path, { resource_type: "image" });
+//         imageUrl = imageUpload.secure_url;
+//       } catch (error) {
+//         console.error("Cloudinary Upload Error:", error);
+//         return res.status(500).json({ message: "Failed to upload image." });
+//       }
+//     }
+  
+//     // Prepare event data (Use `image` instead of `imageUrl` to match your schema)
+//     const eventData = {
+//       userId,
+//       title,
+//       description,
+//       eventDate,
+//       location,
+//       image: imageUrl, // Ensure it matches your schema
+//     };
+  
+//     // Create the event
+//     const event = await Event.create(eventData);
+//     if (!event) {
+//       return res.status(500).json({ message: "Failed to create event." });
+//     }
+  
+//     res.status(201).json({ message: "Event successfully added!", data: event });
+//   };
+
 export const addEvent = async (req, res) => {
-    const { title, description, eventDate, location } = req.body;
-    const imageFile = req.file;
-    console.log("Uploaded Image:", imageFile); // Debugging
-  
-    const userId = req.user.id;
-    const artist = await User.findById(userId);
-    if (!artist) {
-      return res.status(400).json({ message: "Invalid artistId, artist not found" });
+  const { title, description, eventDate, location } = req.body;
+  const imageFile = req.file;
+
+  const userId = req.user.id;
+  const artist = await User.findById(userId);
+  if (!artist) {
+    return res.status(400).json({ message: "Invalid artistId, artist not found" });
+  }
+
+  if (!title || !eventDate || !location) {
+    return res.status(400).json({ message: "Please provide title, eventDate, and location." });
+  }
+
+  const existingEvent = await Event.findOne({ title });
+  if (existingEvent) {
+    return res.status(400).json({ message: "Event title must be unique." });
+  }
+
+  let imageUrl = "";
+  if (imageFile) {
+    try {
+      const imageUpload = await cloudinary.uploader.upload(imageFile.path, {
+        resource_type: "image",
+      });
+      imageUrl = imageUpload.secure_url;
+    } catch (error) {
+      console.error("Cloudinary Upload Error:", error);
+      return res.status(500).json({ message: "Failed to upload image." });
     }
-  
-    // Ensure necessary fields are provided
-    if (!title || !eventDate || !location) {
-      return res.status(400).json({ message: "Please provide title, eventDate, and location." });
-    }
-  
-    // Check if an Event with the same title already exists
-    const existingEvent = await Event.findOne({ title });
-    if (existingEvent) {
-      return res.status(400).json({ message: "Event title must be unique." });
-    }
-  
-    // Upload image if available
-    let imageUrl = "";
-    if (imageFile) {
-      try {
-        const imageUpload = await cloudinary.uploader.upload(imageFile.path, { resource_type: "image" });
-        imageUrl = imageUpload.secure_url;
-      } catch (error) {
-        console.error("Cloudinary Upload Error:", error);
-        return res.status(500).json({ message: "Failed to upload image." });
+  }
+
+  const eventData = {
+    userId,
+    title,
+    description,
+    eventDate,
+    location,
+    image: imageUrl,
+  };
+
+  const event = await Event.create(eventData);
+  if (!event) {
+    return res.status(500).json({ message: "Failed to create event." });
+  }
+
+  // 🔔 Notify followers
+  try {
+    const artistProfile = await Artist.findOne({ userId });
+
+    if (
+      artistProfile &&
+      Array.isArray(artistProfile.followers) &&
+      artistProfile.followers.length > 0
+    ) {
+      for (const followerId of artistProfile.followers) {
+        await notifiactionModel.create({
+          userId: followerId,
+          content: `📅 ${artist.username} just announced a new event: "${title}". Don’t miss it!`,
+          type: "event",
+          isRead: false,
+          name: title,
+          image: imageUrl || "", // Optional image of event
+        });
       }
     }
-  
-    // Prepare event data (Use `image` instead of `imageUrl` to match your schema)
-    const eventData = {
-      userId,
-      title,
-      description,
-      eventDate,
-      location,
-      image: imageUrl, // Ensure it matches your schema
-    };
-  
-    // Create the event
-    const event = await Event.create(eventData);
-    if (!event) {
-      return res.status(500).json({ message: "Failed to create event." });
-    }
-  
-    res.status(201).json({ message: "Event successfully added!", data: event });
-  };
+  } catch (err) {
+    console.error("Error sending event notifications:", err);
+    // Not returning error here to avoid stopping response due to notification failure
+  }
+
+  res.status(201).json({ message: "Event successfully added!", data: event });
+};
+
   
 // Get all Events
 export const getAllEvents = async (req, res) => {

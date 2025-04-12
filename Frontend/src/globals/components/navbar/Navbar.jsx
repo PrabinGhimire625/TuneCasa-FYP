@@ -2,8 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { assets } from '../../../assets/frontend-assets/assets';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { userProfile } from '../../../store/authSlice';
+import { resetStatus, userProfile } from '../../../store/authSlice';
 import { FaBars, FaTimes } from 'react-icons/fa';
+import { Bell } from "lucide-react";
+import { fetchAllNotificationsOfSingleUser, markAllNotificationsAsRead } from '../../../store/notificationSlice';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -13,6 +15,21 @@ const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const dropdownRef = useRef(null);
+
+  //notification
+  // const { notifications } = useSelector((state) => state.notifications);
+  // const unreadCount = notifications.filter((n) => !n.isRead).length;
+
+  // const handleClick = () => {
+  //   dispatch(markAllNotificationsAsRead()); // <-- this triggers isRead: true
+  // };
+
+  const unreadCount = useSelector((state) => state.notifications.unreadCount);
+  console.log(unreadCount, "unreadCount")
+
+  useEffect(() => {
+    dispatch(fetchAllNotificationsOfSingleUser());
+  }, [dispatch, unreadCount]);
 
   useEffect(() => {
     const localStorageToken = localStorage.getItem('token');
@@ -29,6 +46,7 @@ const Navbar = () => {
   const handleLogout = async () => {
     localStorage.removeItem('token');
     setIsLoggedIn(false);
+     dispatch(resetStatus());
     navigate("/login");
   };
 
@@ -79,6 +97,17 @@ const Navbar = () => {
               <Link to="/mainSubcription">
                 <p className="bg-white text-black text-sm px-4 py-1 rounded-2xl">Explore Premium</p>
               </Link>
+
+              <Link to="/notification" className="relative">
+      <p className="flex items-center gap-2">
+        <Bell className="w-6 h-6" />
+        {unreadCount > 0 && (
+          <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+            {unreadCount}
+          </span>
+        )}
+      </p>
+    </Link>
 
               <div className="relative" ref={dropdownRef}>
                 <div

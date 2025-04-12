@@ -42,12 +42,12 @@ const Checkout = () => {
             <p className="text-xl font-semibold text-gray-200">Music Premium Membership</p>
             <p className="text-sm text-gray-400">Ad-free, unlimited music + exclusive perks</p>
           </div>
-        </div>
+        </div> 
 
         {/* Pricing Details */}
         <div className="mb-6">
           <p className="text-gray-400 font-medium text-sm">Billing starts: {currentDate}</p>
-          <p className="text-3xl font-bold text-purple-600 mt-1">${PLAN_PRICES[planName]} <span className="text-lg font-normal text-gray-400">/mo</span></p>
+          <p className="text-3xl font-bold text-purple-600 mt-1">NPR {PLAN_PRICES[planName]} <span className="text-lg font-normal text-gray-400">/mo</span></p>
         </div>
 
         {/* Payment Method */}

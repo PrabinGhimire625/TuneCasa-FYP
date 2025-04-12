@@ -12,12 +12,12 @@ import subscriptionRouter from "./routes/subscriptionRoute.js"
 import songAnalyticsRoutes from "./routes/songAnalyticsRoutes.js"
 import AdsTrackingRoutes from "./routes/adTrackingRoute.js"
 import adsRouter from "./routes/adRoutes.js"
+import notificationRouter from "./routes/notificationRoute.js"
 import connectDB from "./config/mongoDb.js";
 import connectCloudinary from "./config/cloudinary.js";
 import adminSeeder from "./adminSeeder.js";
 
 import './cron/expireSubscription.js'; // Import the cron job file
-
 
 dotenv.config()
 
@@ -46,6 +46,7 @@ app.use("/api/subscription",subscriptionRouter)
 app.use("/api/ads",adsRouter)
 app.use("/api/song-analytics",songAnalyticsRoutes)
 app.use("/api/ads-tracking",AdsTrackingRoutes)
+app.use("/api/notification",notificationRouter)
 
 app.listen(port,()=>{
     console.log(`Server is running on the PORT ${port}`)

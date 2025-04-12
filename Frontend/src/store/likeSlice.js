@@ -46,7 +46,6 @@ export function addLike({songId} ) {
 }
 
 
-// List All Genres
 export function listAllLikeSong() {
     return async function listAllLikeSongThunk(dispatch) {
         dispatch(setStatus(STATUS.LOADING));

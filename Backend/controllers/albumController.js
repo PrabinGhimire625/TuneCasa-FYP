@@ -1,50 +1,142 @@
 import { v2 as cloudinary } from "cloudinary";
 import albumModel from "../models/albumModel.js";
-
+import Artist from "../models/artistModel.js"
+import notifiactionModel from "../models/notifiactionModel.js";
+import User from "../models/userModel.js";
 
 //add album
-export const addAlbum = async (req, res) => {
-    try{
-        const { name, desc, bgColour, genre } = req.body;
-        const imageFile = req.file;
-        if (!name || !desc || !bgColour) {
-            return res.status(404).json({ message: "Please provide name, description, and background color." });
+// export const addAlbum = async (req, res) => {
+//     try {
+//       const { name, desc, bgColour, genre } = req.body;
+//       const imageFile = req.file;
+//       const userId = req.user.id;
+  
+//       if (!name || !desc || !bgColour) {
+//         return res.status(404).json({ message: "Please provide name, description, and background color." });
+//       }
+  
+//       if (!imageFile) {
+//         return res.status(403).json({ message: "Please upload an image for the album." });
+//       }
+  
+//       // Check if an album with the same name already exists
+//       const existingAlbum = await albumModel.findOne({ name });
+//       if (existingAlbum) {
+//         return res.status(400).json({ message: "Album name must be unique." });
+//       }
+  
+//       // Upload image to Cloudinary
+//       const imageUpload = await cloudinary.uploader.upload(imageFile.path, {
+//         resource_type: "image",
+//       });
+  
+//       if (!imageUpload) {
+//         return res.status(500).json({ message: "Failed to upload image." });
+//       }
+  
+//       const albumData = {
+//         userId, // ✅ Include the artist's userId
+//         name,
+//         desc,
+//         bgColour,
+//         genre,
+//         image: imageUpload.secure_url,
+//       };
+  
+//       const album = await albumModel.create(albumData);
+  
+//       if (!album) {
+//         return res.status(500).json({ message: "Failed to create album in the database." });
+//       }
+  
+//       res.status(200).json({ message: "Album is successfully added!", data: album });
+  
+//     } catch (err) {
+//       console.error("Album creation error:", err);
+//       res.status(500).json({ error: "Internal server error" });
+//     }
+//   };
+  
+  export const addAlbum = async (req, res) => {
+    try {
+      const { name, desc, bgColour, genre } = req.body;
+      const imageFile = req.file;
+      const userId = req.user.id;
+  
+      if (!name || !desc || !bgColour) {
+        return res.status(404).json({ message: "Please provide name, description, and background color." });
+      }
+  
+      if (!imageFile) {
+        return res.status(403).json({ message: "Please upload an image for the album." });
+      }
+  
+      // Check if an album with the same name already exists
+      const existingAlbum = await albumModel.findOne({ name });
+      if (existingAlbum) {
+        return res.status(400).json({ message: "Album name must be unique." });
+      }
+  
+      // Upload image to Cloudinary
+      const imageUpload = await cloudinary.uploader.upload(imageFile.path, {
+        resource_type: "image",
+      });
+  
+      if (!imageUpload) {
+        return res.status(500).json({ message: "Failed to upload image." });
+      }
+  
+      const albumData = {
+        userId,
+        name,
+        desc,
+        bgColour,
+        genre,
+        image: imageUpload.secure_url,
+      };
+  
+      const album = await albumModel.create(albumData);
+  
+      if (!album) {
+        return res.status(500).json({ message: "Failed to create album in the database." });
+      }
+  
+      // 🔔 Notify followers
+      try {
+        const artist = await User.findById(userId);
+        const artistProfile = await Artist.findOne({ userId });
+  
+        if (
+          artist &&
+          artistProfile &&
+          Array.isArray(artistProfile.followers) &&
+          artistProfile.followers.length > 0
+        ) {
+          for (const followerId of artistProfile.followers) {
+            await notifiactionModel.create({
+              userId: followerId,
+              content: `🎵 ${artist.username} just dropped a new album: "${name}"! Check it out now.`,
+              type: "album",
+              isRead: false,
+              name: name,
+              image: imageUpload.secure_url,
+            });
+          }
         }
-        if (!imageFile) {
-            return res.status(403).json({ message: "Please upload an image for the album." });
-        }
-           // Check if an album with the same name already exists
-           const existingAlbum = await albumModel.findOne({ name });
-           if (existingAlbum) {
-               return res.status(400).json({Message: "Album name must be unique." });
-           }
-
-        // Upload image to Cloudinary
-        const imageUpload = await cloudinary.uploader.upload(imageFile.path, { resource_type: "image" });
-        if (!imageUpload) {
-            return res.status(500).json({ message: "Failed to upload image." });
-        }
-
-        const albumData = {
-            name,
-            desc,
-            bgColour,
-            genre,
-            image: imageUpload.secure_url,
-        };
-
-        // Create the album in the database
-        const album = await albumModel.create(albumData);
-        if (!album) {
-            return res.status(500).json({ message: "Failed to create album in the database." });
-        }
-        res.status(200).json({ message: "Album is successfully added!", data: album });
-    }catch(err){
-        res.status(500).json({ error: "Internal server error"});
+      } catch (err) {
+        console.error("Error sending album notifications:", err);
+        // Don't stop the response if notifications fail
+      }
+  
+      res.status(200).json({ message: "Album is successfully added!", data: album });
+    } catch (err) {
+      console.error("Album creation error:", err);
+      res.status(500).json({ error: "Internal server error" });
     }
-};
+  };
+  
 
-//get all album
+
 export const getAllAlbum=async(req,res)=>{
     const allAlbums=await albumModel.find();
     if(allAlbums.length<1){

@@ -1,42 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import Sidebar from '../../sidebar/Sidebar';
 import { STATUS } from '../../../globals/enumStatus/Status';
 import { useDispatch, useSelector } from 'react-redux';
 import { listSingleGenre, updateGenre } from '../../../store/genreSlice';
 import { useParams, useNavigate } from 'react-router-dom';
 
 const EditGenre = () => {
-  const { id } = useParams(); // Get the genre ID from the URL
+  const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { status, singleGenre } = useSelector((state) => state.genre);
 
-  // State to hold the genre data
   const [genreData, setGenreData] = useState({
     name: '',
     desc: '',
-    bgColour: '#000000', // Set a default color
+    bgColour: '#000000',
   });
 
-  // Fetch the genre data on initial render or when the ID changes
   useEffect(() => {
-    if (id) {
-      dispatch(listSingleGenre(id));
-    }
+    if (id) dispatch(listSingleGenre(id));
   }, [id, dispatch]);
 
-  // Update state with the data fetched from the store
   useEffect(() => {
     if (singleGenre) {
       setGenreData({
         name: singleGenre.name,
-        desc: singleGenre.desc || '', // Ensure description is handled if missing
-        bgColour: singleGenre.bgColour || '#000000', // Set a fallback background color
+        desc: singleGenre.desc || '',
+        bgColour: singleGenre.bgColour || '#000000',
       });
     }
   }, [singleGenre]);
 
-  // Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
     setGenreData((prevData) => ({
@@ -45,64 +38,72 @@ const EditGenre = () => {
     }));
   };
 
-  // Handle form submit
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(updateGenre({id, genreData})); // Dispatch updateGenre with the current genreData
+    dispatch(updateGenre({ id, genreData }));
 
-    // Handle response based on the status
     if (status === STATUS.SUCCESS) {
-      alert('Successfully updated the genre');
-      navigate('/tables'); // Navigate to another page after success
+      alert('Successfully updated the genre!');
+      navigate('/tables');
     } else {
       alert('Failed to update the genre!');
     }
   };
 
-  console.log("id is ",id)
-
   return (
-    <>
-        <div className="flex flex-col flex-1 overflow-y-auto min-h-screen">
-          <div className="p-4">
-            <div className="w-full p-6 text-white bg-gray-800 rounded-lg shadow-xl">
-              <h3 className="text-xl font-bold mb-6 border-b border-gray-700 pb-2">Edit Genre</h3>
-              <form onSubmit={handleSubmit} className="flex flex-col items-start gap-8 text-gray-600">
-                <div className="flex flex-col gap-2.5 text-white">
-                  <p>Genre Name</p>
-                  <input
-                    onChange={handleChange}
-                    name="name"
-                    value={genreData.name}
-                    className="bg-transparent outline-green-600 border-2 border-gray-400 p-2.5 w-[500px]"
-                    placeholder="Type Here"
-                    type="text"
-                    required
-                  />
-                </div>
-
-                <div className="flex flex-col gap-3 text-white">
-                  <p>Background Color</p>
-                  <input
-                    onChange={handleChange}
-                    value={genreData.bgColour}
-                    type="color"
-                    name="bgColour"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  className="text-base bg-black text-white py-2.5 px-14 cursor-pointer"
-                >
-                  Update
-                </button>
-              </form>
-            </div>
+    <div className="flex flex-col flex-1 min-h-screen bg-gray-900 text-white px-6 py-10">
+      <div className="max-w-3xl w-full mx-auto bg-gray-800 rounded-2xl shadow-2xl p-10">
+        <h2 className="text-3xl font-bold mb-8 border-b border-gray-700 pb-3">🎧 Edit Genre</h2>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+          {/* Genre Name */}
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-medium text-gray-300">Genre Name</label>
+            <input
+              type="text"
+              name="name"
+              value={genreData.name}
+              onChange={handleChange}
+              required
+              placeholder="Enter genre name"
+              className="bg-gray-700 text-white border border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+            />
           </div>
-        </div>
 
-    </>
+          {/* Description */}
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-medium text-gray-300">Description</label>
+            <textarea
+              name="desc"
+              value={genreData.desc}
+              onChange={handleChange}
+              placeholder="Short description (optional)"
+              rows="4"
+              className="bg-gray-700 text-white border border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
+            ></textarea>
+          </div>
+
+          {/* Background Color */}
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-medium text-gray-300">Background Color</label>
+            <input
+              type="color"
+              name="bgColour"
+              value={genreData.bgColour}
+              onChange={handleChange}
+              className="w-16 h-10 rounded-md border border-white/20 shadow-inner"
+            />
+          </div>
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className="mt-4 bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 px-6 rounded-lg transition-all duration-300"
+          >
+            Update Genre
+          </button>
+        </form>
+      </div>
+    </div>
   );
 };
 

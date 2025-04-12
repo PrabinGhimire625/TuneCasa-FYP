@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { fetchTotalAlbums, fetchTotalArtists, fetchTotalPlaylists, fetchTotalSongs, fetchTotalSubscriptionUsers, fetchTotalUsers } from "../../store/analyticSlice";
 import DisplayArtist from "../artist/DisplayArtist";
+import { Link } from "react-router-dom";
 
 const data = [
   { year: "Jan", listeners: 100, prevListeners: 800 },
@@ -13,14 +14,6 @@ const data = [
   { year: "Apr", listeners: 2500, prevListeners: 18000 },
   { year: "May", listeners: 4000, prevListeners: 32000 },
   { year: "Jun", listeners: 7000, prevListeners: 55000 },
-];
-
-const trendingArtists = [
-  { name: "Aria Melody", plays: 2500, img: "/images/artist1.jpg" },
-  { name: "Skyler Beats", plays: 220, img: "/images/artist2.jpg" },
-  { name: "Echo Rhythms", plays: 180, img: "/images/artist3.jpg" },
-  { name: "Neon Vibes", plays: 1500, img: "/images/artist4.jpg" },
-  { name: "Horizon Tunes", plays: 1200, img: "/images/artist5.jpg" },
 ];
 
 export default function Dashboard() {
@@ -42,18 +35,18 @@ export default function Dashboard() {
       {/* Dashboard Stats */}
       <div className="grid grid-cols-4 gap-6 mt-6">
         {[
-          { label: "Total Artists", value: totalArtists?.toLocaleString() || 0, icon: <FiUsers />, color: "text-blue-400" },
-          { label: "Total Songs", value: totalSongs?.toLocaleString() || 0, icon: <FiMusic />, color: "text-yellow-400" },
-          { label: "Total Listeners", value: totalUsers?.toLocaleString() || 0, icon: <FiHeadphones />, color: "text-green-400" },
-          { label: "Playlists Created", value: totalPlaylist?.toLocaleString() || 0, icon: <FiList />, color: "text-purple-400" },
+          { label: "Total Artists", value: totalArtists?.toLocaleString() || 0, icon: <FiUsers />, color: "text-blue-400", link: "/displayArtist" },
+          { label: "Total Songs", value: totalSongs?.toLocaleString() || 0, icon: <FiMusic />, color: "text-yellow-400", link: "/songAnalystic" },
+          { label: "Total Listeners", value: totalUsers?.toLocaleString() || 0, icon: <FiHeadphones />, color: "text-green-400", link: "/users" },
+          { label: "Playlists Created", value: totalPlaylist?.toLocaleString() || 0, icon: <FiList />, color: "text-purple-400", link: "/playlists" },
         ].map((stat, index) => (
-          <div key={index} className="bg-gray-800 p-5 rounded-xl flex items-center gap-4">
+          <Link to={stat.link} key={index} className="bg-gray-800 p-5 rounded-xl flex items-center gap-4 hover:bg-gray-700 transition-all">
             <div className={`text-3xl ${stat.color}`}>{stat.icon}</div>
             <div>
               <p className="text-xl font-bold">{stat.value}</p>
               <p className="text-gray-400">{stat.label}</p>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
 
@@ -78,9 +71,7 @@ export default function Dashboard() {
       {/* Trending Artists */}
       <div className="bg-gray-800 p-6 rounded-lg mt-6">      
          <DisplayArtist/>
-        
       </div>
-      
     </div>
   );
 }

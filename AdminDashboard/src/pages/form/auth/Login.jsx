@@ -5,6 +5,7 @@ import { login, resetStatus } from '../../../store/authSlice';
 import { STATUS } from '../../../globals/enumStatus/Status';
 import tunecasaLogo from '../../../assets/tunecasaLogo.png';
 import {Link} from "react-router-dom"
+import { toast } from 'react-toastify';
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -39,7 +40,7 @@ const Login = () => {
     if (status === STATUS.SUCCESS) {
       setMessage("Login successful! Redirecting...");
       dispatch(resetStatus()); // Reset the status
-      alert("Admin successfully login")
+      toast.success("Admin successfull login")
       navigate("/")
     } else if (status === STATUS.ERROR) {
       setMessage("Your email or password is incorrect!");

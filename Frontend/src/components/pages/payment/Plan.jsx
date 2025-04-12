@@ -24,7 +24,7 @@ const Plan = () => {
 
                                 </div>
                                 <div className="mb-8">
-                                    <span className="text-5xl font-extrabold text-white">$2.99</span>
+                                    <span className="text-5xl font-extrabold text-white">NPR 2.99</span>
                                     <span className="text-xl font-medium text-gray-400">/mo</span>
                                 </div>
                                 <ul className="mb-8 space-y-4 text-gray-400">
@@ -51,7 +51,7 @@ const Plan = () => {
                                     <p className="mt-4 text-gray-400">of uninterrupted music access.</p>
                                 </div>
                                 <div className="mb-8">
-                                    <span className="text-5xl font-extrabold text-white">$15.99</span>
+                                    <span className="text-5xl font-extrabold text-white">NPR 15.99</span>
                                     <span className="text-xl font-medium text-gray-400">/6 mo</span>
                                 </div>
                                 <ul className="mb-8 space-y-4 text-gray-400">
@@ -78,7 +78,7 @@ const Plan = () => {
                                     <p className="mt-4 text-gray-400">For a full year of uninterrupted music access.</p>
                                 </div>
                                 <div className="mb-8">
-                                    <span className="text-5xl font-extrabold text-white">$29.99</span>
+                                    <span className="text-5xl font-extrabold text-white">NPR 29.99</span>
                                     <span className="text-xl font-medium text-gray-400">/yr</span>
                                 </div>
                                 <ul className="mb-8 space-y-4 text-gray-400">

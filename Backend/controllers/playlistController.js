@@ -49,6 +49,56 @@ export const getSinglePlaylist = async (req, res) => {
 }
 
 
+// Get playlists of the logged-in user
+export const getPlaylistOfSingleUser = async (req, res) => {
+  const userId = req.user.id; // Assuming you're using a middleware to authenticate and add the user ID to req.user
+  
+  try {
+    // Fetch the playlists of the user and populate the username from the User model
+    const userPlaylists = await Playlist.find({ userId: userId })
+      .populate('userId', 'username') // Populate the 'userId' field with the 'username' from the User model
+      .exec();
+
+    if (userPlaylists.length < 1) {
+      return res.status(404).json({ message: "No playlists found for this user" });
+    }
+
+    // Return the playlists with the populated username
+    res.status(200).json({ message: "Successfully retrieved user's playlists", data: userPlaylists });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error", error: err });
+  }
+};
+
+
+
+// Get public playlists of a specific user
+export const getPublicPlaylistsByUser = async (req, res) => {
+  try {
+    const userId = req.user.id; // Accessing the user ID from the request (assuming the user is authenticated)
+
+    // Find all public playlists where the userId matches and privacy is "public"
+    const publicPlaylists = await Playlist.find({ userId, privacy: "public" })
+      .populate('userId', 'username') // Populate the 'userId' field with the 'username' from the User model
+      .exec();
+
+    // If no public playlists are found for the user
+    if (publicPlaylists.length < 1) {
+      return res.status(404).json({ message: "No public playlists found for this user" });
+    }
+
+    // Return the public playlists for the specific user
+    res.status(200).json({
+      message: "Successfully retrieved public playlists for this user",
+      data: publicPlaylists,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error", error: err });
+  }
+};
+
 
 //delete playlist 
 export const deletePlaylist=async(req, res)=>{

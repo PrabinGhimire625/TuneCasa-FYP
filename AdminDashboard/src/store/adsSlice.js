@@ -16,11 +16,15 @@ const adsSlice=createSlice({
         setStatus(state,action){
             state.status=action.payload
         },
+         resetStatus(state){
+                    state.status=STATUS.LOADING
+                },
+
         setSingleAds(state,action){
             state.singleAds=action.payload
         },
         setDeleteAds(state, action) {
-            const index = state.ads.findIndex(ad => ad._id === action.payload.adsId); 
+            const index = state.ads.findIndex(ad => ad._id === action.payload.id); 
             if (index !== -1) {
                 state.ads.splice(index, 1); 
             }
@@ -38,7 +42,7 @@ const adsSlice=createSlice({
     }
 })
 
-export const {setAds,setStatus,setSingleAds,setDeleteAds,setUpdateAds}=adsSlice.actions
+export const {setAds,setStatus,setSingleAds,setDeleteAds,setUpdateAds, resetStatus}=adsSlice.actions
 export default adsSlice.reducer
 
 
@@ -106,14 +110,14 @@ export function listSingleAds(id){
 }
 
 //delete the ads
-export function deleteAds(adsId){
+export function deleteAds(id){
     return async function deleteAdsThunk(dispatch) {
         dispatch(setStatus(STATUS.LOADING));
         try{
-        const response=await APIAuthenticated.delete(`/api/ads/${adsId}`);
+        const response=await APIAuthenticated.delete(`/api/ads/${id}`);
         console.log(response);
         if(response.status===200){
-            dispatch(setDeleteAds({adsId}));
+            dispatch(setDeleteAds({id}));
             dispatch(setStatus(STATUS.SUCCESS));
         }else{
             dispatch(setStatus(STATUS.ERROR)); 

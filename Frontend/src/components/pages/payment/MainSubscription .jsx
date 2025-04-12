@@ -39,8 +39,8 @@ const MainSubscription = () => {
                             </p>
 
                             <p className="text-xl sm:text-2xl text-gray-300 mb-2">
-                                <span className="font-semibold text-white">Amount Paid:</span> 
-                                ${subscription?.amount}
+                                <span className="font-semibold text-white">Amount Paid: </span> 
+                                NPR {subscription?.amount}
                             </p>
 
                             <p className="text-xl sm:text-2xl text-gray-300 mb-4">

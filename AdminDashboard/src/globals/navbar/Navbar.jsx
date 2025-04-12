@@ -4,12 +4,21 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ArtistProfile, setToken } from '../../store/authSlice';
 import tunecasaLogo from "../../assets/tunecasaLogo.png";
 import { FiLogOut, FiMusic, FiBell, FiUser } from "react-icons/fi";
+import { getEventAndMusicNotifications } from '../../store/notificationSlice';
 
 const Navbar = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { token, profile } = useSelector((state) => state.auth);
     const [isLoggedIn, setIsloggedIn] = useState(false);
+
+    const {unreadCount} = useSelector((state) => state.notifications);
+    console.log(unreadCount, "unreadCount")
+  
+    useEffect(() => {
+      dispatch(getEventAndMusicNotifications());
+    }, [dispatch]);
+  
 
     useEffect(() => {
         const localStorageToken = localStorage.getItem('token');
@@ -48,11 +57,17 @@ const Navbar = () => {
                 <div className="flex items-center space-x-6">
                     {isLoggedIn && (
                         <>
-                            {/* Notifications Icon */}
-                            <button className="relative p-2 rounded-lg hover:bg-gray-700">
-                                <FiBell className="text-white text-lg" />
-                                <span className="absolute top-0 right-0 bg-red-600 text-white text-xs px-1.5 py-0.5 rounded-full">3</span>
-                            </button>
+                         {/* Notifications Icon */}
+                         <Link to="/notification" className="relative">
+      <p className="flex items-center gap-2">
+        <FiBell className="w-6 h-6" />
+        {unreadCount > 0 && (
+          <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+            {unreadCount}
+          </span>
+        )}
+      </p>
+    </Link>
                         </>
                     )}
 

@@ -3,13 +3,15 @@ import songModel from "../models/songModel.js";
 import albumModel from "../models/albumModel.js"
 import Artist from "../models/artistModel.js"
 import User from "../models/userModel.js";
+import notifiactionModel from "../models/notifiactionModel.js";
 
 //add songs
 export const addSong = async (req, res) => {
   const { name, desc, album, genre } = req.body;
   const audioFile = req.files.audio[0];
   const imageFile = req.files.image[0];
-  const userId=req.user.id;
+  const userId = req.user.id;
+
   try {
     const artist = await User.findById(userId);
     if (!artist) {
@@ -29,19 +31,48 @@ export const addSong = async (req, res) => {
       desc,
       album,
       genre,
-      userId, 
+      userId,
       image: imageUpload.secure_url,
       file: audioUpload.secure_url,
-      duration
+      duration,
     };
 
     const song = await songModel.create(songData);
+
+    // Find artist profile to get followers
+    const artistProfile = await Artist.findOne({ userId });
+
+
+
+    // Notify followers about the new song release
+if (artistProfile && Array.isArray(artistProfile.followers) && artistProfile.followers.length > 0) {
+  for (const followerId of artistProfile.followers) {
+    await notifiactionModel.create({
+      userId: followerId,
+      content: `🎵 ${artist.username} just released a new track: ${name} — check it out now!`, // Song name included
+      type: "music",
+      isRead: false,
+      name: name, // Store the song name for the notification
+      image: imageUpload.secure_url, // Store the song image URL for the notification
+    });
+  }
+}
+
+
+    // Optional: Create a global notification (if needed)
+    // await Notification.create({
+    //   content: `🎵 ${artist.username} just released a new track: ${name} — check it out now!`,
+    //   type: "music",
+    //   isRead: false,
+    // });
+
     res.status(200).json({ message: "Song is successfully added!", data: song });
   } catch (error) {
     console.error("Error adding song:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
 
 //get all the song
 export const getAllSong=async(req,res)=>{

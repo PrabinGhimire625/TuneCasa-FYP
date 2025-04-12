@@ -8,6 +8,7 @@ import { sendEmailToAdmin,sendEmailToArtist } from '../services/SendAdminEmail.j
 import axios from "axios";
 import { oauth2Client } from "../config/googleConfig.js"; 
 import { sendMessageToArtistEmail } from "../services/SendAdminEmail.js";
+import moment from "moment/moment.js";
 
 
 //user registration
@@ -63,6 +64,7 @@ export const login = async (req, res) => {
   }
 };
 
+
 //googlelogin
 export const googleLogin = async (req, res) => {
   try {
@@ -80,12 +82,12 @@ export const googleLogin = async (req, res) => {
       `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${tokens.access_token}`
     );
 
-    const { email, name, image } = userResponse.data;
+    const { email, username, image } = userResponse.data;
 
     // Check if the user already exists in the database
     let user = await User.findOne({ email });
     if (!user) {
-      user = await User.create({ name, email, image });
+      user = await User.create({ username, email, image });
     }
 
     const { _id } = user;
@@ -668,4 +670,59 @@ export const getArtistsUserIsFollowing = async (req, res) => {
   }
 };
 
+
+
+
+export const getUserGrowthByDateRange = async (req, res) => {
+  try {
+    // Get first and last registered user to determine the range
+    const firstUser = await User.findOne().sort({ createdAt: 1 });
+    const lastUser = await User.findOne().sort({ createdAt: -1 });
+
+    if (!firstUser || !lastUser) {
+      return res.status(404).json({
+        success: false,
+        error: "No users found in the database.",
+      });
+    }
+
+    const startDate = moment(firstUser.createdAt).startOf("month");
+    const endDate = moment(lastUser.createdAt).startOf("month");
+
+    const monthsDiff = endDate.diff(startDate, "months");
+    const monthlyGrowth = [];
+
+    let cumulativeCount = 0;
+
+    for (let i = 0; i <= monthsDiff; i++) {
+      const monthStart = moment(startDate).add(i, "months").startOf("month").toDate();
+      const monthEnd = moment(startDate).add(i + 1, "months").startOf("month").toDate();
+
+      const count = await User.countDocuments({
+        createdAt: {
+          $gte: monthStart,
+          $lt: monthEnd,
+        },
+      });
+
+      cumulativeCount += count;
+
+      monthlyGrowth.push({
+        month: moment(monthStart).format("YYYY-MM"),
+        count: cumulativeCount,
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: monthlyGrowth,
+    });
+  } catch (error) {
+    console.error("Error calculating monthly user growth:", error);
+    return res.status(500).json({
+      success: false,
+      error: "Internal server error.",
+    });
+  }
+};
 

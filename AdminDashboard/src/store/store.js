@@ -10,6 +10,7 @@ import artistSlice from "./artistSlice"
 import eventSlice from "./eventSlice"
 import analyticSlice from "./analyticSlice"
 import subscriptionSlice from "./subscriptionSlice"
+import notificationSlice from "./notificationSlice"
 
 const store=configureStore({
     reducer:{
@@ -24,6 +25,7 @@ const store=configureStore({
         event:eventSlice,
         analytics:analyticSlice,
         subscription:subscriptionSlice,
+        notifications:notificationSlice,
 
         
         

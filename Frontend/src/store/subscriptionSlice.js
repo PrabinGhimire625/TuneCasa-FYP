@@ -59,6 +59,7 @@ export function paymentVerification(pidx) {
     };
 }
 
+
 // verify subscription
 export function verifyActiveSubscription() {
   return async function verifyActiveSubscriptionThunk(dispatch) {
@@ -66,11 +67,13 @@ export function verifyActiveSubscription() {
 
     try {
       const response = await APIAuthenticated.get(`/api/subscription/check-active-subscription`);
+     
       console.log("Backend response:", response); // Log the full response object
 
       if (response.status === 200) {
         const { data } = response.data; // Correctly access response.data
         dispatch(setSubscriptionData(data));
+        
         console.log("data in the store", data)
         dispatch(setStatus(STATUS.SUCCESS));
       } else {

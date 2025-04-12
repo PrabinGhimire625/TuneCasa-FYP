@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { assets } from "../../../assets/artist-assets/assets";
 import { useDispatch, useSelector } from "react-redux";
-import { createAds } from "../../../store/adsSlice";
+import { createAds, resetStatus } from "../../../store/adsSlice";
 import { STATUS } from "../../../globals/enumStatus/Status";
+import { toast } from 'react-toastify';
 
 const CreateAds = () => {
   const { status } = useSelector((state) => state.ads);
@@ -12,6 +13,7 @@ const CreateAds = () => {
     name: "",
     audio: null,
     image: null,
+    totalPlays: 1,
   });
 
   const [audioPreview, setAudioPreview] = useState(null);
@@ -42,84 +44,107 @@ const CreateAds = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(createAds(adsData));
+
   };
 
   useEffect(() => {
     if (status === STATUS.SUCCESS) {
-      alert("Ad successfully added!");
-      setAdsData({ name: "", audio: null, image: null });
+      dispatch(resetStatus());
+      toast.success("Ad created successfully!");
+      setAdsData({ name: "", audio: null, image: null, totalPlays: 1 });
       setAudioPreview(null);
       setImagePreview(null);
     } else if (status === STATUS.ERROR) {
-      alert("Failed to add the ad. Please try again.");
+      toast.error("Something went wrong!");
     }
   }, [status]);
 
   return (
-    <section className="p-8 flex justify-center">
-      <div className="max-w-lg w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-        <h2 className="text-3xl font-bold text-center text-white mb-6">
-          Create New Ad
+    <section className=" p-6 md:p-10  flex justify-center">
+      <div className="max-w-2xl w-full bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-700 p-8 md:p-10">
+        <h2 className="text-3xl font-bold text-center text-white mb-8">
+          🎧 Create New Ad
         </h2>
+
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-          <div className="flex gap-6 items-center justify-between">
-            {/* Upload Audio */}
-            <div className="flex flex-col gap-4 items-center w-1/2">
-              <label className="text-lg text-gray-400" htmlFor="audio">
+          {/* Upload Audio & Image */}
+          <div className="flex flex-col md:flex-row gap-6">
+            {/* Audio Upload */}
+            <div className="flex flex-col items-center gap-3 w-full md:w-1/2">
+              <label htmlFor="audio" className="text-sm text-gray-300 font-medium">
                 Upload Ad Audio
               </label>
               <input
-                onChange={handleChange}
                 type="file"
                 id="audio"
                 name="audio"
                 accept="audio/*"
+                onChange={handleChange}
                 hidden
               />
-              <label htmlFor="audio">
+              <label htmlFor="audio" className="cursor-pointer">
                 <img
                   src={audioPreview ? assets.upload_added : assets.upload_song}
-                  className="w-32 h-32 cursor-pointer rounded-lg object-cover transition-transform transform hover:scale-110"
+                  className="w-28 h-28 md:w-32 md:h-32 rounded-xl object-cover border-2 border-dashed border-gray-600 hover:scale-105 transition-transform"
                   alt="Upload Audio"
                 />
               </label>
+              {audioPreview && <span className="text-xs text-teal-400">Audio selected</span>}
             </div>
-            
-            {/* Upload Image */}
-            <div className="flex flex-col gap-4 items-center w-1/2">
-              <label className="text-lg text-gray-400" htmlFor="image">
-                Upload Image
+
+            {/* Image Upload */}
+            <div className="flex flex-col items-center gap-3 w-full md:w-1/2">
+              <label htmlFor="image" className="text-sm text-gray-300 font-medium">
+                Upload image
               </label>
               <input
-                onChange={handleChange}
                 type="file"
                 id="image"
-                accept="image/*"
                 name="image"
+                accept="image/*"
+                onChange={handleChange}
                 hidden
               />
-              <label htmlFor="image">
+              <label htmlFor="image" className="cursor-pointer">
                 <img
                   src={imagePreview || assets.upload_area}
-                  className="w-32 h-32 cursor-pointer rounded-lg object-cover transition-transform transform hover:scale-110"
+                  className="w-28 h-28 md:w-32 md:h-32 rounded-xl object-cover border-2 border-dashed border-gray-600 hover:scale-105 transition-transform"
                   alt="Upload Image"
                 />
               </label>
+              {imagePreview && <span className="text-xs text-teal-400">Image selected</span>}
             </div>
           </div>
 
-          {/* Ad Name */}
-          <div className="flex flex-col gap-2.5">
-            <label htmlFor="name" className="text-lg text-gray-800">
-              Ads Name
+          {/* Ad Name Input */}
+          <div className="flex flex-col">
+            <label htmlFor="name" className="text-sm text-gray-300 font-medium mb-1">
+              Ad Name
             </label>
             <input
-              onChange={handleChange}
+              type="text"
               name="name"
               value={adsData.name}
-              className="bg-transparent border-2 border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-600 focus:ring-opacity-50"
-              placeholder="Ads title"
-              type="text"
+              onChange={handleChange}
+              placeholder="Enter ad name"
+              className="bg-gray-900 text-white border border-gray-600 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 placeholder:text-gray-400"
+              required
+            />
+          </div>
+
+          {/* Total Plays Input */}
+          <div className="flex flex-col">
+            <label htmlFor="totalPlays" className="text-sm text-gray-300 font-medium mb-1">
+              Total Plays
+            </label>
+            <input
+              type="number"
+              name="totalPlays"
+              value={adsData.totalPlays}
+              onChange={handleChange}
+              min="1"
+              placeholder="Number of plays"
+              className="bg-gray-900 text-white border border-gray-600 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 placeholder:text-gray-400"
               required
             />
           </div>
@@ -127,9 +152,9 @@ const CreateAds = () => {
           {/* Submit Button */}
           <button
             type="submit"
-            className="bg-gray-950 text-white text-lg py-3 px-10 rounded-lg hover:bg-teal-700 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-opacity-75"
+            className="bg-teal-600 hover:bg-teal-700 text-white text-lg font-semibold py-3 rounded-xl mt-2 transition duration-300 focus:outline-none focus:ring-4 focus:ring-teal-400"
           >
-            Add Ad
+            ➕ Create Ad
           </button>
         </form>
       </div>

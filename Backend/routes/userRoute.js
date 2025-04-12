@@ -1,6 +1,6 @@
 import {Router} from "express";
 import errorHandler from "../services/catchAsyncError.js";
-import { approveArtist,artistProfile, artistLogin, fetchAllUser, fetchPendingArtists, forgetPassword, login, profile, register, registerArtist, rejectArtist, resetPassword, updateUser, verifyOtp, fetchAllArtists, fetchSingleUser, googleLogin, sendMessageToArtist, fetchLatestArtists, countAllArtists, countAllUsers, countUserOnly, deleteUser, followArtist, unfollowArtist, getArtistFollowersCount, getArtistsUserIsFollowing } from "../controllers/userController.js";
+import { approveArtist,artistProfile, artistLogin, fetchAllUser, fetchPendingArtists, forgetPassword, login, profile, register, registerArtist, rejectArtist, resetPassword, updateUser, verifyOtp, fetchAllArtists, fetchSingleUser, googleLogin, sendMessageToArtist, fetchLatestArtists, countAllArtists, countAllUsers, countUserOnly, deleteUser, followArtist, unfollowArtist, getArtistFollowersCount, getArtistsUserIsFollowing, getUserGrowthByDateRange } from "../controllers/userController.js";
 import { isAuthenticated } from "../middleware/authMiddleware.js";
 import upload from "../middleware/multer.js"
 const router=Router();
@@ -54,6 +54,9 @@ router.route("/follow/:id").post(isAuthenticated, errorHandler(followArtist));
 router.route("/unfollow/:id").post(isAuthenticated, errorHandler(unfollowArtist));
 router.route("/followers/:id").get(isAuthenticated, errorHandler(getArtistFollowersCount));
 router.route("/suggested-artists").get(isAuthenticated, errorHandler(getArtistsUserIsFollowing));
+
+
+router.route("/userGrowth").get(getUserGrowthByDateRange)
 
 
 export default router

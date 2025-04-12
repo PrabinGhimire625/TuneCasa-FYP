@@ -2,51 +2,75 @@ import Subscription, { PLAN_PRICES, PLAN_DURATION } from "../models/subscription
 import Payment from "../models/paymentModel.js";
 import axios from "axios";
 import moment from 'moment'; // for better date handling
+import User from "../models/userModel.js";
+import notifiactionModel from "../models/notifiactionModel.js";
 
 // Create a new subscription
 export const createSubscription = async (req, res) => {
   try {
     const { planName } = req.body;
-    const userId = req.user.id; 
-    
-    // Validate subscription plan
-    if (!PLAN_PRICES[planName]) {
+    const userId = req.user.id;
+
+    const PLAN_DURATION = {
+      monthly: 30,
+      halfYear: 180,
+    };
+
+    const PLAN_PRICES = {
+      monthly: 2.99,
+      halfYear: 15.99,
+    };
+
+    if (!PLAN_DURATION[planName]) {
       return res.status(400).json({ message: "Invalid subscription plan" });
     }
-    
-    // Create Subscription document
+
+    const now = new Date();
+
+    // 🧠 Find the latest subscription by endDate (not by creation date)
+    const latestSub = await Subscription.findOne({
+      userId,
+    }).sort({ endDate: -1 });
+
+    let startDate = now;
+
+    if (latestSub && latestSub.endDate > now) {
+      // Queue the new subscription after the latest one
+      startDate = new Date(latestSub.endDate);
+    }
+
+    const endDate = new Date(startDate);
+    endDate.setDate(endDate.getDate() + PLAN_DURATION[planName]);
+
+    // 🧾 Create subscription
     const subscription = await Subscription.create({
       userId,
       planName,
       amount: PLAN_PRICES[planName],
-      status: "pending", 
+      status: "pending", // or active if you want to activate immediately
+      startDate,
+      endDate,
     });
-    
-    // Create Payment record linked to the subscription
+
     const payment = await Payment.create({
       subscriptionId: subscription._id,
       totalAmount: PLAN_PRICES[planName],
-      paymentMethod: "khalti", 
-      paymentStatus: "unpaid", 
+      paymentMethod: "khalti",
+      paymentStatus: "unpaid",
     });
 
-    // Link payment to subscription and save
     subscription.payment = payment._id;
     await subscription.save();
-    
-    // Define Khalti payment initiation request data
-    const paymentData = {
-      return_url: "http://localhost:5173/verifyPayment/", 
-      purchase_order_id: subscription._id.toString(), 
-      amount: PLAN_PRICES[planName] * 100, 
-      website_url: "http://localhost:5173/", 
-      purchase_order_name: `orderName_${subscription._id}`, 
-    };
 
-    // Send request to Khalti payment initiation API
     const response = await axios.post(
       "https://a.khalti.com/api/v2/epayment/initiate/",
-      paymentData,
+      {
+        return_url: "http://localhost:5173/verifyPayment/",
+        purchase_order_id: subscription._id.toString(),
+        amount: PLAN_PRICES[planName] * 100,
+        website_url: "http://localhost:5173/",
+        purchase_order_name: `order_${subscription._id}`,
+      },
       {
         headers: {
           Authorization: `Key ${process.env.KHALTI_SECRET_KEY}`,
@@ -54,25 +78,25 @@ export const createSubscription = async (req, res) => {
       }
     );
 
-    // Handle Khalti response
-    const khaltiResponse = response.data;
-    payment.pidx = khaltiResponse.pidx; 
+    payment.pidx = response.data.pidx;
     await payment.save();
+
+    console.log("✅ Queued subscription with startDate:", startDate);
 
     res.status(200).json({
       message: "Subscription initiated successfully",
       data: {
-        payment: payment,
-        url: khaltiResponse.payment_url, // Redirect URL for Khalti payment page
-        khaltiData: khaltiResponse,
+        payment,
+        url: response.data.payment_url,
       },
     });
-    
   } catch (error) {
-    console.error("Error creating subscription:", error);
+    console.error("❌ Subscription error:", error);
     res.status(500).json({ message: "Error creating subscription", error: error.message });
   }
 };
+
+
 
 // Khalti payment verification
 export const khaltiVerification = async (req, res) => {
@@ -89,15 +113,20 @@ export const khaltiVerification = async (req, res) => {
       return res.status(404).json({ message: "Payment not found" });
     }
 
+    // Check if the payment is already completed
+    if (payment.paymentStatus === "paid") {
+      console.log("Payment already verified and status is 'paid'. Skipping notification.");
+      return res.status(200).json({ message: "Payment already processed" });
+    }
+
     const subscription = await Subscription.findById(payment.subscriptionId);
     if (!subscription) {
       return res.status(404).json({ message: "Subscription not found" });
     }
 
     const planName = subscription.planName;
-
-    // Check if the planName is valid and retrieve the duration
     const durationInDays = PLAN_DURATION[planName];
+
     if (!durationInDays) {
       return res.status(400).json({ message: "Invalid plan duration" });
     }
@@ -119,10 +148,10 @@ export const khaltiVerification = async (req, res) => {
       payment.paymentStatus = "paid";
       await payment.save();
 
-      // Calculate the start and end date for the subscription
+      // Calculate start and end dates
       const startDate = new Date();
       const endDate = new Date(startDate);
-      endDate.setDate(startDate.getDate() + durationInDays); 
+      endDate.setDate(startDate.getDate() + durationInDays);
 
       // Activate the subscription associated with the payment
       await Subscription.findByIdAndUpdate(payment.subscriptionId, {
@@ -131,6 +160,39 @@ export const khaltiVerification = async (req, res) => {
         endDate,
       });
 
+      // 🔔 Check if a notification for this subscription already exists
+      // 🔔 Check if a notification for this subscription already exists
+try {
+  const user = await User.findById(subscription.userId);
+  if (user) {
+    // Check if the notification already exists
+    const existingNotification = await notifiactionModel.findOne({
+      userId: user._id,
+      type: "subscription",
+      name: `Subscription: ${planName}`, // Name should be unique to the subscription plan
+    });
+
+    if (!existingNotification) {
+      console.log("Creating new notification for subscription activation");
+
+      const newNotification = await notifiactionModel.create({
+        userId: user._id,
+        content: `🎉 Your subscription to the ${planName} plan is now active! Enjoy your perks!`,
+        type: "subscription",
+        isRead: false,
+        name: `Subscription: ${planName}`,
+        image: "", // Optional image for the notification
+      });
+
+      console.log("Notification saved:", newNotification);
+    } else {
+      console.log("Notification already exists for this subscription.");
+    }
+  }
+} catch (err) {
+  console.error("Error sending subscription notification:", err);
+}
+
       res.status(200).json({
         message: "Payment successful, subscription activated!",
         payment: {
@@ -138,7 +200,7 @@ export const khaltiVerification = async (req, res) => {
           paymentMethod: payment.paymentMethod,
           totalAmount: payment.totalAmount,
           paymentStatus: payment.paymentStatus,
-          pidx: payment.pidx, 
+          pidx: payment.pidx,
         },
         subscription: {
           subscriptionId: payment.subscriptionId,
@@ -159,6 +221,7 @@ export const khaltiVerification = async (req, res) => {
     res.status(500).json({ message: "Error verifying payment", error: error.message });
   }
 };
+
 
 // Check if user already has an active subscription
 export const checkActiveSubscription = async (req, res) => {
@@ -215,8 +278,6 @@ export const getAllSubscription = async (req, res) => {
     data: allSubscription,
   });
 };
-
-
 
 
 

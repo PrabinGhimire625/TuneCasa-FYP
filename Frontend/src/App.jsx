@@ -45,14 +45,15 @@ import AllAlbum from "./components/pages/Home/AllAlbum";
 import AboutUs from "./components/pages/AboutUs/AboutUs";
 import Settings from "./components/pages/setting/Setting";
 import Following from "./components/pages/artist/Following";
+import Notification from "./components/pages/Notification/Notification";
 
 
 function App() {
   return (
-    <>       
+    <>  
       <Provider store={store}>
         <BrowserRouter>
-        <ToastContainer position="top-right" autoClose={3000} />
+          <ToastContainer position="top-right" autoClose={3000} />
           <div className="flex flex-col min-h-screen">
             <Navbar />
             <div className="flex flex-1 relative">
@@ -86,7 +87,7 @@ function App() {
                 {/* <Route path="/playlist" element={<Playlist />} /> */}
                 <Route path="/playlist" element={<ProtectedRoute> <Playlist /></ProtectedRoute>}/>
                 <Route path="/allPlaylist" element={<AllPlaylist />} />
-                
+  
                 <Route path="/allGenre" element={<Genre />} />
                 <Route path="/genreDetails/:genre" element={<GenreDetails />} />
                 <Route path="/genreBasedSong/:genre" element={<GenreBasedSong />} />
@@ -103,9 +104,10 @@ function App() {
                 <Route path="/about" element={<AboutUs />} />
                 <Route path="/setting" element={<Settings />} />
                 <Route path="/following" element={<Following />} />
+                <Route path="/notification" element={<Notification />} />
                 
                 {/* GoogleLogin Route */}
-                {/* <Route 
+                <Route 
                   path="/googleLogin" 
                   element={
                     <GoogleOAuthProvider clientId="687900192771-rqsgh5k9r6kvqt7kmiatsh9cov55a5qv.apps.googleusercontent.com">
@@ -116,7 +118,7 @@ function App() {
                       />
                     </GoogleOAuthProvider>
                   } 
-                /> */}
+                />
               </Routes>
               </div>
               
