@@ -23,6 +23,9 @@ import EditSong from "./pages/EditForm/EditSong";
 import AddEvent from "./pages/AddForm/AddEvent";
 import ListEvent from "./pages/Tables/ListEvent";
 import EditEvent from "./pages/EditForm/EditEvent";
+import SongAnalytics from "./pages/Tables/SongAnalytics";
+import SingleSongAnalytics from "./pages/Tables/SingleSongAnalytics";
+import Checkout from "./pages/checkout/Checkout";
 
 function App() {
   return (
@@ -33,7 +36,7 @@ function App() {
           <Sidebar/>
           <div className="flex-1 h-screen overflow-y-scroll bg-gray-900">
             <Navbar/>
-            <div className="pt-8 pl-5 sm:pt-12 sm:pl-12">
+            <div className="pt-8 pl-5  sm:pl-12">
               <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
@@ -53,6 +56,9 @@ function App() {
                 <Route path="/editAlbum/:id" element={<EditAlbum />} />
                 <Route path="/editSong/:id" element={<EditSong />} />
                 <Route path="/editEvent/:id" element={<EditEvent />} />
+                <Route path="/songAnalytics" element={<SongAnalytics />} />
+                <Route path="/singleSongAnalytics/:id" element={<SingleSongAnalytics />} />
+                <Route path="/checkout" element={<Checkout />} />
               </Routes>
             </div>
           </div>

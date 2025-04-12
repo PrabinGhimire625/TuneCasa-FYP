@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { STATUS } from "../globals/enumStatus/Status";
 import { API, APIAuthenticated } from "../http";
+import { STATUS } from "../globals/components/Status";
+
 
 const analyticSlice = createSlice({
     name: "analytics",
@@ -16,7 +17,6 @@ const analyticSlice = createSlice({
         totalSubscriptionUser: null,
         artistMonthlyEarning:null,
         status: STATUS.LOADING,
-        checkout:null,
     },
     reducers: {
         setSongDetails(state, action) {
@@ -52,9 +52,6 @@ const analyticSlice = createSlice({
         setStatus(state, action) {
             state.status = action.payload;
         },
-        setCheckout(state, action) {
-            state.checkout = action.payload;
-        },
     }
 });
 
@@ -69,7 +66,7 @@ export const {
     setError, 
     setArtistSongAnalytics,
     setSongDetails,setSingleSongAnalytics,
-    setArtistMonthlyEarning,setCheckout
+    setArtistMonthlyEarning
 } = analyticSlice.actions;
 export default analyticSlice.reducer;
 
@@ -223,11 +220,11 @@ export function fetchSingleSongAnalytics(id){
 
 
 //list the single song analytics
-export function fetchArtistSongAnalytics(id){
+export function fetchArtistSongAnalytics(){
     return async function fetchArtistSongAnalyticsThunk(dispatch) {
         dispatch(setStatus(STATUS.LOADING));
         try{
-        const response=await API.get(`/api/song-analytics/artistSong/${id}`);
+        const response=await APIAuthenticated.get(`/api/song-analytics/artistSong/`);
         if(response.status===200){
             const {data} =response.data;
             dispatch(setArtistSongAnalytics(data));
@@ -243,11 +240,11 @@ export function fetchArtistSongAnalytics(id){
 }
 
 //calculate the artist monthly based earning from song
-export function calculateArtistMonthlyEarning(id){
+export function calculateArtistMonthlyEarning(){
     return async function calculateArtistMonthlyEarningThunk(dispatch) {
         dispatch(setStatus(STATUS.LOADING));
         try{
-        const response=await API.get(`/api/song-analytics/artist/monthly-earnings/${id}`);
+        const response=await APIAuthenticated.get(`/api/song-analytics/artist/monthly-earnings`);
         if(response.status===200){
             const {data} =response.data;
             dispatch(setArtistMonthlyEarning(data));
@@ -261,25 +258,3 @@ export function calculateArtistMonthlyEarning(id){
         }  
     }
 }
-
-
-// checkout 
-export function artistCheckout() {
-    return async function artistCheckoutThunk(dispatch) {
-      dispatch(setStatus(STATUS.LOADING));
-      try {
-        const response = await APIAuthenticated.post(`/api/song-analytics/checkout`);
-    
-        if (response.status === 200) {
-          dispatch(setStatus(STATUS.SUCCESS));
-        } else {
-          dispatch(setStatus(STATUS.ERROR));
-        }
-      } catch (err) {
-        console.error("Checkout error:", err);
-        dispatch(setStatus(STATUS.ERROR));
-      }
-    };
-  }
-  
-  

@@ -16,12 +16,6 @@ const ListAlbum = () => {
       dispatch(deleteAlbum(albumId));
     }
 
-
-
-
-
-
-  
   return (
     <>
       <div className='text-white'>

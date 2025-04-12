@@ -1,5 +1,5 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { FiSearch, FiMusic, FiUsers, FiHeadphones, FiList } from "react-icons/fi";
+import { FiSearch, FiMusic, FiUsers, FiHeadphones, FiList, FiPlusCircle, FiFacebook, FiInstagram } from "react-icons/fi";
 import { FaChartLine } from "react-icons/fa";
 
 const data = [
@@ -11,25 +11,26 @@ const data = [
   { year: "2023", listeners: 70000, prevListeners: 55000 },
 ];
 
-const trendingArtists = [
-  { name: "Aria Melody", plays: 25000, img: "/images/artist1.jpg" },
-  { name: "Skyler Beats", plays: 22000, img: "/images/artist2.jpg" },
-  { name: "Echo Rhythms", plays: 18000, img: "/images/artist3.jpg" },
-  { name: "Neon Vibes", plays: 15000, img: "/images/artist4.jpg" },
-  { name: "Horizon Tunes", plays: 12000, img: "/images/artist5.jpg" },
+const trendingSongs = [
+  { title: "Rise Above", artist: "Aria Melody", plays: 25000, img: "/images/song1.jpg" },
+  { title: "Echoes of the Night", artist: "Skyler Beats", plays: 22000, img: "/images/song2.jpg" },
+  { title: "Into the Horizon", artist: "Echo Rhythms", plays: 18000, img: "/images/song3.jpg" },
+  { title: "Vibes of Neon", artist: "Neon Vibes", plays: 15000, img: "/images/song4.jpg" },
+  { title: "Waves of Sound", artist: "Horizon Tunes", plays: 12000, img: "/images/song5.jpg" },
 ];
 
-export default function Dashboard() {
+export default function ArtistDashboard() {
   return (
     <div className="bg-gray-900 text-white p-5 min-h-screen">
 
       {/* Dashboard Stats */}
       <div className="grid grid-cols-4 gap-6 mt-6">
-        {[
-          { label: "Total Artists", value: "3,5", icon: <FiUsers />, color: "text-blue-400" },
-          { label: "Total Songs", value: "120", icon: <FiMusic />, color: "text-yellow-400" },
-          { label: "Active Listeners", value: "70", icon: <FiHeadphones />, color: "text-green-400" },
-          { label: "Playlists Created", value: "47", icon: <FiList />, color: "text-purple-400" },
+        {[ 
+       
+          { label: "Total Songs", value: "10", icon: <FiMusic />, color: "text-yellow-400" },
+          { label: "Upcoming Events", value: "3", icon: <FiList />, color: "text-purple-400" },
+          { label: "Followers", value: "35,000", icon: <FiUsers />, color: "text-blue-400" },
+          { label: "Total Revenue", value: "$50,000", icon: <FiPlusCircle />, color: "text-red-400" },
         ].map((stat, index) => (
           <div key={index} className="bg-gray-800 p-5 rounded-xl flex items-center gap-4">
             <div className={`text-3xl ${stat.color}`}>{stat.icon}</div>
@@ -59,19 +60,48 @@ export default function Dashboard() {
         </ResponsiveContainer>
       </div>
 
-      {/* Trending Artists */}
+      {/* Trending Songs */}
       <div className="bg-gray-800 p-6 rounded-lg mt-6">
-        <h3 className="text-lg font-semibold">🔥 Trending Artists</h3>
+        <h3 className="text-lg font-semibold">🔥 Trending Songs</h3>
         <div className="grid grid-cols-5 gap-4 mt-4">
-          {trendingArtists.map((artist, index) => (
+          {trendingSongs.map((song, index) => (
             <div key={index} className="bg-gray-700 p-3 rounded-lg text-center">
-              <img src={artist.img} alt={artist.name} className="w-20 h-20 mx-auto rounded-full border-2 border-green-400" />
-              <p className="mt-2 font-semibold">{artist.name}</p>
-              <p className="text-sm text-gray-400">{artist.plays.toLocaleString()} plays</p>
+              <img src={song.img} alt={song.title} className="w-20 h-20 mx-auto rounded-full border-2 border-green-400" />
+              <p className="mt-2 font-semibold">{song.title}</p>
+              <p className="text-sm text-gray-400">{song.plays.toLocaleString()} plays</p>
+              <p className="text-sm text-gray-500">{song.artist}</p>
             </div>
           ))}
         </div>
       </div>
+
+      {/* Recent Activity Section */}
+      <div className="bg-gray-800 p-6 rounded-lg mt-6 shadow-lg">
+        <h3 className="text-lg font-semibold flex items-center gap-2">
+          <FiList className="text-purple-400" /> Upcoming Events
+        </h3>
+        <div className="mt-4 space-y-2">
+          <p className="text-gray-400">Live Show in NYC | May 15, 2025</p>
+          <p className="text-gray-400">Concert in LA | June 20, 2025</p>
+          <p className="text-gray-400">Virtual Event | July 10, 2025</p>
+        </div>
+      </div>
+
+     {/* Social Media Section */}
+<div className="bg-gray-800 p-6 rounded-lg mt-6 text-center">
+  <h3 className="text-lg font-semibold">🔗 Social Media</h3>
+  <div className="flex justify-center gap-6 mt-4">
+    <a href="https://instagram.com/artist" target="_blank" rel="noopener noreferrer" className="text-pink-500">
+      <FiInstagram />
+    </a>
+    <a href="https://facebook.com/artist" target="_blank" rel="noopener noreferrer" className="text-blue-600">
+      <FiFacebook />
+    </a>
+  </div>
+</div>
+
+
     </div>
   );
 }
+

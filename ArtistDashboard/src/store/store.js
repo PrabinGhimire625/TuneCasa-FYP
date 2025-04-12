@@ -4,6 +4,7 @@ import albumSlice from "./albumSlice"
 import authSlice from "./authSlice"
 import genreSlice from "./genreSlice"
 import eventSlice from "./eventSlice"
+import analyticSlice from "./analyticSlice"
 
 const store=configureStore({
     reducer:{
@@ -12,6 +13,7 @@ const store=configureStore({
         album:albumSlice,
         genre:genreSlice,
         event:eventSlice,
+        analytics:analyticSlice,
        
     }
 })
