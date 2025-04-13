@@ -57,11 +57,11 @@ const EditProfile = () => {
   };
   
     return (
-        <div className="h-screen bg-black">
+        <div className="h-screen ">
             <div className="h-[90%] flex">
-                <div className="flex items-start justify-center flex-1 bg-stone-900">
+                <div className="flex items-start justify-center flex-1 bg-gray-900">
                     <form
-                        className="flex items-start bg-stone-800 px-12 py-12 rounded-lg shadow-lg mt-2 mx-5 relative"
+                        className="flex items-start  px-12 py-12 rounded-lg shadow-lg mt-2 mx-5 relative"
                         onSubmit={handleSubmit}
                     >
                         {/* Profile Image Upload */}

@@ -3,6 +3,8 @@ import Event from "../models/eventModel.js";
 import User from "../models/userModel.js";
 import Artist from "../models/artistModel.js"
 import notifiactionModel from "../models/notifiactionModel.js";
+import moment from 'moment';
+
 
 // Add Event
 // export const addEvent = async (req, res) => {
@@ -215,3 +217,40 @@ export const fetchEventsOfEachArtist = async (req, res) => {
 
   res.status(200).json({ message: "Successfully fetched artist's events.", data: artistEvents });
 };
+
+
+export const fetchAndCountArtistUpcomingEvents = async (req, res) => {
+  const userId = req.user.id;
+
+  try {
+    const artist = await User.findById(userId);
+    if (!artist) {
+      return res.status(404).json({ message: "Artist not found." });
+    }
+
+    // Get today's date as string: "YYYY-MM-DD"
+    const today = moment().format("YYYY-MM-DD");
+
+    // Find events where eventDate >= today
+    const upcomingEvents = await Event.find({
+      userId,
+      eventDate: { $gte: today },
+    }).sort({ eventDate: 1 }); // Sort by upcoming date
+
+    if (upcomingEvents.length === 0) {
+      return res.status(404).json({ message: "No upcoming events found for this artist." });
+    }
+
+    res.status(200).json({
+      message: "Successfully fetched artist's upcoming events.",
+      totalUpcomingEvents: upcomingEvents.length,
+      upcomingEvents: upcomingEvents,
+    });
+  } catch (error) {
+    console.error("Error fetching upcoming events:", error);
+    res.status(500).json({ message: "Something went wrong while fetching upcoming events." });
+  }
+};
+
+
+

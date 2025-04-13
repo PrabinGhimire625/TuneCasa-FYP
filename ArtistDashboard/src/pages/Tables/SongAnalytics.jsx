@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { calculateArtistMonthlyEarning, fetchArtistSongAnalytics } from '../../store/analyticSlice';
 import { TrendingUp, Clock, Eye, ArrowRight } from 'lucide-react';
+import Footer from '../../globals/components/Footer';
 
 const SongAnalytics = () => {
   const dispatch = useDispatch();
@@ -49,7 +50,7 @@ const SongAnalytics = () => {
         <input
           type="text"
           placeholder="Search song by name..."
-          className="w-full md:w-1/2 px-5 py-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full md:w-1/2 px-5 py-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-100"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />

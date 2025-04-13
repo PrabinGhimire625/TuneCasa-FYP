@@ -1,5 +1,5 @@
 import {Router} from "express"
-import { addSong, countAllSong, deleteSong, fetchArtistSongs, fetchSingleSong, fetchSongByGenre, fetchSongsByAlbum, getAllSong, updateSong } from "../controllers/songController.js";
+import { addSong, countAllSong, countArtistSongs, deleteSong, fetchArtistSongs, fetchSingleSong, fetchSongByGenre, fetchSongsByAlbum, getAllSong, updateSong } from "../controllers/songController.js";
 import upload from "../middleware/multer.js";
 import errorHandler from "../services/catchAsyncError.js";
 import { isAuthenticated } from "../middleware/authMiddleware.js";
@@ -9,6 +9,7 @@ router.route("/").post(isAuthenticated, upload.fields([{name:'image',maxCount:1}
 .get( errorHandler(getAllSong))
 
 router.route("/total/count").get( errorHandler(countAllSong))
+router.route("/artistSong/count").get(isAuthenticated, errorHandler(countArtistSongs))
 
 router.route("/:album").get( errorHandler(fetchSongsByAlbum))
 router.route("/songByGenre/genres/:genre").get( errorHandler(fetchSongByGenre))
@@ -21,6 +22,7 @@ router.route("/singleSong/:id").get(isAuthenticated, errorHandler((fetchSingleSo
 router.route("/:id").get(isAuthenticated, errorHandler((fetchSingleSong)))
 .delete(isAuthenticated, errorHandler(deleteSong))
 .patch(isAuthenticated, upload.fields([{ name: 'image', maxCount: 1 }]),errorHandler(updateSong))
+
 
 
 export default router

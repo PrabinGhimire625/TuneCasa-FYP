@@ -5,6 +5,7 @@ import authSlice from "./authSlice"
 import genreSlice from "./genreSlice"
 import eventSlice from "./eventSlice"
 import analyticSlice from "./analyticSlice"
+import checkoutSlice from "./checkoutSlice"
 
 const store=configureStore({
     reducer:{
@@ -14,6 +15,7 @@ const store=configureStore({
         genre:genreSlice,
         event:eventSlice,
         analytics:analyticSlice,
+        checkout:checkoutSlice,
        
     }
 })

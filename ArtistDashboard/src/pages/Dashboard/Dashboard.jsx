@@ -87,20 +87,6 @@ export default function ArtistDashboard() {
         </div>
       </div>
 
-     {/* Social Media Section */}
-<div className="bg-gray-800 p-6 rounded-lg mt-6 text-center">
-  <h3 className="text-lg font-semibold">🔗 Social Media</h3>
-  <div className="flex justify-center gap-6 mt-4">
-    <a href="https://instagram.com/artist" target="_blank" rel="noopener noreferrer" className="text-pink-500">
-      <FiInstagram />
-    </a>
-    <a href="https://facebook.com/artist" target="_blank" rel="noopener noreferrer" className="text-blue-600">
-      <FiFacebook />
-    </a>
-  </div>
-</div>
-
-
     </div>
   );
 }

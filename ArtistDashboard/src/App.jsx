@@ -26,6 +26,8 @@ import EditEvent from "./pages/EditForm/EditEvent";
 import SongAnalytics from "./pages/Tables/SongAnalytics";
 import SingleSongAnalytics from "./pages/Tables/SingleSongAnalytics";
 import Checkout from "./pages/checkout/Checkout";
+import SingleCheckout from "./pages/checkout/SingleCheckout";
+import Footer from "./globals/components/Footer";
 
 function App() {
   return (
@@ -59,10 +61,13 @@ function App() {
                 <Route path="/songAnalytics" element={<SongAnalytics />} />
                 <Route path="/singleSongAnalytics/:id" element={<SingleSongAnalytics />} />
                 <Route path="/checkout" element={<Checkout />} />
+                <Route path="/:id" element={<SingleCheckout />} />
               </Routes>
             </div>
           </div>
+         
         </div>
+         <Footer/>
       </BrowserRouter>
     </Provider>
   );

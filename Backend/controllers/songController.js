@@ -187,7 +187,7 @@ export const fetchSongsByAlbum = async (req, res) => {
     res.status(200).json({ message: "Songs fetched successfully", data: songs });
   };
   
-
+//song by genre
   export const fetchSongByGenre = async (req, res) => {
       const { genre } = req.params;
   
@@ -219,5 +219,22 @@ export const fetchSongsByAlbum = async (req, res) => {
       }
   };
   
+  
+// Count songs for an artist
+export const countArtistSongs = async (req, res) => {
+  const userId = req.user.id;
+  try {
+    const songCount = await songModel.countDocuments({ userId });
+
+    res.status(200).json({
+      message: "Song count fetched successfully",
+      totalSongs: songCount,
+    });
+  } catch (error) {
+    console.error("Error counting songs:", error);
+    res.status(500).json({ message: "Something went wrong while counting songs" });
+  }
+};
+
 
   
