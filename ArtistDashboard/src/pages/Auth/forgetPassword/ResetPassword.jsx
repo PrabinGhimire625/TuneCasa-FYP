@@ -33,7 +33,7 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="flex  justify-center h-screen overflow-hidden bg-stone-800">
+    <div className="flex  justify-center h-screen overflow-hidden bg-gray-900">
       <div className=" mt-16 bg-stone-700 lg:w-5/12 md:w-6/12 h-[400px] shadow-3xl">
         <div className="absolute p-4 transform -translate-x-1/2 -translate-y-1/2 bg-gray-800 rounded-full left-1/2 md:p-8">
           <svg width="32" height="32" viewBox="0 0 24 24" fill="#FFF">

@@ -222,7 +222,7 @@ export function fetchSingleSongAnalytics(id){
 }
 
 
-//list the single song analytics
+//list the artists song analytics
 export function fetchArtistSongAnalytics(id){
     return async function fetchArtistSongAnalyticsThunk(dispatch) {
         dispatch(setStatus(STATUS.LOADING));

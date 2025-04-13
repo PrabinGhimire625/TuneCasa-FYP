@@ -42,7 +42,7 @@ const SingleSongAnalytics = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen text-white p-6 mt-[-112px]">
+    <div className="flex justify-center items-center  text-white p-6 ">
       <div className="w-full max-w-4xl bg-opacity-10 backdrop-blur-md p-8 rounded-xl shadow-2xl border border-gray-700">
         {/* Song Title */}
         <h2 className="text-4xl text-center font-extrabold mb-6 text-blue-400 tracking-wide">
@@ -108,6 +108,26 @@ const SingleSongAnalytics = () => {
             Your browser does not support the audio element.
           </audio>
         </div>
+        <div className="mt-8 bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-700">
+          <h3 className="text-xl font-semibold text-blue-400 mb-4">TuneCasa Earning Calculation</h3>
+          <p className="text-gray-400">
+            Your earnings on TuneCasa are generated based on various factors such as song plays and watch time. Here's how the earnings are calculated:
+          </p>
+          <ul className="list-disc pl-6 text-gray-400 mt-4">
+            <li><strong>Song Plays:</strong> Each time your song is played, it contributes to your earnings.</li>
+            <li><strong>Watch Time:</strong> The longer users listen to your song, the more you earn. Watch time is an important factor in calculating your earnings.</li>
+            <li><strong>Total Earnings Calculation:</strong> All earnings from song plays, watch time, and any associated ad revenue are summed up to calculate your total earnings.</li>
+            <li><strong>Checkout Threshold:</strong> Once your total earnings exceed NPR 1000, you'll be eligible to initiate a checkout process to withdraw your earnings.</li>
+          </ul>
+          <p className="text-gray-400 mt-4">
+            Please note, your earnings will be updated regularly, and you can track your balance in the "Earnings" section of your dashboard. Once your total earnings reach the NPR 1000 threshold, you can proceed with the checkout to withdraw your funds.
+          </p>
+          <p className="text-gray-400 mt-4">
+            For more detailed information, please refer to our full terms and conditions.
+          </p>
+        </div>
+
+
       </div>
     </div>
   );

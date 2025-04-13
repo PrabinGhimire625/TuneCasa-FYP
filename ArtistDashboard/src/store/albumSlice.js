@@ -8,6 +8,7 @@ const albumSlice = createSlice({
         albums: [], 
         singleAlbum: null, 
         status: STATUS.LOADING,
+        albumOfArtist:[],
     },
     reducers: {
         setAlbumData(state, action) {
@@ -15,7 +16,9 @@ const albumSlice = createSlice({
         },
         setSingleAlbum(state, action) {
             state.singleAlbum = action.payload; 
-            console.log(  state.singleAlbum)
+        },
+        setAlbumOfArtist(state, action) {
+            state.albumOfArtist = action.payload; 
         },
         setStatus(state, action) {
             state.status = action.payload;
@@ -31,16 +34,26 @@ const albumSlice = createSlice({
         }
         ,
         setDeleteAlbum(state, action) {
-            const index = state.albums.findIndex(album => album._id === action.payload.albumId);  // Use '===' instead of '='
+            const { albumId } = action.payload;
+        
+            // Remove album from the global album list
+            const index = state.albums.findIndex(album => album._id === albumId);  
             if (index !== -1) {
                 state.albums.splice(index, 1); // Remove the album from the list
             }
+        
+            // Also remove the album from the artist-specific album list
+            const artistIndex = state.albumOfArtist.findIndex(album => album._id === albumId);  
+            if (artistIndex !== -1) {
+                state.albumOfArtist.splice(artistIndex, 1); // Remove from the artist's list
+            }
         }
+        
         
     },
 });
 
-export const { setAlbumData, setSingleAlbum, setStatus,setDeleteAlbum,setUpdateAlbum } = albumSlice.actions;
+export const { setAlbumData, setSingleAlbum, setStatus,setDeleteAlbum,setUpdateAlbum, setAlbumOfArtist } = albumSlice.actions;
 export default albumSlice.reducer;
 
 // Add a new album
@@ -79,6 +92,26 @@ export function listAllAlbum() {
             if (response.status === 200) {
                 const { data } = response.data;
                 dispatch(setAlbumData(data));
+                dispatch(setStatus(STATUS.SUCCESS));
+            } else {
+                dispatch(setStatus(STATUS.ERROR));
+            }
+        } catch (err) {
+            console.error(err);
+            dispatch(setStatus(STATUS.ERROR));
+        }
+    };
+}
+
+//List all albums of the specific artist
+export function listAllAlbumOfArtist() {
+    return async function listAllAlbumOfArtist(dispatch) {
+        dispatch(setStatus(STATUS.LOADING));
+        try {
+            const response = await APIAuthenticated.get("/api/album/albumOfArtist");
+            if (response.status === 200) {
+                const { data } = response.data;
+                dispatch(setAlbumOfArtist(data));
                 dispatch(setStatus(STATUS.SUCCESS));
             } else {
                 dispatch(setStatus(STATUS.ERROR));

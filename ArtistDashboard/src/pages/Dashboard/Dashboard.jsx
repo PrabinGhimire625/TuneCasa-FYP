@@ -1,6 +1,15 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { FiSearch, FiMusic, FiUsers, FiHeadphones, FiList, FiPlusCircle, FiFacebook, FiInstagram } from "react-icons/fi";
 import { FaChartLine } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { countArtistSong } from "../../store/songSlice";
+import { CountArtistUpcommingEvent } from "../../store/eventSlice";
+import { Link } from "react-router-dom";
+import { countArtistFollower } from "../../store/authSlice";
+import { calculateArtistMonthlyEarning } from "../../store/analyticSlice";
+import TrendingSong from "../mostPlaySong/TrendingSong";
+
 
 const data = [
   { year: "2018", listeners: 1000, prevListeners: 800 },
@@ -12,39 +21,118 @@ const data = [
 ];
 
 const trendingSongs = [
-  { title: "Rise Above", artist: "Aria Melody", plays: 25000, img: "/images/song1.jpg" },
-  { title: "Echoes of the Night", artist: "Skyler Beats", plays: 22000, img: "/images/song2.jpg" },
-  { title: "Into the Horizon", artist: "Echo Rhythms", plays: 18000, img: "/images/song3.jpg" },
-  { title: "Vibes of Neon", artist: "Neon Vibes", plays: 15000, img: "/images/song4.jpg" },
-  { title: "Waves of Sound", artist: "Horizon Tunes", plays: 12000, img: "/images/song5.jpg" },
+  {
+    title: "Rise Above",
+    artist: "Aria Melody",
+    plays: 25000,
+    img: "/images/song1.jpg",
+  },
+  {
+    title: "Echoes of the Night",
+    artist: "Skyler Beats",
+    plays: 22000,
+    img: "/images/song2.jpg",
+  },
+  {
+    title: "Into the Horizon",
+    artist: "Echo Rhythms",
+    plays: 18000,
+    img: "/images/song3.jpg",
+  },
+  {
+    title: "Vibes of Neon",
+    artist: "Neon Vibes",
+    plays: 15000,
+    img: "/images/song4.jpg",
+  },
+  {
+    title: "Waves of Sound",
+    artist: "Horizon Tunes",
+    plays: 12000,
+    img: "/images/song5.jpg",
+  },
 ];
 
 export default function ArtistDashboard() {
+  const dispatch = useDispatch();
+  const { artistSongCount } = useSelector((state) => state.song);
+  const { artistUpcomingEvent } = useSelector((state) => state.event);
+  const { artistFollower } = useSelector((state) => state.auth);
+  const { artistMonthlyEarning } = useSelector((state) => state.analytics);
+
+  useEffect(() => {
+    dispatch(countArtistSong());
+    dispatch(CountArtistUpcommingEvent());
+    dispatch(countArtistFollower())
+    dispatch(calculateArtistMonthlyEarning());
+  }, [dispatch]);
+
+  console.log("artistUpcomingEvent, ", artistUpcomingEvent)
+
   return (
     <div className="bg-gray-900 text-white p-5 min-h-screen">
 
       {/* Dashboard Stats */}
-      <div className="grid grid-cols-4 gap-6 mt-6">
-        {[ 
-       
-          { label: "Total Songs", value: "10", icon: <FiMusic />, color: "text-yellow-400" },
-          { label: "Upcoming Events", value: "3", icon: <FiList />, color: "text-purple-400" },
-          { label: "Followers", value: "35,000", icon: <FiUsers />, color: "text-blue-400" },
-          { label: "Total Revenue", value: "$50,000", icon: <FiPlusCircle />, color: "text-red-400" },
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
+        {[
+          {
+            label: "Total Songs",
+            value: artistSongCount?.songCount?.toLocaleString() || 0,
+            icon: <FiMusic />,
+            color: "text-yellow-400",
+            link: "/allSong",
+          },
+          {
+            label: "Upcoming Events",
+            value: artistUpcomingEvent?.count?.toLocaleString() || 0,
+            icon: <FiList />,
+            color: "text-purple-400",
+            link: "/upcomingEvents",
+          },
+          {
+            label: "Followers",
+            value: artistFollower?.totalFollowers?.toLocaleString() || 0,
+            icon: <FiUsers />,
+            color: "text-blue-400",
+            link: "/followerList",
+          },
+          {
+            label: "Total earning",
+            value: `NPR ${artistMonthlyEarning?.totalEarnings?.toLocaleString() || 0}`,
+            icon: <FiPlusCircle />,
+            color: "text-red-400",
+            link: "/songAnalytics",
+          },
         ].map((stat, index) => (
-          <div key={index} className="bg-gray-800 p-5 rounded-xl flex items-center gap-4">
-            <div className={`text-3xl ${stat.color}`}>{stat.icon}</div>
-            <div>
-              <p className="text-xl font-bold">{stat.value}</p>
-              <p className="text-gray-400">{stat.label}</p>
-            </div>
+          <div
+            key={index}
+            className="bg-gray-800 p-5 rounded-xl flex items-center gap-4 hover:bg-gray-700 transition duration-300 shadow-md"
+          >
+            {/* Wrap the whole div in a Link */}
+            {stat.link ? (
+              <Link to={stat.link} className="w-full flex items-center gap-4">
+                <div className={`text-3xl ${stat.color}`}>{stat.icon}</div>
+                <div>
+                  <p className="text-xl font-bold">{stat.value}</p>
+                  <p className="text-gray-400">{stat.label}</p>
+                </div>
+              </Link>
+            ) : (
+              <div className={`w-full flex items-center gap-4`}>
+                <div className={`text-3xl ${stat.color}`}>{stat.icon}</div>
+                <div>
+                  <p className="text-xl font-bold">{stat.value}</p>
+                  <p className="text-gray-400">{stat.label}</p>
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
 
       {/* Listeners Growth Chart */}
-      <div className="bg-gray-800 p-6 rounded-lg mt-6 shadow-lg">
-        <h3 className="text-lg font-semibold flex items-center gap-2">
+      <div className="bg-gray-800 p-6 rounded-lg mt-8 shadow-lg">
+        <h3 className="text-lg font-semibold flex items-center gap-2 mb-4">
           <FaChartLine className="text-green-400" /> Listener Growth
         </h3>
         <ResponsiveContainer width="100%" height={300}>
@@ -54,40 +142,58 @@ export default function ArtistDashboard() {
             <YAxis tick={{ fill: "white" }} />
             <Tooltip />
             <Legend />
-            <Line type="monotone" dataKey="listeners" stroke="#4CAF50" strokeWidth={2} dot={{ fill: "#4CAF50" }} />
-            <Line type="monotone" dataKey="prevListeners" stroke="#2196F3" strokeWidth={2} dot={{ fill: "#2196F3" }} />
+            <Line
+              type="monotone"
+              dataKey="listeners"
+              stroke="#4CAF50"
+              strokeWidth={2}
+              dot={{ fill: "#4CAF50" }}
+            />
+            <Line
+              type="monotone"
+              dataKey="prevListeners"
+              stroke="#2196F3"
+              strokeWidth={2}
+              dot={{ fill: "#2196F3" }}
+            />
           </LineChart>
         </ResponsiveContainer>
       </div>
 
       {/* Trending Songs */}
-      <div className="bg-gray-800 p-6 rounded-lg mt-6">
-        <h3 className="text-lg font-semibold">🔥 Trending Songs</h3>
-        <div className="grid grid-cols-5 gap-4 mt-4">
-          {trendingSongs.map((song, index) => (
-            <div key={index} className="bg-gray-700 p-3 rounded-lg text-center">
-              <img src={song.img} alt={song.title} className="w-20 h-20 mx-auto rounded-full border-2 border-green-400" />
-              <p className="mt-2 font-semibold">{song.title}</p>
-              <p className="text-sm text-gray-400">{song.plays.toLocaleString()} plays</p>
-              <p className="text-sm text-gray-500">{song.artist}</p>
-            </div>
-          ))}
-        </div>
+      <div className="">
+        <TrendingSong />
+
       </div>
 
-      {/* Recent Activity Section */}
-      <div className="bg-gray-800 p-6 rounded-lg mt-6 shadow-lg">
-        <h3 className="text-lg font-semibold flex items-center gap-2">
+      {/* Upcoming Events */}
+      <div className="bg-gray-800 p-6 rounded-lg mt-8 shadow-lg">
+        <h3 className="text-lg font-semibold flex items-center gap-2 mb-3">
           <FiList className="text-purple-400" /> Upcoming Events
         </h3>
-        <div className="mt-4 space-y-2">
-          <p className="text-gray-400">Live Show in NYC | May 15, 2025</p>
-          <p className="text-gray-400">Concert in LA | June 20, 2025</p>
-          <p className="text-gray-400">Virtual Event | July 10, 2025</p>
-        </div>
-      </div>
+        <Link to="/upcomingEvents">
+          <ul className="space-y-2 list-disc list-inside text-gray-300">
+            {artistUpcomingEvent?.events
+              ?.filter((event) => new Date(event.eventDate) >= new Date()) // Optional: show only future events
+              .slice(0, 5)
+              .map((event) => {
+                const date = new Date(event.eventDate);
+                const formattedDate = date.toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                });
 
+                return (
+                  <li key={event._id}>
+                    {event.title} | {formattedDate}
+                  </li>
+                );
+              })}
+          </ul>
+        </Link>
+
+      </div>
     </div>
   );
 }
-

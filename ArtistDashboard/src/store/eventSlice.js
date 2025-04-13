@@ -7,7 +7,8 @@ const eventSlice = createSlice({
     initialState: {
         event: [],
         status: STATUS.LOADING,
-        singleEvent: null
+        singleEvent: null,
+        artistUpcomingEvent:[],
     },
     reducers: {
         setEvent(state, action) {
@@ -18,6 +19,9 @@ const eventSlice = createSlice({
         },
         setSingleEvent(state, action) {
             state.singleEvent = action.payload;
+        },
+        setArtistUpcommingEvent(state, action){
+            state.artistUpcomingEvent=action.payload;
         },
         setDeleteEvent(state, action) {
             state.event = state.event.filter(event => event._id !== action.payload.eventId);
@@ -34,7 +38,7 @@ const eventSlice = createSlice({
     }
 });
 
-export const { setEvent, setStatus, setSingleEvent, setDeleteEvent, setUpdateEvent } = eventSlice.actions;
+export const { setEvent, setStatus, setSingleEvent, setDeleteEvent, setUpdateEvent, setArtistUpcommingEvent } = eventSlice.actions;
 export default eventSlice.reducer;
 
 //Add Event
@@ -140,4 +144,24 @@ export function updateEvent({ id, eventData }) {
             dispatch(setStatus(STATUS.ERROR));
         }
     };
+}
+
+//artist song count
+export function CountArtistUpcommingEvent(){
+    return async function CountArtistUpcommingEventThunk(dispatch) {
+        dispatch(setStatus(STATUS.LOADING));
+        try{
+        const response=await APIAuthenticated.get("/api/event/artistEvent/count");
+        if(response.status===200){
+            const {data} =response.data;
+            dispatch(setArtistUpcommingEvent(data));
+            dispatch(setStatus(STATUS.SUCCESS));
+        }else{
+            dispatch(setStatus(STATUS.ERROR)); 
+        }
+        }catch(err){
+            console.log(err);
+        dispatch(setStatus(STATUS.ERROR));  
+        }  
+    }
 }

@@ -3,6 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateArtistProfile, artistProfile, resetStatus } from "../../../store/authSlice"; 
 import { useParams, useNavigate } from "react-router-dom";
 import { STATUS } from "../../../globals/components/Status";
+import { toast } from "react-toastify";
+import TrendingSong from "../../mostPlaySong/TrendingSong";
+import UpComingEvent from "../../event/UpComingEvent";
 
 const EditProfile = () => {
     const { id } = useParams();
@@ -48,20 +51,21 @@ const EditProfile = () => {
   
     dispatch(updateArtistProfile({ id, userData: formData })).then(() => {
       if (status === STATUS.SUCCESS) {
-        alert("User is updated successfully!");
-        navigate("/profile")
+       toast.success("User edited");
+        navigate("/profile");
       } else {
-        alert("User is not updated successfully!");
+        toast.error("Something went wrong");
       }
     });
   };
   
     return (
-        <div className="h-screen ">
-            <div className="h-[90%] flex">
+      <>
+        <div className=" ">
+           
                 <div className="flex items-start justify-center flex-1 bg-gray-900">
                     <form
-                        className="flex items-start  px-12 py-12 rounded-lg shadow-lg mt-2 mx-5 relative"
+                        className="w-full flex items-start  px-12 py-12 rounded-lg shadow-lg mt-2 mx-5 relative"
                         onSubmit={handleSubmit}
                     >
                         {/* Profile Image Upload */}
@@ -123,8 +127,16 @@ const EditProfile = () => {
                         )}
                     </form>
                 </div>
-            </div>
+                   
+                
+      
+            <TrendingSong/>
+         
+       
+      
         </div>
+       
+      </>
     );
 };
 

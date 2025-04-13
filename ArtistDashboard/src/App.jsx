@@ -28,12 +28,19 @@ import SingleSongAnalytics from "./pages/Tables/SingleSongAnalytics";
 import Checkout from "./pages/checkout/Checkout";
 import SingleCheckout from "./pages/checkout/SingleCheckout";
 import Footer from "./globals/components/Footer";
+import SingleSong from "./pages/SinglePages/SingleSong";
+import SongByAlbum from "./pages/Tables/SongByAlbum";
+import UpComingEvent from "./pages/event/UpComingEvent";
+import SingleEvent from "./pages/event/SingleEvent";
+import { FolderLock } from "lucide-react";
+import FollowerList from "./pages/follower/FollowerList";
+import TrendingSong from "./pages/mostPlaySong/TrendingSong";
 
 function App() {
   return (
     <Provider  store={store}>
       <BrowserRouter>
-      <ToastContainer />
+      <ToastContainer position="top-right" autoClose={1000} />
         <div className="flex items-start min-h-screen">
           <Sidebar/>
           <div className="flex-1 h-screen overflow-y-scroll bg-gray-900">
@@ -51,7 +58,8 @@ function App() {
                 <Route path="/add-song" element={<AddSong />} />
                 <Route path="/add-album" element={<AddAlbum />} />
                 <Route path="/add-event" element={<AddEvent />} />
-                <Route path="/list-song" element={<ListSong />} />
+                <Route path="/allSong" element={<ListSong />} />
+                <Route path="/singleSong/:id" element={<SingleSong />} />
                 <Route path="/list-album" element={<ListAlbum />} />
                 <Route path="/list-event" element={<ListEvent />} />
                 <Route path="/" element={<Dashboard />} />
@@ -62,6 +70,11 @@ function App() {
                 <Route path="/singleSongAnalytics/:id" element={<SingleSongAnalytics />} />
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/:id" element={<SingleCheckout />} />
+                <Route path="/album/:name" element={<SongByAlbum />} />
+                <Route path="/upcomingEvents" element={<UpComingEvent />} />
+                <Route path="/singleEvent/:id" element={<SingleEvent />} />
+                <Route path="/followerList" element={<FollowerList />} />
+                <Route path="/trendingSong" element={<TrendingSong />} />
               </Routes>
             </div>
           </div>

@@ -1,24 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { assets } from '../../assets/artist-assets/assets';
 import { useDispatch, useSelector } from 'react-redux';
-import { listAllAlbum } from '../../store/albumSlice';
+import { listAllAlbum, listAllAlbumOfArtist } from '../../store/albumSlice';
 import { addSong } from '../../store/songSlice';
 import { STATUS } from '../../globals/components/Status';
 import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { listAllGenre } from '../../store/genreSlice';
+import { useNavigate } from 'react-router-dom';
 
 const AddSong = () => {
-  const { albums, status } = useSelector((state) => state.album);
+  const { albumOfArtist, status } = useSelector((state) => state.album);
   const { genre } = useSelector((state) => state.genre);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [songData, setSongData] = useState({
-    name: "",
-    desc: "",
+    name: '',
+    desc: '',
     image: null,
     audio: null,
-    album: "none",
-    genre:"none"
+    album: 'none',
+    genre: 'none',
   });
 
   const handleChange = (e) => {
@@ -31,106 +34,121 @@ const AddSong = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!songData.audio) {
-      toast.warning("audio is required");
-      return; 
-    }
-    if (!songData.image) {
-      toast.warning("image is required");
-      return; 
-    }
+    if (!songData.audio) return toast.warning('Audio is required');
+    if (!songData.image) return toast.warning('Image is required');
+
     dispatch(addSong(songData));
     if (status === STATUS.SUCCESS) {
-      alert("Successfully added the song");
+      toast.success('Song added successfully!');
+      //navigate('/allSong'); // Redirect to the allSong route after successful song addition
     } else {
-      alert("Failed to add the song");
+      toast.error('Something went wrong');
     }
   };
-  
+
 
   useEffect(() => {
-    dispatch(listAllAlbum());
-    dispatch(listAllGenre())
+    dispatch(listAllAlbumOfArtist());
+    dispatch(listAllGenre());
   }, [dispatch]);
 
-
   return (
-    <>
-      <form onSubmit={handleSubmit} className='flex flex-col items-start gap-8 text-gray-600'>
-        <div className='flex gap-8'>
-          {/* upload song */}
-          <div className='flex flex-col gap-4'>
-            <p>Upload song</p>
+    <div className="bg-gray-900 flex justify-center items-center py-10 px-4">
+      <ToastContainer />
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-2xl bg-gray-800 text-white p-8 rounded-2xl shadow-2xl flex flex-col gap-6 border border-gray-700"
+      >
+        <h2 className="text-3xl font-semibold mb-2 border-b border-gray-600 pb-3">🎵 Add New Song</h2>
+
+        <div className="flex flex-col sm:flex-row gap-6 justify-between">
+          {/* Upload Song */}
+          <div className="flex flex-col items-center gap-2">
+            <p className="text-sm font-medium">Upload Song</p>
             <input
               onChange={handleChange}
               type="file"
-              id='song'
-              name='audio'
-              accept='audio/*'
+              id="song"
+              name="audio"
+              accept="audio/*"
               hidden
-              
             />
-            <label htmlFor="song">
-              <img src={songData.audio ? assets.upload_added : assets.upload_song} className='w-24 cursor-pointer' alt="" />
-            </label>     
+            <label htmlFor="song" className="cursor-pointer">
+              <img
+                src={songData.audio ? assets.upload_added : assets.upload_song}
+                alt=""
+                className="w-24 h-24 object-contain border-2 border-dashed border-gray-600 rounded-lg hover:border-green-500 transition"
+              />
+            </label>
           </div>
 
-          {/* upload image */}
-          <div className='flex flex-col gap-4'>
-            <p>Upload image</p>
+          {/* Upload Image */}
+          <div className="flex flex-col items-center gap-2">
+            <p className="text-sm font-medium">Upload Image</p>
             <input
               onChange={handleChange}
               type="file"
-              id='image'
-              accept='image/*'
-              name='image'
+              id="image"
+              accept="image/*"
+              name="image"
               hidden
             />
-            <label htmlFor="image">
-              <img src={songData.image ? URL.createObjectURL(songData.image) : assets.upload_area} className='w-24 cursor-pointer' alt="" />
+            <label htmlFor="image" className="cursor-pointer">
+              <img
+                src={songData.image ? URL.createObjectURL(songData.image) : assets.upload_area}
+                alt=""
+                className="w-24 h-24 object-cover border-2 border-dashed border-gray-600 rounded-lg hover:border-green-500 transition"
+              />
             </label>
           </div>
         </div>
 
-        <div className='flex flex-col gap-2.5'>
-          <p>Song name</p>
+        {/* Song Name */}
+        <div className="flex flex-col gap-1">
+          <label className="text-sm font-medium">Song Name</label>
           <input
             onChange={handleChange}
-            name='name'
+            name="name"
             value={songData.name}
-            className='bg-transparent outline-green-600 border-2 border-gray-400 p-2.5 w-[500px]'
-            placeholder='Type Here'
+            className="bg-gray-900 text-white rounded-md p-3 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500"
+            placeholder="Type song name here"
             type="text"
             required
           />
         </div>
 
-        <div className='flex flex-col gap-2.5'>
-          <p>Song description</p>
+        {/* Song Description */}
+        <div className="flex flex-col gap-1">
+          <label className="text-sm font-medium">Description</label>
           <textarea
             onChange={handleChange}
-            name='desc'
+            name="desc"
             value={songData.desc}
-            className='bg-transparent outline-green-600 border-2 border-gray-400 p-2.5 w-[500px]'
-            placeholder='Type Here'
+            rows={4}
+            className="bg-gray-900 text-white rounded-md p-3 border border-gray-600 resize-none focus:outline-none focus:ring-2 focus:ring-green-500"
+            placeholder="Write something about the song..."
             required
           />
         </div>
 
-        {/* select album */}
-        <div className='flex flex-col gap-2.5'>
-          <p>Album</p>
+        {/* Album Selection */}
+        <div className="flex flex-col gap-1">
+          <label className="text-sm font-medium">Select Album</label>
           <select
             onChange={handleChange}
-            name='album'
+            name="album"
             value={songData.album}
-            className='bg-transparent outline-green-600 border-2 border-gray-400 p-2.5 w-[500px]'
+            className="bg-gray-900 text-white rounded-md p-3 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500"
             required
           >
-            <option value="none">Select an Album</option>
-            {albums.length > 0 ? (
-              albums.map((item, index) => (
-                <option key={index} value={item?.name}>{item?.name}</option>
+            <option value="none" disabled>
+              Select an Album
+            </option>
+            {albumOfArtist.length > 0 ? (
+              albumOfArtist.map((item, index) => (
+                <option key={index} value={item?.name}>
+                  {item?.name}
+                </option>
               ))
             ) : (
               <option disabled>No Albums Available</option>
@@ -138,32 +156,40 @@ const AddSong = () => {
           </select>
         </div>
 
-        {/* select genre */}
-        <div className='flex flex-col gap-2.5'>
-          <p>Genre</p>
+        {/* Genre Selection */}
+        <div className="flex flex-col gap-1">
+          <label className="text-sm font-medium">Select Genre</label>
           <select
             onChange={handleChange}
-            name='genre'
+            name="genre"
             value={songData.genre}
-            className='bg-transparent outline-green-600 border-2 border-gray-400 p-2.5 w-[500px]'
+            className="bg-gray-900 text-white rounded-md p-3 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500"
             required
           >
-            <option value="none">Select an Album</option>
+            <option value="none" disabled>
+              Select a Genre
+            </option>
             {genre.length > 0 ? (
               genre.map((item, index) => (
-                <option key={index} value={item?.name}>{item?.name}</option>
+                <option key={index} value={item?.name}>
+                  {item?.name}
+                </option>
               ))
             ) : (
-              <option disabled>No genre available</option>
+              <option disabled>No Genre Available</option>
             )}
           </select>
         </div>
 
-        <button type='submit' className='text-base bg-black text-white py-2.5 px-14 cursor-pointer'>
-          Add
+        {/* Submit */}
+        <button
+          type="submit"
+          className="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-md transition"
+        >
+          Add Song
         </button>
       </form>
-    </>
+    </div>
   );
 };
 

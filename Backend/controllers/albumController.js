@@ -136,7 +136,7 @@ import User from "../models/userModel.js";
   };
   
 
-
+//get all albums
 export const getAllAlbum=async(req,res)=>{
     const allAlbums=await albumModel.find();
     if(allAlbums.length<1){
@@ -144,6 +144,34 @@ export const getAllAlbum=async(req,res)=>{
     }
     res.status(200).json({message:"Successfully get all the album", data:allAlbums})
 }
+
+//get album of the specific artist
+export const getAlbumsOfArtist = async (req, res) => {
+  try {
+    const userId = req.user?.id; // Ensure your auth middleware sets this
+
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized: User ID missing" });
+    }
+
+    const artistAlbums = await albumModel.find({ userId }).sort({ createdAt: -1 });
+
+    if (artistAlbums.length < 1) {
+      return res.status(404).json({ message: "No albums found for this artist." });
+    }
+
+    res.status(200).json({
+      message: "Successfully retrieved artist's albums",
+      data: artistAlbums
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Server error while fetching albums",
+      error: error.message
+    });
+  }
+};
+
 
 //get single album
 export const fetchSingleAlbum=async(req,res)=>{
@@ -171,9 +199,6 @@ export const fetchSingleAlbumByName = async (req, res) => {
         res.status(500).json({ message: "Server error", error: error.message });
     }
 };
-
-
-
 
 //delete album
 export const deleteAlbum=async(req,res)=>{
@@ -250,7 +275,6 @@ export const fetchAlbumByGenre = async (req, res) => {
     }
 };
 
-//fetch lates release album
 // Fetch the latest top 5 albums
 export const fetchLatestAlbums = async (req, res) => {
         const latestAlbums = await albumModel.find()
@@ -273,3 +297,4 @@ export const countAllAlbum = async (req, res) => {
   // Send the count as a response
   res.status(200).json({ message: "Album count fetched successfully", data: totalAlbum });
 };
+

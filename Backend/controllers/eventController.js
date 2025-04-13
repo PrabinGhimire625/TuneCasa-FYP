@@ -228,27 +228,44 @@ export const fetchAndCountArtistUpcomingEvents = async (req, res) => {
       return res.status(404).json({ message: "Artist not found." });
     }
 
-    // Get today's date as string: "YYYY-MM-DD"
+    // 🔧 Fix: Use string for comparison
     const today = moment().format("YYYY-MM-DD");
 
-    // Find events where eventDate >= today
-    const upcomingEvents = await Event.find({
+    // ✅ Count upcoming events
+    const upcomingEventCount = await Event.countDocuments({
       userId,
-      eventDate: { $gte: today },
-    }).sort({ eventDate: 1 }); // Sort by upcoming date
+      eventDate: { $gte: today }, // eventDate is likely stored as a string
+    });
 
-    if (upcomingEvents.length === 0) {
-      return res.status(404).json({ message: "No upcoming events found for this artist." });
-    }
+    // 📦 Fetch all events (still as full objects)
+    const allEvents = await Event.find({ userId });
+
+    // 🧠 Sort: Upcoming first, Past later
+    const sortedEvents = allEvents.sort((a, b) => {
+      const now = new Date();
+      const aDate = new Date(a.eventDate);
+      const bDate = new Date(b.eventDate);
+
+      const isAUpcoming = aDate >= now;
+      const isBUpcoming = bDate >= now;
+
+      if (isAUpcoming && !isBUpcoming) return -1;
+      if (!isAUpcoming && isBUpcoming) return 1;
+
+      return aDate - bDate;
+    });
 
     res.status(200).json({
-      message: "Successfully fetched artist's upcoming events.",
-      totalUpcomingEvents: upcomingEvents.length,
-      upcomingEvents: upcomingEvents,
+      message: "Fetched all events with count of upcoming ones.",
+      data: {
+        count: upcomingEventCount,
+        events: sortedEvents,
+      },
     });
+
   } catch (error) {
-    console.error("Error fetching upcoming events:", error);
-    res.status(500).json({ message: "Something went wrong while fetching upcoming events." });
+    console.error("Error fetching artist events:", error);
+    res.status(500).json({ message: "Something went wrong while fetching events." });
   }
 };
 

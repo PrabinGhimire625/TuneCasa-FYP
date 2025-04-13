@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { register, resetStatus } from '../../../store/authSlice';
 import { STATUS } from '../../../globals/components/Status';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const Register = () => {
   const dispatch = useDispatch();
@@ -17,11 +18,11 @@ const Register = () => {
 
   useEffect(() => {
     if (status === STATUS.SUCCESS) {
-      alert("Artist registration is pending approval. You will get the response soon in the email");
+      toast.success("Artist registration is pending approval. You will get the response soon in the email");
       dispatch(resetStatus()); 
       navigate("/login"); 
     } else if (status === STATUS.ERROR) {
-      alert("An error occurred during registration.");
+      toast.error("Something went wrong");
       dispatch(resetStatus()); 
     }
   }, [status, dispatch, navigate]);

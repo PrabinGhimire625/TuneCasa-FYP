@@ -730,7 +730,7 @@ export const countFollower = async (req, res) => {
     const artist = await Artist.findOne({ userId: req.user.id })
       .populate({
         path: "followers",
-        select: "username", // select fields you want to return
+        select: "username email image", // select fields you want to return
       });
 
     if (!artist) {
@@ -741,9 +741,12 @@ export const countFollower = async (req, res) => {
 
     res.status(200).json({
       message: "Followers fetched successfully",
-      totalFollowers: followerCount,
-      followers: artist.followers, // List of follower user details
+      data: {
+        totalFollowers: followerCount,
+        followers: artist.followers, // List of follower user details
+      },
     });
+    
   } catch (error) {
     console.error("Fetch followers error:", error);
     res.status(500).json({ message: "Server error", error: error.message });

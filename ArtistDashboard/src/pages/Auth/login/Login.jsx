@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { login, resetStatus } from '../../../store/authSlice';
 import { STATUS } from '../../../globals/components/Status';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const Login = () => {
   const dispatch=useDispatch();
@@ -19,10 +20,10 @@ const Login = () => {
   useEffect(() => {
     if (status === STATUS.SUCCESS) {
       console.log(status)
-      alert("Successfully login to the system!")
+      toast.success("Successfully login")
       dispatch(resetStatus())
       navigate('/');
-    } 
+    }
   }, [status, navigate, dispatch]);
 
   return (

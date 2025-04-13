@@ -6,7 +6,9 @@ const songSlice=createSlice({
     initialState:{
         song:[],
         status:STATUS.LOADING,
-        singleSong:null
+        singleSong:null,
+        artistSongCount:null,
+        songByAlbum:[],
     },
     reducers:{
         setSong(state,action){
@@ -18,6 +20,12 @@ const songSlice=createSlice({
         },
         setSingleSong(state,action){
             state.singleSong=action.payload
+        },
+        setSongByAlbum(state,action){
+            state.songByAlbum=action.payload
+        },
+        setArtistSongCount(state,action){
+            state.artistSongCount=action.payload
         },
         setDeleteSong(state, action) {
             const index = state.song.findIndex(songs => songs._id === action.payload.songId); 
@@ -38,7 +46,7 @@ const songSlice=createSlice({
     }
 })
 
-export const {setSong,setStatus,setSingleSong,setDeleteSong,setUpdateSong}=songSlice.actions
+export const {setSong,setStatus,setSingleSong,setDeleteSong,setUpdateSong, setArtistSongCount, setSongByAlbum}=songSlice.actions
 export default songSlice.reducer
 
 
@@ -140,4 +148,43 @@ export function updateSong({id, songData}){
             dispatch(setStatus(STATUS.ERROR));
         }
     } 
+}
+
+//artist song count
+export function countArtistSong(){
+    return async function countArtistSong(dispatch) {
+        dispatch(setStatus(STATUS.LOADING));
+        try{
+        const response=await APIAuthenticated.get("/api/song/artistSong/count");
+        if(response.status===200){
+            const {data} =response.data;
+            dispatch(setArtistSongCount(data));
+            dispatch(setStatus(STATUS.SUCCESS));
+        }else{
+            dispatch(setStatus(STATUS.ERROR)); 
+        }
+        }catch(err){
+            console.log(err);
+        dispatch(setStatus(STATUS.ERROR));  
+        }  
+    }
+}
+
+//fetch song by album
+export function fetchAllSongByAlbum(album) {  // Accept album as a parameter
+    return async function fetchAllSongByAlbumThunk(dispatch) {
+        dispatch(setStatus(STATUS.LOADING));
+        try {
+            const response = await API.get(`api/song/${album}`);  // Use album parameter in API request
+            console.log("response from the fetch all song by album ", response);
+            
+            if (response.status === 200) {
+                const { data } = response.data;
+                dispatch(setSongByAlbum(data));  // Dispatch the fetched data
+                dispatch(setStatus(STATUS.SUCCESS));
+            }
+        } catch (err) {
+            dispatch(setStatus(STATUS.ERROR));  
+        }   
+    }
 }

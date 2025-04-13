@@ -533,3 +533,81 @@ export const artistCheckout = async (req, res) => {
   }
 };
 
+//fetch artist song analytics
+export const fetchArtistTrendingSong = async (req, res) => {
+  try {
+    const userId = req.user.id; // Use the authenticated user's ID
+
+    // Validate ObjectId format for userId
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "Invalid artist ID format." });
+    }
+
+    // Find all songs created by the given artist (userId)
+    const artistSongs = await songModel.find(
+      { userId: new mongoose.Types.ObjectId(userId) }, 
+      { _id: 1 } // Only fetch the _id (songId)
+    );
+
+    if (!artistSongs.length) {
+      return res.status(404).json({ message: "No songs found for this artist." });
+    }
+
+    const songIds = artistSongs.map(song => song._id); // Extract song IDs
+
+    // Fetch top 5 songs based on total views
+    const topSongs = await songAnalyticsModel.aggregate([
+      {
+        $match: { 
+          songId: { $in: songIds.map(id => new mongoose.Types.ObjectId(id)) } // Filter by artist's songs
+        }
+      },
+      {
+        $group: {
+          _id: "$songId",
+          totalViews: { $sum: "$views" }
+        }
+      },
+      {
+        $sort: { totalViews: -1 } // Sort by total views in descending order
+      },
+      {
+        $limit: 5 // Limit to the top 5 songs
+      },
+      {
+        $lookup: {
+          from: "songs", // Join with the songs collection
+          localField: "_id",
+          foreignField: "_id",
+          as: "song"
+        }
+      },
+      {
+        $unwind: { path: "$song", preserveNullAndEmptyArrays: true }
+      },
+      {
+        $project: {
+          songName: { $ifNull: ["$song.name", "Unknown"] },
+          songImage: { $ifNull: ["$song.image", "Unknown"] },
+          album: { $ifNull: ["$song.album", "Unknown"] },
+          totalViews: 1
+        }
+      }
+    ]);
+
+    if (!topSongs.length) {
+      return res.status(404).json({ message: "No trending songs found for this artist." });
+    }
+
+    res.status(200).json({
+      message: "Top 5 trending songs fetched successfully",
+      data: topSongs
+    });
+
+  } catch (error) {
+    console.error("Error fetching artist trending songs:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+

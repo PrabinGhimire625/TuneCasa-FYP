@@ -9,7 +9,8 @@ const authSlice=createSlice({
         data:[],
         status : STATUS.LOADING,
         token:"",
-        profile:""   
+        profile:"",
+        artistFollower:[],
     },
     reducers:{
         setUserData(state,action){
@@ -28,6 +29,9 @@ const authSlice=createSlice({
         setProfile(state,action){
             state.profile=action.payload
         },
+        setArtistFollower(state,action){
+            state.artistFollower=action.payload
+        },
         setUpdateUserProfile(state,action){
             const index=state.data.findIndex(item=>item.id===action.payload.id);
             if(index!==-1){
@@ -41,7 +45,7 @@ const authSlice=createSlice({
 })
 
 
-export const {setUserData,setStatus,resetStatus,setToken,setProfile,setUpdateUserProfile}=authSlice.actions
+export const {setUserData,setStatus,resetStatus,setToken,setProfile,setUpdateUserProfile, setArtistFollower}=authSlice.actions
 export default authSlice.reducer
 
 //signup
@@ -132,4 +136,24 @@ export function updateArtistProfile({ id, userData }) {
             throw err;
         }
     };
+}
+
+
+// get the follower list and the total follower of the specific artist
+export function countArtistFollower(){
+    return async function countArtistFollowerThunk(dispatch) {
+        dispatch(setStatus(STATUS.LOADING));
+        try{
+            const response=await APIAuthenticated.get("/api/count");
+            if(response.status===200){
+                const {data}=response.data;
+                dispatch(setArtistFollower(data));
+                dispatch(setStatus(STATUS.SUCCESS));  
+            }else{
+                dispatch(setStatus(STATUS.ERROR));
+            }
+        }catch(err){
+            dispatch(setStatus(STATUS.ERROR));
+        }  
+    }
 }

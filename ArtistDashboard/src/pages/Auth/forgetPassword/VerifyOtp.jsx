@@ -27,7 +27,7 @@ const VerifyOtp = () => {
   };
 
   return (
-    <div className="flex  justify-center bg-stone-900 h-screen overflow-hidden ">
+    <div className="flex  justify-center bg-gray-900 h-screen overflow-hidden ">
       <div className=" bg-stone-800 w-17/12 lg:w-5/12 md:w-6/12 shadow-3xl mt-10 h-[380px]">
         <form className="p-3 md:p-10" onSubmit={handleSubmit}>
           <h1 className="text-lg md:text-2xl mb-6">Verify OTP</h1>

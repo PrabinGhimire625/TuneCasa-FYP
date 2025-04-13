@@ -75,13 +75,20 @@ if (artistProfile && Array.isArray(artistProfile.followers) && artistProfile.fol
 
 
 //get all the song
-export const getAllSong=async(req,res)=>{
-        const allSongs=await songModel.find();
-        if(allSongs.length<1){
-            return res.status(404).json({message:"Songs not found"});   
-        }
-        res.status(200).json({message: "Successfull get all the songs",data:allSongs});
-}
+export const getAllSong = async (req, res) => {
+  try {
+      const allSongs = await songModel.find().sort({ createdAt: -1 }); // Sort by newest first
+      if (allSongs.length < 1) {
+          return res.status(404).json({ message: "Songs not found" });
+      }
+      res.status(200).json({ message: "Successfully fetched all songs", data: allSongs });
+  } catch (error) {
+      res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+
+
 
 // Count all songs
 export const countAllSong = async (req, res) => {
@@ -219,22 +226,31 @@ export const fetchSongsByAlbum = async (req, res) => {
       }
   };
   
-  
-// Count songs for an artist
-export const countArtistSongs = async (req, res) => {
+
+// Count songs and list them for an artist
+export const countAndListArtistSongs = async (req, res) => {
   const userId = req.user.id;
   try {
+    // Fetch the count of songs
     const songCount = await songModel.countDocuments({ userId });
+    
+    // Fetch the songs for the artist, sorted by the latest `createdAt`
+    const songs = await songModel.find({ userId }).sort({ createdAt: -1 });
 
     res.status(200).json({
-      message: "Song count fetched successfully",
-      totalSongs: songCount,
+      message: "Songs fetched successfully",
+      data: {
+        songCount,
+        songs,
+      },
     });
   } catch (error) {
-    console.error("Error counting songs:", error);
-    res.status(500).json({ message: "Something went wrong while counting songs" });
+    console.error("Error fetching songs:", error);
+    res.status(500).json({ message: "Something went wrong while fetching songs" });
   }
 };
+
+
 
 
   

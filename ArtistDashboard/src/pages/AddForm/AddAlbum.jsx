@@ -1,99 +1,124 @@
-import React, { useEffect, useState } from 'react'
-import { assets } from '../../assets/artist-assets/assets'
-import {useDispatch, useSelector} from  "react-redux"
+import React, { useEffect, useState } from 'react';
+import { assets } from '../../assets/artist-assets/assets';
+import { useDispatch, useSelector } from "react-redux";
 import { addAlbum } from '../../store/albumSlice';
 import { STATUS } from '../../globals/components/Status';
 import { listAllGenre } from '../../store/genreSlice';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const AddAlbum = () => {
-  const dispatch=useDispatch();
-  const {status, albums}=useSelector((state)=>state.album);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { status } = useSelector((state) => state.album);
   const { genre } = useSelector((state) => state.genre);
-  console.log(status);
-  console.log(albums)
 
-  const [albumData, setAlbumData]=useState(({
-    image:"",
-    name:"",
-    desc:"",
-    bgColour:"#121212",
-    genre:"none"
-  }))
+  const [submitted, setSubmitted] = useState(false);
 
+  const [albumData, setAlbumData] = useState({
+    image: "",
+    name: "",
+    desc: "",
+    bgColour: "#121212",
+    genre: "none"
+  });
 
-  const handleChange=(e)=>{
-    const {name, value, files}=e.target;
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
     setAlbumData({
       ...albumData,
-      [name]:name==='image' ? files[0]:value
-    })
-  }
+      [name]: name === 'image' ? files[0] : value
+    });
+  };
 
-  const handleSubmit=async(e)=>{
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setSubmitted(true);
     dispatch(addAlbum(albumData));
-    if (status === STATUS.SUCCESS) {
-      alert('Successfully added the album');
-      // navigate('/tables');
-  } else {
-      alert('Failed to add the album!');
-  }
-  }
+  };
 
   useEffect(() => {
-      dispatch(listAllGenre())
-    }, [dispatch]);
+    dispatch(listAllGenre());
+  }, [dispatch]);
 
-  console.log(albumData)
-
-
+  useEffect(() => {
+    if (submitted) {
+      if (status === STATUS.SUCCESS) {
+        toast.success("Album added");
+        navigate('/list-album');
+      } else if (status === STATUS.ERROR) {
+        toast.error("Something went wrong");
+      }
+    }
+  }, [status, submitted, navigate]);
 
   return (
-    <>
-      <form onSubmit={handleSubmit} className='flex flex-col items-start gap-8 text-gray-600'>
-        <div className='flex gap-8'>
-         
-          {/* upload image */}
-          <div className='flex flex-col gap-4'>
-            <p>Upload image</p>
-            <input onChange={handleChange} type="file" name='image' id='image' accept='image/*' hidden />
-            <label htmlFor="image">
-              <img 
-                src={albumData.image ? URL.createObjectURL(albumData.image) : assets.upload_area} 
-                className='w-24 cursor-pointer' 
-                alt="Uploaded preview or placeholder" 
-              /> 
-            </label>
-          </div>
+    <div className="flex justify-center bg-gradient-to-br p-6">
+      <form onSubmit={handleSubmit} className="w-full max-w-2xl bg-gray-800 p-8 rounded-lg shadow-lg border-2 border-gray-700">
+        <h2 className="text-3xl font-bold text-center text-white mb-8">Add New Album</h2>
+
+        {/* Upload Image */}
+        <div className="flex flex-col gap-4 mb-6">
+          <p className="text-lg text-gray-300">Upload Image</p>
+          <input onChange={handleChange} type="file" name='image' id='image' accept='image/*' hidden />
+          <label htmlFor="image">
+            <img
+              src={albumData.image ? URL.createObjectURL(albumData.image) : assets.upload_area}
+              className="w-48 h-48 object-cover rounded-xl shadow-lg cursor-pointer transition-all duration-300 hover:scale-105"
+              alt="Uploaded preview or placeholder"
+            />
+          </label>
         </div>
 
-        <div className='flex flex-col gap-2.5'>
-          <p>Album name</p>
-          <input onChange={handleChange} name='name' className='bg-transparent outline-green-600 border-2 border-gray-400 p-2.5 w-[500px]' placeholder='Type Here' type="text" required/>
+        {/* Album Name */}
+        <div className="flex flex-col gap-2.5 mb-6">
+          <p className="text-lg text-gray-300">Album Name</p>
+          <input
+            onChange={handleChange}
+            name='name'
+            className="bg-transparent outline-none border-2 border-gray-600 p-3 w-full text-white placeholder-gray-400 rounded-lg shadow-md focus:border-blue-100"
+            placeholder='Type here'
+            type="text"
+            required
+          />
         </div>
 
-        <div className='flex flex-col gap-2.5'>
-          <p>Album description</p>
-          <textarea onChange={handleChange} name='desc' className='bg-transparent outline-green-600 border-2 border-gray-400 p-2.5 w-[500px]' placeholder='Type Here' type="text" required/>
+        {/* Album Description */}
+        <div className="flex flex-col gap-2.5 mb-6">
+          <p className="text-lg text-gray-300">Album Description</p>
+          <textarea
+            onChange={handleChange}
+            name='desc'
+            className="bg-transparent outline-none border-2 border-gray-600 p-3 w-full text-white placeholder-gray-400 rounded-lg shadow-md focus:border-blue-100"
+            placeholder='Type here'
+            required
+          />
         </div>
 
-
-        <div className='flex flex-col gap-3'>
-          <p>Background color</p>
-          <input onChange={handleChange} type='color' name='bgColour'/>
+        {/* Background Color */}
+        <div className="flex flex-col gap-3 mb-6">
+          <p className="text-lg text-gray-300">Background Color</p>
+          <input
+            onChange={handleChange}
+            type='color'
+            name='bgColour'
+            value={albumData.bgColour}
+            className="w-16 h-16 p-0 rounded-lg shadow-md focus:ring-2 focus:ring-blue-100 border-2 border-gray-600"
+          />
         </div>
 
-           {/* select genre */}
-           <div className='flex flex-col gap-2.5'>
-          <p>Genre</p>
+        {/* Genre Selection */}
+        <div className="flex flex-col gap-2.5 mb-6">
+          <p className="text-lg text-gray-300">Genre</p>
           <select
             onChange={handleChange}
             name='genre'
             value={albumData.genre}
-            className='bg-transparent outline-green-600 border-2 border-gray-400 p-2.5 w-[500px]'
+            className="bg-gray-900 outline-none border-2 border-gray-600 p-3 w-full text-white placeholder-gray-400 rounded-lg shadow-md focus:border-blue-100"
             required
           >
-            <option value="none">Select an genre</option>
+            <option value="none" disabled>Select a Genre</option>
             {genre.length > 0 ? (
               genre.map((item, index) => (
                 <option key={index} value={item?.name}>{item?.name}</option>
@@ -104,11 +129,16 @@ const AddAlbum = () => {
           </select>
         </div>
 
-
-        <button type='submit' className='text-base bg-black text-white py-2.5 px-14 cursor-pointer'>Add</button>
+        {/* Submit Button */}
+        <button
+          type='submit'
+          className="w-full py-3 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-500 transition-all duration-200"
+        >
+          Add Album
+        </button>
       </form>
-    </>
-  )
-}
+    </div>
+  );
+};
 
-export default AddAlbum
+export default AddAlbum;

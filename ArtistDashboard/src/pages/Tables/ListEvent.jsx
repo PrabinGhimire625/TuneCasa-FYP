@@ -46,6 +46,8 @@ const ListEvent = () => {
                                 <FontAwesomeIcon icon={faPen} className="text-white w-4 h-4" />
                             </Link>
                         </div>
+
+                        
                     </div>
                 ))}
             </div>

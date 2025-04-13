@@ -44,7 +44,7 @@ const SingleArtist = () => {
       {/* Earnings Section */}
       <div className="mt-10 p-6 bg-gray-800 rounded-lg shadow-lg flex justify-between items-center">
         <h3 className="text-2xl font-semibold">Current Month Earnings</h3>
-        <p className="text-4xl font-bold text-green-400">${artistMonthlyEarning?.totalEarnings || "0.00"}</p>
+        <p className="text-4xl font-bold text-green-400">NPR {artistMonthlyEarning?.totalEarnings || "0.00"}</p>
       </div>
 
 

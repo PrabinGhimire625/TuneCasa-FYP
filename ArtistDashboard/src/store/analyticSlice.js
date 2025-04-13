@@ -17,6 +17,7 @@ const analyticSlice = createSlice({
         totalSubscriptionUser: null,
         artistMonthlyEarning:null,
         status: STATUS.LOADING,
+        artistTrendingSong:[],
     },
     reducers: {
         setSongDetails(state, action) {
@@ -27,6 +28,9 @@ const analyticSlice = createSlice({
         },
         setArtistSongAnalytics(state, action) {
             state.artistSongAnalytics = action.payload;
+        },
+        setArtistTrendingSong(state, action) {
+            state.artistTrendingSong = action.payload;
         },
         setTotalUsers(state, action) {
             state.totalUsers = action.payload;
@@ -64,6 +68,7 @@ export const {
     setTotalSubscriptionUser, 
     setStatus, 
     setError, 
+    setArtistTrendingSong,
     setArtistSongAnalytics,
     setSongDetails,setSingleSongAnalytics,
     setArtistMonthlyEarning
@@ -248,6 +253,27 @@ export function calculateArtistMonthlyEarning(){
         if(response.status===200){
             const {data} =response.data;
             dispatch(setArtistMonthlyEarning(data));
+            dispatch(setStatus(STATUS.SUCCESS));
+        }
+        else{
+            dispatch(setStatus(STATUS.ERROR));  
+        }
+        }catch(err){
+        dispatch(setStatus(STATUS.ERROR));  
+        }  
+    }
+}
+
+
+// //list the artisrt trending 5
+export function fetchArtistTrendingSong(id){
+    return async function fetchArtistTrendingSong(dispatch) {
+        dispatch(setStatus(STATUS.LOADING));
+        try{
+        const response=await APIAuthenticated.get(`/api/song-analytics/trendingSong`);
+        if(response.status===200){
+            const {data} =response.data;
+            dispatch(setArtistTrendingSong(data));
             dispatch(setStatus(STATUS.SUCCESS));
         }
         else{

@@ -23,7 +23,7 @@ const ForgetPassword = () => {
   };
 
   return (
-    <div className="flex  bg-stone-900 justify-center min-h-screen bg-cover bg-center bg-[url('path/to/your/background.jpg')]">
+    <div className="flex  bg-gray-900 justify-center min-h-screen bg-cover bg-center bg-[url('path/to/your/background.jpg')]">
       <div className="w-[420px] bg-transparent mt-16 h-[250px] text-white rounded-lg border-2 border-white/20 shadow-lg backdrop-blur-md p-8">
         <form onSubmit={handleSubmit}>
           <h1 className="text-3xl text-center font-bold mb-6">Forgot Password</h1>

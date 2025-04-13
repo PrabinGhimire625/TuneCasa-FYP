@@ -40,13 +40,13 @@ const Navbar = () => {
             <header className="shadow-md font-[sans-serif] tracking-wide relative z-50">
                 <section className="md:flex lg:items-center relative py-3 lg:px-10 px-4 lg:min-h-[80px] max-lg:min-h-[60px] bg-gray-800">
                     <a href="#" className="mr-10 max-sm:w-full max-sm:mb-3 shrink-0">
-                        <div className="w-[50px] h-[50px] rounded-full overflow-hidden">
+                       <Link to="/dashboard"> <div className="w-[50px] h-[50px] rounded-full overflow-hidden">
                             <img
                                 src={assets.tunecasaLogo}
                                 alt="logo"
                                 className="w-full h-full object-cover"
                             />
-                        </div>
+                        </div></Link>
 
 
                     </a>
@@ -98,7 +98,7 @@ const Navbar = () => {
                                             </li>
                                             <li>
                                                 <a href="/profile">
-                                                    <button className="relative flex items-center justify-center h-8 w-8 rounded-full bg-gray-800 text-white text-sm font-bold">
+                                                    <button className="relative flex items-center justify-center h-8 w-8 rounded-full bg-gray-900 text-white text-sm font-bold">
                                                         {profile.username ? profile.username.charAt(0).toUpperCase() : 'P'}
                                                     </button>
                                                 </a>
