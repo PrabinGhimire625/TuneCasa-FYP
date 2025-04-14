@@ -8,6 +8,8 @@ import ArtistBook from '../pages/artistBooking/ArtistBook'
 import { Link, useNavigate } from "react-router-dom"
 import Footer from '../../globals/components/footer/Footer'
 import DisplayAlbum from '../pages/album/DisplayAlbum'
+import TopListeningSong from '../pages/recommendation/TopListeningSong'
+import LatestSystemSong from '../pages/recommendation/LatestSystemSong'
 
 const DisplayHome = () => {
   const navigate = useNavigate();
@@ -78,6 +80,14 @@ const DisplayHome = () => {
         {/* Artists section */}
         <div className='mb-6'>
           <DisplayArtist />
+        </div>
+
+        <div className='mb-6'>
+          <TopListeningSong />
+        </div>
+
+        <div className='mb-6'>
+          <LatestSystemSong />
         </div>
 
         <div className='mb-6'>

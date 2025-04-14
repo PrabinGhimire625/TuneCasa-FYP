@@ -1,5 +1,7 @@
 import {Router} from "express"
-import { addSong, countAllSong, countAndListArtistSongs, deleteSong, fetchArtistSongs, fetchSingleSong, fetchSongByGenre, fetchSongsByAlbum, getAllSong, updateSong } from "../controllers/songController.js";
+import { addSong, countAllSong, countAndListArtistSongs, deleteSong, fetchArtistSongs, fetchSingleSong, fetchSongByGenre, fetchSongsByAlbum, getAllSong, getLatestSongs, 
+    getLatestSongsByArtist, updateSong } from "../controllers/songController.js";
+
 import upload from "../middleware/multer.js";
 import errorHandler from "../services/catchAsyncError.js";
 import { isAuthenticated } from "../middleware/authMiddleware.js";
@@ -18,6 +20,11 @@ router.route("/artist/:userId").get( errorHandler(fetchArtistSongs))
 
 
 router.route("/singleSong/:id").get(isAuthenticated, errorHandler((fetchSingleSong)))
+
+//recommend song
+router.route("/recommend/artistSong/:userId").get(errorHandler(getLatestSongsByArtist));
+router.route("/recommend/systemSong").get(errorHandler(getLatestSongs));
+
 
 router.route("/:id").get(isAuthenticated, errorHandler((fetchSingleSong)))
 .delete(isAuthenticated, errorHandler(deleteSong))

@@ -11,6 +11,7 @@ import subscriptionSlice from "./subscriptionSlice"
 import eventSlice from "./eventSlice"
 import adsSlice from "./adsSlice"
 import notificationSlice from "./notificationSlice"
+import analyticSlice from "./analyticSlice"
 
 
 const store=configureStore({
@@ -27,6 +28,7 @@ const store=configureStore({
         event:eventSlice,
         ads:adsSlice,
         notifications:notificationSlice,
+        analytics:analyticSlice,
     }
 })
 

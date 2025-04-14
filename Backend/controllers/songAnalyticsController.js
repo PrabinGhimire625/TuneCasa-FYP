@@ -611,3 +611,29 @@ export const fetchArtistTrendingSong = async (req, res) => {
 };
 
 
+//recommend the user best on their song listening history
+export const getRecommendedSongsForUser = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const analytics = await songAnalyticsModel.find({ userId })
+      .sort({ views: -1 }) // Or watchTime
+      .limit(6)
+      .populate("songId");
+
+    // Map to include both song info and view count
+    const topSongs = analytics.map((item) => ({
+      song: item.songId,
+      views: item.views,
+      watchTime: item.watchTime,
+    }));
+
+    res.json({ data : topSongs });
+  } catch (error) {
+    console.error("Recommended songs error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+

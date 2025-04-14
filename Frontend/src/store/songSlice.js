@@ -9,6 +9,8 @@ const songSlice=createSlice({
         singleSong:null,
         songByAlbum:null,
         artistSong:null,
+        lastestArtist6Song:[],
+        latestSystem6Song:[],
     },
     reducers:{
         setSong(state,action){
@@ -25,6 +27,12 @@ const songSlice=createSlice({
         },
         setSongOfArtist(state,action){
             state.artistSong=action.payload
+        },
+        setLatest6ArtistSong(state,action){
+            state.lastestArtist6Song=action.payload
+        },
+        setLatest6SystemSong(state,action){
+            state.latestSystem6Song=action.payload
         },
         setDeleteSong(state, action) {
             const index = state.song.findIndex(songs => songs._id === action.payload.songId); 
@@ -45,7 +53,7 @@ const songSlice=createSlice({
     }
 })
 
-export const {setSong,setStatus,setSingleSong,setDeleteSong,setUpdateSong, setSongByAlbum,setSongOfArtist}=songSlice.actions
+export const {setSong,setStatus,setSingleSong,setDeleteSong,setUpdateSong, setSongByAlbum,setSongOfArtist, setLatest6ArtistSong,setLatest6SystemSong}=songSlice.actions
 export default songSlice.reducer
 
 
@@ -186,3 +194,37 @@ export function getArtistSong(id){
     }
 }
 
+//latest song of the artist 
+export function getLatestArtist6Song(id){
+    return async function getLatestArtist6SongThunk(dispatch) {
+        dispatch(setStatus(STATUS.LOADING));
+        try{
+            const response=await API.get(`/api/song/recommend/artistSong/${id}`);
+            if(response.status===200){
+                const {data}=response.data;
+                dispatch(setLatest6ArtistSong(data));
+                dispatch(setStatus(STATUS.SUCCESS));
+            }
+        }catch(err){
+            dispatch(setStatus(STATUS.ERROR));
+        }
+    }
+}
+
+
+//system latest song
+export function getLatestSystem6Song(){
+    return async function getLatestSystem6SongThunk(dispatch) {
+        dispatch(setStatus(STATUS.LOADING));
+        try{
+            const response=await API.get(`/api/song/recommend/systemSong`);
+            if(response.status===200){
+                const {data}=response.data;
+                dispatch(setLatest6SystemSong(data));
+                dispatch(setStatus(STATUS.SUCCESS));
+            }
+        }catch(err){
+            dispatch(setStatus(STATUS.ERROR));
+        }
+    }
+}

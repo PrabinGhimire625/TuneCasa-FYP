@@ -46,6 +46,10 @@ import AboutUs from "./components/pages/AboutUs/AboutUs";
 import Settings from "./components/pages/setting/Setting";
 import Following from "./components/pages/artist/Following";
 import Notification from "./components/pages/Notification/Notification";
+import TopListeningSong from "./components/pages/recommendation/TopListeningSong";
+import LatestArtistSong from "./components/pages/recommendation/LatestArtistSong";
+import LatestSystemSong from "./components/pages/recommendation/LatestSystemSong";
+
 
 
 function App() {
@@ -105,6 +109,9 @@ function App() {
                 <Route path="/setting" element={<Settings />} />
                 <Route path="/following" element={<Following />} />
                 <Route path="/notification" element={<Notification />} />
+                <Route path="/topListeningSong" element={<TopListeningSong />} />
+                <Route path="/latestArtistSong" element={<LatestArtistSong />} />
+                <Route path="/latestSystemSong" element={<LatestSystemSong />} />
                 
                 {/* GoogleLogin Route */}
                 <Route 

@@ -7,6 +7,7 @@ import { fetchAllSongByAlbum } from "../../../store/songSlice";
 import { listSingleAlbumByName } from "../../../store/albumSlice";
 import { setCurrentSong, playPause, setSongList } from "../../../store/playerSlice";
 import Player from "../player/Player";
+import { FaPause, FaPlay } from "react-icons/fa";
 
 const SingleAlbum = () => {
   const { name } = useParams();
@@ -81,7 +82,7 @@ const SingleAlbum = () => {
                   currentSong?._id === item._id && isPlaying ? "opacity-100" : "opacity-0 hover:opacity-100"
                 }`}
               >
-                {currentSong?._id === item._id && isPlaying ? "⏸" : "▶"}
+                {currentSong?._id === item._id && isPlaying ? <FaPause /> : <FaPlay />}
               </button>
             </div>
            <Link to={`/singleSong/${item._id}`}> <span className="text-white ml-3 hover:underline white">{item.name}</span></Link>

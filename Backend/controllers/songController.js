@@ -251,6 +251,23 @@ export const countAndListArtistSongs = async (req, res) => {
 };
 
 
+// recommend latest 6 songs created by an artist
+export const getLatestSongsByArtist = async (req, res) => {
+  const { userId } = req.params;
+  const latestSongs = await songModel.find({ userId })
+    .sort({ createdAt: -1 })
+    .limit(6);
+  res.status(200).json({  message: "Successfully fetched 6 latest song of the user", data: latestSongs });
+};
+
+// recommend overall latest 6 songs uploaded
+export const getLatestSongs = async (req, res) => {
+  const latestSongs = await songModel.find()
+    .sort({ createdAt: -1 })
+    .limit(6);
+  res.status(200).json({ message: "Successfully fetched songs 6 latest song on the system",  data : latestSongs });
+};
+
 
 
   

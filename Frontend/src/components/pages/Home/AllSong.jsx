@@ -4,6 +4,7 @@ import { setCurrentSong, playPause, setSongList } from "../../../store/playerSli
 import Player from "../player/Player";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { FaPause, FaPlay } from "react-icons/fa";
 
 const AllSong = () => {
   const dispatch = useDispatch();
@@ -103,8 +104,13 @@ const AllSong = () => {
                       }`}
                     >
                       <span className="text-xs sm:text-sm md:text-base">
-                        {currentSong?._id === songItem._id && isPlaying ? "⏸" : "▶"}
+                        {currentSong?._id === songItem._id && isPlaying ? <FaPause /> : <FaPlay />}
                       </span>
+
+                    
+
+
+
                     </button>
                   </div>
 
