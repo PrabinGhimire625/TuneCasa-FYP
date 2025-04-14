@@ -9,6 +9,7 @@ import axios from "axios";
 import { oauth2Client } from "../config/googleConfig.js"; 
 import { sendMessageToArtistEmail } from "../services/SendAdminEmail.js";
 import moment from "moment/moment.js";
+import notifiactionModel from "../models/notifiactionModel.js"
 
 
 //user registration
@@ -565,13 +566,15 @@ export const countUserOnly = async (req, res) => {
   res.status(200).json({ message: "userCount count fetched successfully", data: userCount });
 };
 
-//follow artist
+// followController.js
+
+// POST /api/artists/:id/follow
 export const followArtist = async (req, res) => {
   try {
-    const artist = await Artist.findOne({ userId: req.params.id }); // userId, not _id
+    const artist = await Artist.findOne({ userId: req.params.id }); // id = artist's userId
     if (!artist) return res.status(404).json({ message: "Artist not found" });
 
-    const userId = req.user.id;
+    const userId = req.user.id; // who is following (logged-in user)
 
     const alreadyFollowing = artist.followers.some(
       (followerId) => followerId.toString() === userId
@@ -581,10 +584,20 @@ export const followArtist = async (req, res) => {
       return res.status(400).json({ message: "Already following this artist" });
     }
 
+    // Add to followers
     artist.followers.push(userId);
     await artist.save();
 
-    res.status(200).json({ message: "Successfully followed the artist" });
+    // Save notification for the artist
+    await notifiactionModel.create({
+      userId: req.params.id, // artist's userId (who gets notified)
+      artistUserId: req.params.id,
+      content: `🎧 A new fan just followed you!`,
+      type: "follow",
+      isRead: false,
+    });
+
+    res.status(200).json({ message: "Successfully followed the artist and notification sent" });
   } catch (error) {
     console.error("Follow error:", error);
     res.status(500).json({ message: "Server error", error: error.message });
@@ -752,3 +765,4 @@ export const countFollower = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+

@@ -37,7 +37,7 @@ const AddEvent = () => {
     dispatch(addEvent(eventData));
     if (status === STATUS.SUCCESS) {
       toast.success("Event added");
-      navigate("/list-event")
+      navigate("/upcomingEvents")
     } else {
       toast.error("Something went wrong");
     }

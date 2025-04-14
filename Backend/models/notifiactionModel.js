@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 // Notification Schema
 const notificationSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false }, // null for global
-  type: { type: String, enum: ['music', 'event', 'chat', 'app', 'ad', "album", "subscription"], default: 'music' }, // type of notification
+  type: { type: String, enum: ['music', 'event', 'chat', 'app', 'ad', "album", "subscription", "follow"], default: 'music' }, // type of notification
   content: { type: String, required: true }, // content of the notification
   name: { type: String },
   image: { type: String },

@@ -40,6 +40,7 @@ import AccountSetting from "./pages/support/AccountSetting";
 import ContactSupport from "./pages/support/ContactSupport";
 import HelpCenter from "./pages/support/HelpCenter";
 import PageNotFound from "./pages/pageNotFound/PageNotFound";
+import Notification from "./pages/notification/Notification";
 
 function App() {
   return (
@@ -92,6 +93,8 @@ function App() {
                 <Route path="/accountSetting" element={<ProtectedRoute> <AccountSetting /></ProtectedRoute>} />
                 <Route path="/contactSupport" element={<ProtectedRoute> <ContactSupport /></ProtectedRoute>}/>
                 <Route path="/helpCenter" element={<ProtectedRoute> <HelpCenter /></ProtectedRoute>} />
+                <Route path="/notification" element={<ProtectedRoute> <Notification /></ProtectedRoute>} />
+
                 <Route path="/*" element={<PageNotFound />} />
               </Routes>
             </div>

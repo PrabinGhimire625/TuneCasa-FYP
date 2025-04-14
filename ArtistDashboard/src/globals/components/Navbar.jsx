@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { assets } from '../../assets/artist-assets/assets'
 import { artistProfile, resetStatus, setToken } from "../../store/authSlice"
+import { Bell } from 'lucide-react';
+import { fetchAllNotificationsOfArtist } from '../../store/notificationSlice';
 
 
 const Navbar = () => {
@@ -10,6 +12,16 @@ const Navbar = () => {
     const dispatch = useDispatch();
     const { token, status, profile } = useSelector((state) => state.auth);
     const [isLoggedIn, setIsloggedIn] = useState(false);
+
+
+    
+  const unreadCount = useSelector((state) => state.notifications.unreadCount);
+  console.log(unreadCount, "unreadCount")
+      useEffect(() => {
+        dispatch(fetchAllNotificationsOfArtist());
+      }, [dispatch, unreadCount]);
+
+
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -29,19 +41,19 @@ const Navbar = () => {
     );
 
     // handle logout
-     const handleLogout = async () => {
-       localStorage.removeItem('token');
-       setIsloggedIn(false);
+    const handleLogout = async () => {
+        localStorage.removeItem('token');
+        setIsloggedIn(false);
         dispatch(resetStatus());
-       navigate("/login");
-     };
+        navigate("/login");
+    };
 
     return (
         <>
             <header className="shadow-md font-[sans-serif] tracking-wide relative z-50">
                 <section className="md:flex lg:items-center relative py-3 lg:px-10 px-4 lg:min-h-[80px] max-lg:min-h-[60px] bg-gray-800">
                     <a href="#" className="mr-10 max-sm:w-full max-sm:mb-3 shrink-0">
-                       <Link to="/dashboard"> <div className="w-[50px] h-[50px] rounded-full overflow-hidden">
+                        <Link to="/dashboard"> <div className="w-[50px] h-[50px] rounded-full overflow-hidden">
                             <img
                                 src={assets.tunecasaLogo}
                                 alt="logo"
@@ -67,50 +79,68 @@ const Navbar = () => {
                                 </ul>
                             </div>
                         </div>
+
+
                         <div className="ml-auto max-lg:mt-4">
-                            <ul className="flex items-center">
-                                {
-                                    !isLoggedIn ? (
-                                        <>
-                                            <li className="mr-4">
-                                                <Link to="/register">
-                                                    <button className="max-sm:hidden flex items-center justify-center text-[15px] max-lg:py-3 px-4 font-medium text-black bg-white cursor-pointer rounded-md h-8">
-                                                        Signup
-                                                    </button>
-                                                </Link>
-                                            </li>
-                                            <li className="mr-4">
-                                                <Link to="/login">
-                                                    <button className="max-sm:hidden flex items-center justify-center text-[15px] max-lg:py-3 px-4 font-medium text-black bg-white cursor-pointer rounded-md h-8">
-                                                        Login
-                                                    </button>
-                                                </Link>
-                                            </li>
-                                        </>
+                            <ul className="flex items-center gap-4">
+                                <li className="relative">
+                                    <Link to="/notification" className="flex items-center relative mr-5 mt-2">
+                                        <Bell className="w-6 h-6 text-white" />
+                                       
+                                     {unreadCount >0 && (
+                                           <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                          {unreadCount}
+                                       </span>
+                                     )}
 
-                                    ) : (
-                                        <>
-                                            <li className="mr-4">
-                                                <Link to="#">
-                                                    <button onClick={handleLogout} className="max-sm:hidden flex items-center justify-center text-[15px] max-lg:py-3 px-4 font-medium text-white bg-red-900 cursor-pointer rounded-md h-8">
-                                                        Logout
-                                                    </button>
-                                                </Link>
-                                            </li>
-                                            <li>
-                                                <a href="/profile">
-                                                    <button className="relative flex items-center justify-center h-8 w-8 rounded-full bg-gray-900 text-white text-sm font-bold">
-                                                        {profile.username ? profile.username.charAt(0).toUpperCase() : 'P'}
-                                                    </button>
-                                                </a>
-                                            </li>
-                                        </>
 
-                                    )
-                                }
+                                    </Link>
+                                </li>
+
+                                {!isLoggedIn ? (
+                                    <>
+                                        <li>
+                                            <Link to="/register">
+                                                <button className="max-sm:hidden flex items-center justify-center text-[15px] px-4 py-1 font-medium text-black bg-white cursor-pointer rounded-md h-8 hover:bg-gray-200 transition">
+                                                    Signup
+                                                </button>
+                                            </Link>
+                                        </li>
+                                        <li>
+                                            <Link to="/login">
+                                                <button className="max-sm:hidden flex items-center justify-center text-[15px] px-4 py-1 font-medium text-black bg-white cursor-pointer rounded-md h-8 hover:bg-gray-200 transition">
+                                                    Login
+                                                </button>
+                                            </Link>
+                                        </li>
+                                    </>
+                                ) : (
+                                    <>
+                                        <li>
+                                            <button
+                                                onClick={handleLogout}
+                                                className="max-sm:hidden flex items-center justify-center text-[15px] px-4 py-1 font-medium text-white bg-red-900 cursor-pointer rounded-md h-8 hover:bg-red-800 transition"
+                                            >
+                                                Logout
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <Link to="/profile">
+                                                <div className="relative flex items-center justify-center h-8 w-8 rounded-full bg-gray-900 text-white text-sm font-bold hover:bg-gray-700 transition">
+                                                    {profile.username ? profile.username.charAt(0).toUpperCase() : 'P'}
+                                                </div>
+                                            </Link>
+                                        </li>
+                                    </>
+                                )}
                             </ul>
                         </div>
+
+
+
                     </div>
+
+
                 </section>
             </header>
 

@@ -6,6 +6,7 @@ import genreSlice from "./genreSlice"
 import eventSlice from "./eventSlice"
 import analyticSlice from "./analyticSlice"
 import checkoutSlice from "./checkoutSlice"
+import notiticationSlice from "./notificationSlice"
 
 const store=configureStore({
     reducer:{
@@ -16,7 +17,8 @@ const store=configureStore({
         event:eventSlice,
         analytics:analyticSlice,
         checkout:checkoutSlice,
-       
+        notifications:notiticationSlice,
+
     }
 })
 
