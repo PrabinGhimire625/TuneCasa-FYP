@@ -19,10 +19,10 @@ const Footer = () => {
         <div>
           <h3 className="text-lg font-semibold mb-4 text-white">Quick Links</h3>
           <ul className="space-y-2 text-sm">
-            <li><Link to="/artist/dashboard" className="hover:text-white transition">Dashboard</Link></li>
-            <li><Link to="/artist/events" className="hover:text-white transition">My Events</Link></li>
-            <li><Link to="/artist/bookings" className="hover:text-white transition">Your songs</Link></li>
-            <li><Link to="/artist/checkout" className="hover:text-white transition">Earnings</Link></li>
+            <li><Link to="/dashboard" className="hover:text-white hover:underline transition">Dashboard</Link></li>
+            <li><Link to="/upcomingEvents" className="hover:text-white hover:underline transition">My Events</Link></li>
+            <li><Link to="/allSong" className="hover:text-white  hover:underline transition">My songs</Link></li>
+            <li><Link to="/songAnalytics" className="hover:text-white  hover:underline transition">Earnings</Link></li>
           </ul>
         </div>
 
@@ -30,9 +30,9 @@ const Footer = () => {
         <div>
           <h3 className="text-lg font-semibold mb-4 text-white">Support</h3>
           <ul className="space-y-2 text-sm">
-            <li><Link to="/artist/settings" className="hover:text-white transition">Account Settings</Link></li>
-            <li><Link to="/help" className="hover:text-white transition">Help Center</Link></li>
-            <li><a href="mailto:support@tunecasa.com" className="hover:text-white transition">Contact Support</a></li>
+            <li><Link to="/accountSetting" className="hover:text-white transition">Account Settings</Link></li>
+            <li><Link to="/helpCenter" className="hover:text-white transition">Help Center</Link></li>
+            <li><a href="contactSupport" className="hover:text-white transition">Terms and Conditions</a></li>
           </ul>
         </div>
 

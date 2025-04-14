@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { assets } from '../../assets/artist-assets/assets'
-import { artistProfile, setToken } from "../../store/authSlice"
+import { artistProfile, resetStatus, setToken } from "../../store/authSlice"
 
 
 const Navbar = () => {
@@ -29,11 +29,12 @@ const Navbar = () => {
     );
 
     // handle logout
-    const handleLogout = () => {
-        localStorage.removeItem('token')
-        setIsloggedIn(false);
-        navigate("/login");
-    }
+     const handleLogout = async () => {
+       localStorage.removeItem('token');
+       setIsloggedIn(false);
+        dispatch(resetStatus());
+       navigate("/login");
+     };
 
     return (
         <>

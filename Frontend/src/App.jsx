@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import ProtectedRoute from './components/ProtectedRoute'; // Correct path to your ProtectedRoute component
+import ProtectedRoute from './components/ProtectedRoute'; 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Sidebar from "./components/pages/sidebar/Sidebar";
