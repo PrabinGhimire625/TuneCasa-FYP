@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { deletePlaylist, fetchSinglePlaylist, updateImageOnPlaylist } from "../../../store/playlistSlice";
 import { listAllSong } from "../../../store/songSlice";
-import { setCurrentSong, playPause } from "../../../store/playerSlice";
+import { setCurrentSong, playPause, setSongList } from "../../../store/playerSlice";
 import { Link, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faThumbsUp, faThumbsDown, faPen, faPlay, faMinus } from "@fortawesome/free-solid-svg-icons";
@@ -11,6 +11,8 @@ import EditPlaylist from "../playlist/EditPlaylist";
 import Player from "../player/Player";
 import { addLike } from "../../../store/likeSlice";
 import { assets } from "../../../assets/frontend-assets/assets";
+import { toast } from "react-toastify";
+import { FaPause, FaPlay } from "react-icons/fa";
 
 const SinglePlaylist = () => {
   const { id } = useParams();
@@ -54,15 +56,14 @@ const SinglePlaylist = () => {
       formData.append("image", imageFile);
       dispatch(updateImageOnPlaylist({ id, playlistData: formData }))
         .then(() => {
-          alert("Playlist image updated successfully!");
+          toast.success("Playlist image updated");
           dispatch(fetchSinglePlaylist(id));
         })
         .catch((error) => {
-          alert("Failed to update the playlist image.");
-          console.error(error);
+          toast.error("Failed to update the playlist image.");
         });
     } else {
-      alert("Please select an image first.");
+      toast.error("Please select an image first.");
     }
   };
 
@@ -70,12 +71,11 @@ const SinglePlaylist = () => {
     if (id) {
       dispatch(deletePlaylist(id))
         .then(() => {
-          alert("Playlist deleted successfully");
+          toast.success("Playlist deleted");
           window.location.reload();
         })
         .catch((error) => {
-          console.error("Error deleting playlist:", error);
-          alert("Failed to delete playlist");
+          toast.error("Failed to delete playlist");
         });
     }
   };
@@ -83,6 +83,13 @@ const SinglePlaylist = () => {
   const handleEditClick = () => setShowEditForm(true);
 
   const handleCloseEditForm = () => setShowEditForm(false);
+
+  //set the singleplaylist?.songs int he songlistfor easily do the next and prev button smoother
+  useEffect(() => {
+    if (singleplaylist?.songs && singleplaylist?.songs.length > 0) {
+      dispatch(setSongList(singleplaylist?.songs));
+    }
+  }, [singleplaylist.songs, dispatch]);
 
   const handleSelectSong = (songItem) => {
     if (currentSong?._id === songItem._id) {
@@ -100,11 +107,10 @@ const SinglePlaylist = () => {
     if (songId) {
       dispatch(addLike({ songId }))
         .then(() => {
-          alert("Song is successfully liked");
+          toast.success("Song liked");
         })
         .catch((error) => {
-          alert("Song is not liked");
-          console.error(error);
+          toast.error("Song not liked");
         });
     }
   };
@@ -125,7 +131,6 @@ const SinglePlaylist = () => {
     item.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  console.log("singleplaylist", singleplaylist)
 
   return (
     <div className="text-white min-h-screen p-6 flex gap-10">
@@ -191,45 +196,48 @@ const SinglePlaylist = () => {
         {/* playlist song */}
         <h2 className="text-xl font-bold mb-4 mt-3">Playlist Songs</h2>
         <div className="grid gap-4 mb-6">
-        {singleplaylist?.songs?.length > 0 ? (
-  singleplaylist.songs.map((item) => (
-    <div key={item._id} className="relative flex items-center p-2 rounded-lg group hover:bg-[#ffffff2b] transition duration-300">
-      
-      {/* Song Image + Play Button on Hover */}
-      <div className="relative w-10 h-10 bg-gray-500 rounded-md overflow-hidden group">
-        <img className="w-full h-full object-cover" src={item?.image} alt="Song Cover" />
+          {singleplaylist?.songs?.length > 0 ? (
+            singleplaylist.songs.map((item) => (
+              <div key={item._id} className="relative flex items-center p-2 rounded-lg group hover:bg-[#ffffff2b] transition duration-300 shadow-lg">
 
-        {/* Play/Pause Icon (Visible on Hover) */}
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <button onClick={() => handleSelectSong(item)} className="text-white text-xl">
-            {currentSong?._id === item._id && isPlaying ? "⏸" : "▶"}
-          </button>
-        </div>
-      </div>
+                {/* Song Image + Play Button on Hover */}
+                <div className="relative w-10 h-10 bg-gray-500 rounded-md overflow-hidden group">
+                  <img className="w-full h-full object-cover" src={item?.image} alt="Song Cover" />
+                  <div
+                    className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300
+    ${currentSong?._id === item._id && isPlaying ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
+                  >
+                    <button onClick={() => handleSelectSong(item)} className="text-white text-xl">
+                      {currentSong?._id === item._id && isPlaying ? <FaPause /> : <FaPlay />}
+                    </button>
+                  </div>
 
-      {/* Song Details */}
-      <div className="ml-4 flex-1">
-        <Link to={`/singleSong/${item._id}`}>
-          <p className="font-semibold text-white hover:underline">{item?.name}</p>
-        </Link>
-        <p className="text-gray-400">{item?.album}</p>
-      </div>
 
-      {/* Actions (Hidden by Default, Shown on Hover) */}
-      <div className="relative z-10 flex items-center space-x-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-300">
-        <button onClick={() => handleLike(item._id)} className="text-white ml-4">
-          <FontAwesomeIcon icon={faThumbsUp} />
-        </button>
-        <FontAwesomeIcon icon={faThumbsDown} className="text-[15px]" />
-        <OptionsMenu songId={item._id} />
-        <p className="text-[15px]">{item?.duration || "0:00"}</p>
-      </div>
+                </div>
 
-    </div>
-  ))
-) : (
-  <p className="text-gray-400">No songs available in this playlist.</p>
-)}
+                {/* Song Details */}
+                <div className="ml-4 flex-1">
+                  <Link to={`/singleSong/${item._id}`}>
+                    <p className="font-semibold text-white hover:underline">{item?.name}</p>
+                  </Link>
+                  <p className="text-gray-400">{item?.album}</p>
+                </div>
+
+                {/* Actions (Hidden by Default, Shown on Hover) */}
+                <div className="relative z-10 flex items-center space-x-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-300">
+                  <button onClick={() => handleLike(item._id)} className="text-white ml-4">
+                    <FontAwesomeIcon icon={faThumbsUp} />
+                  </button>
+                  <FontAwesomeIcon icon={faThumbsDown} className="text-[15px]" />
+                  <OptionsMenu songId={item._id} />
+                  <p className="text-[15px]">{item?.duration || "0:00"}</p>
+                </div>
+
+              </div>
+            ))
+          ) : (
+            <p className="text-gray-400">No songs available in this playlist.</p>
+          )}
 
         </div>
 
@@ -255,71 +263,73 @@ const SinglePlaylist = () => {
             style={{ maxHeight: "500px" }}
             ref={songListRef}
           >
-           {searchQuery ? (
-  filteredSongs.length > 0 ? (
-    filteredSongs.map((item) => (
-      <div
-        key={item._id}
-        className="flex justify-between items-center bg-stone-900 p-3 rounded-lg cursor-pointer group hover:bg-[#ffffff2b] transition duration-300"
-      >
-        <Link
-          to={`/singleSong/${item._id}`}
-          className="flex items-center w-1/4 gap-5"
-        >
-            {/* Song Image + Play Button on Hover */}
-      <div className="relative w-10 h-10 bg-gray-500 rounded-md overflow-hidden group">
-        <img className="w-full h-full object-cover" src={item?.image} alt="Song Cover" />
+            {searchQuery ? (
+              filteredSongs.length > 0 ? (
+                filteredSongs.map((item) => (
+                  <div
+                    key={item._id}
+                    className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center shadow-lg p-3 rounded-lg cursor-pointer group hover:bg-[#ffffff2b] transition duration-300"
+                  >
+                    {/* Song Info & Play Button */}
+                    <Link
+                      to={`/singleSong/${item._id}`}
+                      className="flex items-start sm:items-center w-full sm:w-1/2 gap-3 sm:gap-5"
+                    >
+                      {/* Image + Play Button */}
+                      <div className="relative w-12 h-12 sm:w-10 sm:h-10 bg-gray-500 rounded-md overflow-hidden group">
+                        <img className="w-full h-full object-cover" src={item?.image} alt="Song Cover" />
 
-        {/* Play/Pause Icon (Visible on Hover) */}
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <button onClick={() => handleSelectSong(item)} className="text-white text-xl">
-            {currentSong?._id === item._id && isPlaying ? "⏸" : "▶"}
-          </button>
-        </div>
-      </div>
+                        {/* Play/Pause Icon */}
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault(); // Prevent navigation on click
+                              handleSelectSong(item);
+                            }}
+                            className="text-white text-lg sm:text-xl"
+                          >
+                            {currentSong?._id === item._id && isPlaying ? <FaPause /> : <FaPlay />}
+                          </button>
+                        </div>
+                      </div>
 
-          <div className="w-3/4">
-            <p className="font-semibold hover:underline text-white">
-              {item?.name}
-            </p>
-            <p className="text-gray-400">{item?.album}</p>
+                      {/* Song Text */}
+                      <div className="w-full overflow-hidden">
+                        <p className="font-semibold hover:underline text-white text-sm sm:text-base truncate">
+                          {item?.name}
+                        </p>
+                        <p className="text-gray-400 text-xs sm:text-sm truncate">{item?.album}</p>
+                      </div>
+                    </Link>
+
+                    {/* Right Controls */}
+                    <div className="mt-3 sm:mt-0 w-full sm:w-auto flex justify-between sm:justify-end items-center space-x-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <button onClick={() => handleLike(item._id)} className="text-white">
+                        <FontAwesomeIcon icon={faThumbsUp} />
+                      </button>
+                      <FontAwesomeIcon icon={faThumbsDown} className="text-white" />
+
+                      {/* Options */}
+                      <div className="relative">
+                        <OptionsMenu songId={item._id} />
+                      </div>
+
+                      {/* Duration */}
+                      <p className="text-[13px] text-white">{item?.duration || "0:00"}</p>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p className="text-gray-400">No songs found.</p>
+              )
+            ) : null}
           </div>
-        </Link>
 
-        {/* Initially hidden, only shown on hover */}
-{/* Initially hidden, only shown on hover */}
-<div className="relative z-10 flex justify-end items-center space-x-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-  <button onClick={() => handleLike(item._id)} className="text-white ml-4">
-    <FontAwesomeIcon icon={faThumbsUp} />
-  </button>
-  <FontAwesomeIcon icon={faThumbsDown} className="text-[15px]" />
-
-  {/* Wrap OptionsMenu in a container with absolute positioning */}
-  <div className="relative">
-    <OptionsMenu songId={item._id} />
-  </div>
-
-  <p className="text-[15px]">{item?.duration || "0:00"}</p>
-</div>
-
-
-      </div>
-    ))
-  ) : (
-    <p className="text-gray-400">No songs found.</p>
-  )
-) : null}
-
-
-          </div>
 
         </div>
 
 
       </div>
-
-      {/* Player Component */}
-      {/* <Player /> */}
 
       {showEditForm && (
         <EditPlaylist id={id} playlistData={singleplaylist} onClose={handleCloseEditForm} />

@@ -122,9 +122,7 @@ const Navbar = () => {
                     dropdownOpen ? 'block' : 'hidden'
                   }`}
                 >
-                  <li className="hover:bg-gray-100 hover:text-red-700 px-4 py-2">
-                    <Link to="/account">Account</Link>
-                  </li>
+                  
                   <li className="hover:bg-gray-100 hover:text-red-700 px-4 py-2">
                     <Link to="/profile">Profile</Link>
                   </li>

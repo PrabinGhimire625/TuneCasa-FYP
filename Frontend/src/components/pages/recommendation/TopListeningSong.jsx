@@ -24,6 +24,8 @@ const TopListeningSong = () => {
         }
     };
 
+    console.log("songRecommendation", songRecommendation)
+
     if (status === STATUS.LOADING) {
         return <div className="text-white text-center py-20 text-lg font-medium">Loading...</div>;
     }
@@ -38,7 +40,7 @@ const TopListeningSong = () => {
                 {/* Title */}
                 <div className="flex justify-between items-center mb-8">
                     <h2 className="text-2xl md:text-2xl font-bold">Recommended Songs</h2>
-                  
+
                 </div>
 
                 {/* Song Grid Layout */}

@@ -1,107 +1,148 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { listSingleSong } from '../../../store/songSlice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faThumbsUp, faThumbsDown, faEllipsisV, faPlay, faPause } from '@fortawesome/free-solid-svg-icons';
+import {
+  faThumbsUp,
+  faThumbsDown,
+  faPlay,
+  faPause,
+  faDownload,
+} from '@fortawesome/free-solid-svg-icons';
 import { setCurrentSong, playPause } from '../../../store/playerSlice';
-import Player from '../player/Player';
+import { toast } from 'react-toastify';
+import OptionsMenu from './OptionsMenu';
+import Footer from '../../../globals/components/footer/Footer';
+import LatestSystemSong from '../recommendation/LatestSystemSong';
+import { verifyActiveSubscription } from '../../../store/subscriptionSlice';
+import { STATUS } from '../../../globals/components/enumStatus/Status';
 
 const SingleSong = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const { currentSong, isPlaying } = useSelector((state) => state.player);
+  const navigate = useNavigate();
+  const { status, subscription } = useSelector((state) => state.subscription);
+
   const { singleSong } = useSelector((state) => state.song);
+  console.log("singlesong", singleSong)
 
   useEffect(() => {
-    if (id) {
-      dispatch(listSingleSong(id)); // Fetch the single song details based on ID
-    }
+    if (id) dispatch(listSingleSong(id));
   }, [dispatch, id]);
-
-  console.log(id);
-  console.log('single song data is', singleSong);
 
   const handleSelectSong = (songItem) => {
     if (currentSong?._id === songItem._id) {
-      dispatch(playPause()); // Toggle play/pause if the same song is clicked
+      dispatch(playPause());
     } else {
-      dispatch(setCurrentSong(songItem)); 
-      dispatch(playPause(true)); // Ensure play starts when selecting a new song
+      dispatch(setCurrentSong(songItem));
+      dispatch(playPause(true));
     }
   };
 
-  return (
-    <div className="w-full h-full">
-      {/* Top artist profile section */}
-      <div className="py-10 flex gap-8 flex-col md:flex-row md:items-end bg-neutral-900">
-        <div className="ml-5">
-          <img
-            src={singleSong?.image || 'https://via.placeholder.com/150'}
-            alt="Artist Cover"
-            className="w-40 h-40 object-cover"
-          />
-        </div>
-        <div className="flex flex-col text-white">
-          <h2 className="text-5xl font-bold mb-4 md:text-7xl">{singleSong?.name || 'Unknown Song'}</h2>
-          <h4 className="text-lg text-gray-400">{singleSong?.artist || 'Prabin Ghimire'}</h4>
-        </div>
-      </div>
+  const handleDownload = async (song) => {
+    try {
+      const response = await fetch(song?.file, { mode: 'cors' });
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${song?.name || 'audio'}.mp3`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      toast.error('Failed to download song.');
+    }
+  };
 
-      {/* Song Details Section */}
-      <div className="mt-6 ml-5">
-        {singleSong ? (
-          <div
-            className="flex p-2 items-center text-[#a7a7a7] hover:bg-[#ffffff2b] cursor-pointer group "
-            onClick={() => handleSelectSong(singleSong)}
-           >
-            {/* Image Section */}
-            <div className="flex items-center w-1/3">
-              <b className="mr-4 text-[#a7a7a7]">1</b>
-              <div className="relative w-10 h-10 bg-gray-500 rounded-md overflow-hidden">
+
+  useEffect(() => {
+    dispatch(verifyActiveSubscription());
+  }, [dispatch]);
+
+  console.log("subscription", subscription)
+
+  return (
+    <div className="min-h-screen w-full px-4 sm:px-6 md:px-12 lg:px-24 text-white">
+      <div className="max-w-screen-xl mx-auto py-10">
+        {/* Song Header */}
+        <div className="flex flex-col p-5 md:flex-row items-center gap-8 mb-12 shadow-lg">
+          <img
+            className="w-full max-w-xs md:w-64 md:h-64 rounded-xl object-cover shadow-lg"
+            src={singleSong?.image || 'https://via.placeholder.com/150'}
+            alt="Song Cover"
+          />
+          <div className="flex flex-col text-center md:text-left">
+            <span className="text-gray-400 uppercase text-sm tracking-widest">Song</span>
+            <h1 className="text-4xl md:text-6xl font-bold hover:underline decoration-2 cursor-pointer mt-2">
+              {singleSong?.name || 'Unknown Song'}
+            </h1>
+
+            <Link to={`artistDetails/${singleSong?._id}`}>
+              <p className="text-gray-400 mt-4 max-w-xl">{singleSong?.username || 'Unknown Artist'}</p>
+
+            </Link>
+
+          </div>
+        </div>
+
+        {/* Song Row (Just like in Album Songs list) */}
+        {singleSong && (
+          <div className="flex justify-between items-center p-3 rounded-lg shadow-[0_0_10px_2px_rgba(255,255,255,0.1)] hover:bg-[#1f1f1f] transition-all duration-200 group">
+            {/* Left */}
+            <div className="flex items-center gap-3 w-1/3">
+              <span className="w-6 text-center text-sm text-gray-400">1</span>
+              <div className="relative w-10 h-10 rounded-md overflow-hidden">
                 <img
                   className="w-full h-full object-cover"
-                  src={singleSong?.image || 'https://via.placeholder.com/150'}
-                  alt="Song Cover"
+                  src={singleSong?.image}
+                  alt="Song Thumbnail"
                 />
                 <button
-                  className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-md transition-opacity duration-300"
-                  onClick={(e) => {
-                    e.stopPropagation(); // Prevent parent div click
-                    handleSelectSong(singleSong);
-                  }}
+                  onClick={() => handleSelectSong(singleSong)}
+                  className="absolute inset-0 flex items-center justify-center shadow-lg text-white opacity-0 group-hover:opacity-100 transition-opacity"
                 >
-                  <FontAwesomeIcon icon={currentSong?._id === singleSong?._id && isPlaying ? faPause : faPlay} className="text-white" />
+                  {currentSong?._id === singleSong._id && isPlaying ? (
+                    <FontAwesomeIcon icon={faPause} />
+                  ) : (
+                    <FontAwesomeIcon icon={faPlay} />
+                  )}
                 </button>
               </div>
-              <span className="text-white ml-3">{singleSong?.name || 'Untitled'}</span>
+              <span className="text-white hover:underline text-sm md:text-base">{singleSong.name}</span>
             </div>
 
-            {/* Text Section (Duration, ..., +) */}
-            <div className="flex justify-end items-center w-2/3 space-x-4 mr-16">
-              {/* Like icon */}
-              <p className="text-[15px] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <FontAwesomeIcon icon={faThumbsUp} />
-              </p>
+            {/* Middle */}
+            <div className="hidden sm:flex justify-between items-center text-sm w-1/3 pr-6">
+              <p className="truncate text-gray-400">{singleSong?.album || 'Unknown Album'}</p>
+              <p className="text-sm text-gray-400">{singleSong?.duration || '0:00'}</p>
+            </div>
 
-              {/* Unlike icon */}
-              <p className="text-[15px] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <FontAwesomeIcon icon={faThumbsDown} />
-              </p>
+            {/* Actions */}
+            <div className="flex items-center space-x-4 w-1/3 justify-end pr-2 sm:pr-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <FontAwesomeIcon icon={faThumbsUp} className="cursor-pointer hover:text-white" />
+              <FontAwesomeIcon icon={faThumbsDown} className="cursor-pointer hover:text-white" />
 
-              {/* Ellipsis icon */}
-              <p className="text-[15px] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <FontAwesomeIcon icon={faEllipsisV} />
-              </p>
+              {status === STATUS.SUCCESS && subscription ? (
+                <FontAwesomeIcon
+                  icon={faDownload}
+                  className="cursor-pointer hover:text-white"
+                  onClick={() => handleDownload(singleSong)}
+                />
+              ) : null}
 
-              {/* Song Duration */}
-              <p className="text-[15px]">{singleSong?.duration || '0:00'}</p>
+              <OptionsMenu songId={singleSong._id} />
             </div>
           </div>
-        ) : (
-          <p className="text-gray-400">No song available</p>
         )}
       </div>
+      <div className='mb-6'>
+        <LatestSystemSong />
+      </div>
+      <Footer />
     </div>
   );
 };

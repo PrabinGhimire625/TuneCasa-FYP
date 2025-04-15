@@ -16,6 +16,8 @@ const MainSubscription = () => {
         dispatch(verifyActiveSubscription());
     }, [dispatch]);
 
+    console.log("subscription", subscription)
+
     return (
         <>
             {status === STATUS.SUCCESS && subscription ? (

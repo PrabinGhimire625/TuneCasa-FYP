@@ -8,7 +8,7 @@ const playlistSlice = createSlice({
   initialState: {
     playlist: [],
     status: STATUS.LOADING,
-    singleplaylist:null,
+    singleplaylist:[],
     publicPlaylist:[],
   },
   reducers: {
@@ -141,6 +141,7 @@ export function fetchSinglePlaylist(id){
     dispatch(setStatus(STATUS.LOADING));
     try{
       const response= await APIAuthenticated.get(`/api/playlist/${id}`);
+      console.log("response on the single playlist", response)
       if(response.status===200){
         const {data}=response.data;
         dispatch(setSinglePlaylist(data));

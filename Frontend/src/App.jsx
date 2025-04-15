@@ -83,7 +83,7 @@ function App() {
                 <Route path="/album/:name" element={<ProtectedRoute> <SingleAlbum /></ProtectedRoute>} />
                 <Route path="/singleSong/:id" element={<SingleSong />} />
                 <Route path="/artistDetails/:id"  element={ <ProtectedRoute> <ArtistDetails /></ProtectedRoute>}/>
-
+       
                 <Route path="/artistList" element={<ArtistList />} />
                 <Route path="/displayArtist" element={<DisplayArtist />} />
                 <Route path="/singlePlaylist/:id" element={<ProtectedRoute> <SinglePlaylist /></ProtectedRoute>} />

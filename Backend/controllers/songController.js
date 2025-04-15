@@ -98,16 +98,36 @@ export const countAllSong = async (req, res) => {
 };
 
 
-//fetch single song
-export const fetchSingleSong=async(req,res)=>{
-    const id=req.params.id;
-    const singleSong=await songModel.findById(id)
 
-    if(!singleSong){
-        return res.status(404).json({message:"Songs not found"});   
+export const fetchSingleSong = async (req, res) => {
+    try {
+        const id = req.params.id;
+
+        // Find the song
+        const singleSong = await songModel.findById(id);
+        if (!singleSong) {
+            return res.status(404).json({ message: "Song not found" });
+        }
+
+        // Fetch the user by userId
+        const user = await User.findById(singleSong.userId).select('username');
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Append username to response
+        const responseData = {
+            ...singleSong._doc,
+            username: user.username
+        };
+
+        res.status(200).json({ message: "Successfully fetched the single song", data: responseData });
+
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error: error.message });
     }
-    res.status(200).json({message:"Successfully fetch the single song",data:singleSong});
-}
+};
+
 
 //delete song
 export const deleteSong=async(req,res)=>{

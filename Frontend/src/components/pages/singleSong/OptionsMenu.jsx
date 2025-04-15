@@ -49,7 +49,6 @@ const OptionsMenu = ({ songId }) => {
         {isOpen && (
           <div className="absolute right-0 mt-2 w-64 bg-[#121212] text-white rounded-lg shadow-lg p-2 z-50">
             <ul className="space-y-2">
-              <li className="hover:bg-gray-700 p-2 rounded cursor-pointer">Play next</li>
               <li className="hover:bg-gray-700 p-2 rounded cursor-pointer">Save to library</li>
               <li
                 className="hover:bg-gray-700 p-2 rounded cursor-pointer"
@@ -60,7 +59,7 @@ const OptionsMenu = ({ songId }) => {
               >
                 Save to playlist
               </li>
-              <li className="hover:bg-gray-700 p-2 rounded cursor-pointer">Go to album</li>
+              <li className="hover:bg-gray-700 p-2 rounded cursor-pointer">Download</li>
               <li className="hover:bg-gray-700 p-2 rounded cursor-pointer">Share</li>
             </ul>
           </div>
