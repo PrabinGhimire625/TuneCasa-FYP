@@ -3,8 +3,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisV, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { listAllPlaylist, AddSongOnPlaylist } from "../../../store/playlistSlice";
-import { Link } from "react-router-dom"
-import Playlist from "../playlist/Playlist";
+import { Link } from "react-router-dom";
+import ShareButton from "../share/ShareButton";
+
 
 const OptionsMenu = ({ songId }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,7 +18,6 @@ const OptionsMenu = ({ songId }) => {
     dispatch(listAllPlaylist());
   }, [dispatch]);
 
-  //closes the dropdown if the user clicks anywhere outside of it.
   useEffect(() => {
     function handleClickOutside(event) {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -32,9 +32,10 @@ const OptionsMenu = ({ songId }) => {
 
   const handleAddToPlaylist = (playlistId) => {
     dispatch(AddSongOnPlaylist(songId, playlistId));
-    setShowPlaylistModal(false); // Close modal after adding
+    setShowPlaylistModal(false);
   };
 
+  const songUrl = `${window.location.origin}/song/${songId}`;
 
   return (
     <>
@@ -49,24 +50,25 @@ const OptionsMenu = ({ songId }) => {
         {isOpen && (
           <div className="absolute right-0 mt-2 w-64 bg-[#121212] text-white rounded-lg shadow-lg p-2 z-50">
             <ul className="space-y-2">
-              <li className="hover:bg-gray-700 p-2 rounded cursor-pointer">Save to library</li>
+              <li className="hover:bg-stone-900 p-2 rounded cursor-pointer">Save to library</li>
               <li
-                className="hover:bg-gray-700 p-2 rounded cursor-pointer"
+                className="hover:bg-stone-900 p-2 rounded cursor-pointer"
                 onClick={() => {
-                  setShowPlaylistModal(true); // Show playlist modal
-                  setIsOpen(false); // Close options menu
+                  setShowPlaylistModal(true);
+                  setIsOpen(false);
                 }}
               >
                 Save to playlist
               </li>
-              <li className="hover:bg-gray-700 p-2 rounded cursor-pointer">Download</li>
-              <li className="hover:bg-gray-700 p-2 rounded cursor-pointer">Share</li>
+              <li className="hover:bg-stone-900 p-2 rounded cursor-pointer">Download</li>
+              <li className="hover:bg-stone-900 p-2 rounded cursor-pointer">
+                <ShareButton url={songUrl} />
+              </li>
             </ul>
           </div>
         )}
       </div>
 
-      {/* Playlist Modal */}
       {showPlaylistModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-[#121212] p-6 rounded-lg w-96 text-white">
@@ -87,7 +89,11 @@ const OptionsMenu = ({ songId }) => {
                         className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-700 w-full"
                       >
                         <div className="flex items-center space-x-3">
-                          <img src={item.image || "https://i0.wp.com/www.endofthreefitness.com/wp-content/uploads/2012/06/band-of-brothers.jpeg?resize=640%2C360&ssl=1"} alt={item.title} className="w-10 h-10 rounded-md object-cover" />
+                          <img
+                            src={item.image || "https://i0.wp.com/www.endofthreefitness.com/wp-content/uploads/2012/06/band-of-brothers.jpeg?resize=640%2C360&ssl=1"}
+                            alt={item.title}
+                            className="w-10 h-10 rounded-md object-cover"
+                          />
                           <p>{item.title}</p>
                         </div>
                         <p className="text-gray-400">{item.songs.length} songs</p>
@@ -105,12 +111,7 @@ const OptionsMenu = ({ songId }) => {
                 </button>
               </Link>
             </div>
-
-
-
           </div>
-
-
         </div>
       )}
     </>

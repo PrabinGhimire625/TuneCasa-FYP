@@ -17,29 +17,42 @@ const GenreDetails = () => {
     console.log("The album of that genre is:", albumByGenre);
 
     return (
-        <>
-        <h1 className="text-white text-2xl font-bold my-5 mx-5 capitalize">{genre}</h1>
-            <div className='flex gap-4 my-5 mx-5'>
+        <div className="text-white p-4 md:p-6 min-h-screen">
+            {/* Genre Title */}
+            <h1 className="text-2xl md:text-3xl font-bold capitalize mb-6">{genre} </h1>
+
+            {/* Album Grid */}
+            <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 ">
                 {albumByGenre && albumByGenre.length > 0 ? (
                     albumByGenre.map((item) => (
-                        <Link key={item._id} to={`/album/${albumByGenre.name}`}>
-                            <div className="min-w-[200px] p-3 rounded-lg cursor-pointer hover:bg-stone-900 transition duration-300">
-                                <div className="mb-4">
-                                    <div className="w-40 h-40 rounded-lg overflow-hidden">
-                                        <img className="w-full h-full object-cover" src={item?.image} alt={item?.name} />
-                                    </div>
-                                    <p className="text-slate-200 font-bold ml-3 mt-2 mb-1 truncate">{item?.name}</p>
-                                    <p className="text-slate-500  ml-3 text-sm truncate">{item?.desc}</p>
+                        <Link key={item._id} to={`/album/${item._id}`}>
+                            <div className="shadow-[0_0_10px_2px_rgba(255,255,255,0.1)] rounded-lg transition duration-300 p-3 group">
+                                <div className="w-full h-40 sm:h-44 md:h-48 rounded-md overflow-hidden">
+                                    <img
+                                        src={item?.image}
+                                        alt={item?.name}
+                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                    />
                                 </div>
+                                <p className="text-white font-semibold mt-3 truncate">{item?.name}</p>
+                                <p className="text-sm text-gray-400 truncate">{item?.desc}</p>
                             </div>
                         </Link>
                     ))
                 ) : (
-                    <p>No albums available</p>
+                    <p className="text-gray-300">No albums available</p>
                 )}
             </div>
-            <GenreBasedSong />
-        </>
+
+            {/* Divider */}
+            <div className="my-10 border-t border-stone-700" />
+
+            {/* Genre Songs Section */}
+            <div>
+                <h2 className="text-xl font-bold">Popular {genre} Songs</h2>
+                <GenreBasedSong />
+            </div>
+        </div>
     );
 };
 

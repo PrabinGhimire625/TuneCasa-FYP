@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { listAllGenre } from "../../../store/genreSlice";
 import { Link } from 'react-router-dom'; // Import Link
 import LatestAlbum from "../album/LatestAlbum";
+import Footer from "../../../globals/components/footer/Footer";
 
 const Genre = () => {
     const dispatch = useDispatch();
@@ -27,19 +28,18 @@ const Genre = () => {
     };
 
     return (
-        <div className="w-full p-6 text-white">
+        <div className="text-white px-4 md:px-8 py-10">
+                <div className="max-w-7xl mx-auto">
             <LatestAlbum/>
             {/* Header Section */}
-            <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold">Moods and Genres</h2>
-                {/* <div className="flex space-x-2">
-                    <button onClick={scrollLeft} className="px-3 bg-stone-800 py-1 rounded-full">{"<"}</button>
-                    <button onClick={scrollRight} className="px-3 bg-stone-800 py-1 rounded-full">{">"}</button>
-                </div> */}
-            </div>
+          
 
             {/* Scrollable Genre List */}
-            <div className="relative mt-5">
+            <div className="ml-10 mt-5">
+            <div className="flex justify-between items-center mb-5">
+                <h2 className="text-2xl font-bold">Moods and Genres</h2>
+               
+            </div>
                 <div ref={scrollRef} className="overflow-x-auto pb-2 scrollbar-visible" style={{ scrollBehavior: "smooth", whiteSpace: "nowrap" }}>
                     <div className="flex flex-wrap gap-4">
                         {genre.map((item, index) => (
@@ -61,6 +61,9 @@ const Genre = () => {
                     </div>
                 </div>
             </div>
+        </div>
+        <Footer/>
+          
         </div>
     );
 };

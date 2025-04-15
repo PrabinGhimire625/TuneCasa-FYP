@@ -49,6 +49,7 @@ import Notification from "./components/pages/Notification/Notification";
 import TopListeningSong from "./components/pages/recommendation/TopListeningSong";
 import LatestArtistSong from "./components/pages/recommendation/LatestArtistSong";
 import LatestSystemSong from "./components/pages/recommendation/LatestSystemSong";
+import PublicPlaylist from "./components/pages/playlist/PublicPlaylist";
 
 
 
@@ -91,6 +92,7 @@ function App() {
                 {/* <Route path="/playlist" element={<Playlist />} /> */}
                 <Route path="/playlist" element={<ProtectedRoute> <Playlist /></ProtectedRoute>}/>
                 <Route path="/allPlaylist" element={<AllPlaylist />} />
+                <Route path="/publicPlaylist" element={<PublicPlaylist />} />
   
                 <Route path="/allGenre" element={<Genre />} />
                 <Route path="/genreDetails/:genre" element={<GenreDetails />} />

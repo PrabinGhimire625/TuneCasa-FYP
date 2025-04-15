@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { STATUS } from '../../../globals/components/enumStatus/Status';
 import { fetchAllArtists } from '../../../store/artistSlice';
+import Footer from '../../../globals/components/footer/Footer';
 
 const ArtistList = () => {
     const dispatch = useDispatch();
@@ -21,8 +22,8 @@ const ArtistList = () => {
     }
 
     return (
-        <div className="text-white p-6">
-            <div className="mb-4">
+        <div className="text-white px-4 md:px-8 py-10">
+      <div className="max-w-7xl mx-auto">
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-2xl font-bold">Popular Artist</h2>
                 </div>
@@ -53,6 +54,7 @@ const ArtistList = () => {
                     ))}
                 </div>
             </div>
+            <Footer/>
         </div>
     );
 };

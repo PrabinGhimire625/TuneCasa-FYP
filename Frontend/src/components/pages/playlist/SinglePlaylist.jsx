@@ -13,6 +13,7 @@ import { addLike } from "../../../store/likeSlice";
 import { assets } from "../../../assets/frontend-assets/assets";
 import { toast } from "react-toastify";
 import { FaPause, FaPlay } from "react-icons/fa";
+import ShareButton from "../share/ShareButton";
 
 const SinglePlaylist = () => {
   const { id } = useParams();
@@ -118,7 +119,7 @@ const SinglePlaylist = () => {
   //   const filteredSongs = song.filter((track) =>
   //   track.title.toLowerCase().includes(searchTerm.toLowerCase())
   // );
-  // Existing state and imports...
+
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false); // New state
 
@@ -130,6 +131,12 @@ const SinglePlaylist = () => {
   const filteredSongs = song.filter((item) =>
     item.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+  // Corrected share functionality
+  const generateShareUrl = (playlistId) => {
+    return `${window.location.origin}/singlePlaylist/${playlistId}`;
+  };
+
+  const shareUrl = generateShareUrl(singleplaylist?._id);  // Use the playlist ID to generate the correct URL
 
 
   return (
@@ -145,9 +152,11 @@ const SinglePlaylist = () => {
                   src={imagePreview || singleplaylist?.image || "https://i0.wp.com/www.endofthreefitness.com/wp-content/uploads/2012/06/band-of-brothers.jpeg?resize=640%2C360&ssl=1"}
                   alt="Playlist"
                 />
-                <p className="absolute top-2 right-2 text-sm text-gray-400 bg-gray-800 px-2 py-1 rounded cursor-pointer hover:text-white hover:bg-gray-700 transition">
-                  Edit
+
+                <p className="absolute top-2 right-2 text-sm text-gray-400  px-2 py-1 rounded cursor-pointer hover:text-white transition">
+                  <ShareButton url={shareUrl} />
                 </p>
+
               </Link>
               <input
                 type="file"
@@ -198,7 +207,7 @@ const SinglePlaylist = () => {
         <div className="grid gap-4 mb-6">
           {singleplaylist?.songs?.length > 0 ? (
             singleplaylist.songs.map((item) => (
-              <div key={item._id} className="relative flex items-center p-2 rounded-lg group hover:bg-[#ffffff2b] transition duration-300 shadow-lg">
+              <div key={item._id} className="relative flex items-center p-2 rounded-lg group hover:bg-stone-900 transition duration-300 shadow-lg">
 
                 {/* Song Image + Play Button on Hover */}
                 <div className="relative w-10 h-10 bg-gray-500 rounded-md overflow-hidden group">
@@ -268,7 +277,7 @@ const SinglePlaylist = () => {
                 filteredSongs.map((item) => (
                   <div
                     key={item._id}
-                    className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center shadow-lg p-3 rounded-lg cursor-pointer group hover:bg-[#ffffff2b] transition duration-300"
+                    className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center shadow-lg p-3 rounded-lg cursor-pointer group hover:bg-stone-900 transition duration-300"
                   >
                     {/* Song Info & Play Button */}
                     <Link
@@ -334,7 +343,9 @@ const SinglePlaylist = () => {
       {showEditForm && (
         <EditPlaylist id={id} playlistData={singleplaylist} onClose={handleCloseEditForm} />
       )}
+
     </div>
+
   );
 };
 

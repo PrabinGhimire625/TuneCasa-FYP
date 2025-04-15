@@ -4,6 +4,12 @@ import { Link, useParams } from "react-router-dom";
 import { fetchSongByGenre } from "../../../store/genreSlice";
 import { playPause, setCurrentSong, setSongList } from "../../../store/playerSlice";
 import Player from "../player/Player";
+import { FaPause, FaPlay } from "react-icons/fa";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDownload, faPause, faPlay, faThumbsDown, faThumbsUp } from "@fortawesome/free-solid-svg-icons";
+import { STATUS } from "../../../globals/components/enumStatus/Status";
+import { verifyActiveSubscription } from "../../../store/subscriptionSlice";
+import OptionsMenu from "../singleSong/OptionsMenu";
 
 const GenreBasedSong = () => {
   const { genre } = useParams();
@@ -11,6 +17,12 @@ const GenreBasedSong = () => {
   const { songByGenre } = useSelector((state) => state.genre);
   const { currentSong, isPlaying } = useSelector((state) => state.player);
   const scrollContainer = useRef(null);
+    const { status, subscription } = useSelector((state) => state.subscription);   
+  
+    useEffect(() => {
+      dispatch(verifyActiveSubscription());
+    }, [dispatch]);
+  
 
   useEffect(() => {
     dispatch(fetchSongByGenre(genre));
@@ -53,59 +65,62 @@ const GenreBasedSong = () => {
   console.log("SongByGenre", songByGenre);
 
   return (
-    <div className="w-full p-4 text-white">
-      {/* Title & Scroll Buttons */}
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-bold">Quick Picks</h3>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={scrollLeft}
-            className="px-2 rounded-full text-lg text-gray-400 border-2 border-gray-600 hover:text-white hover:border-white transition"
-          >
-            {"<"}
-          </button>
-          <button
-            onClick={scrollRight}
-            className="px-2 rounded-full text-lg text-gray-400 border-2 border-gray-600 hover:text-white hover:border-white transition"
-          >
-            {">"}
-          </button>
-        </div>
-      </div>
+    <div className="w-full text-white">
 
       {/* Scrollable Song Container */}
-      <div ref={scrollContainer} className="overflow-x-auto scrollbar-hide">
-        <div className="flex gap-6">
-          {songColumns.map((column, colIndex) => (
-            <div key={colIndex} className="flex flex-col gap-4">
-              {column.map((songItem) => (
-                <div key={songItem._id} className="p-1 rounded-lg shadow-lg flex items-center gap-4 w-56">
-                  {/* Song Image with Play Button */}
-                  <div className="relative w-12 h-12 bg-gray-500 rounded-md overflow-hidden">
-                    <img src={songItem.image} alt={songItem.name} className="w-full h-full object-cover" />
-                    <button
-                      onClick={() => handleSelectSong(songItem)}
-                      className={`absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-md transition-opacity duration-300 ${
-                        currentSong?._id === songItem._id && isPlaying ? "opacity-100" : "opacity-0 hover:opacity-100"
-                      }`}
-                    >
-                      {currentSong?._id === songItem._id && isPlaying ? "⏸" : "▶"}
-                    </button>
-                  </div>
-
-                  {/* Song Details */}
-                  <div className="flex flex-col">
-                    <Link to={`singleSong/${songItem._id}`} className="hover:underline">
-                      <span className="text-white font-semibold text-sm truncate">{songItem.name}</span>
-                    </Link>
-                    <span className="text-gray-400 text-xs truncate">• {songItem.desc?.slice(0, 20)}...</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ))}
+    {/* Scrollable Song Container - Enhanced Layout */}
+<div className="space-y-3 mt-6">
+  {songColumns.flat().map((item, index) => (
+    <div
+      key={item._id}
+      className="flex justify-between items-center p-3 rounded-lg hover:bg-stone-900 transition-all duration-200 group"
+    >
+      {/* Left Section */}
+      <div className="flex items-center gap-3 w-1/3">
+        <span className="w-6 text-center text-sm text-gray-400">{index + 1}</span>
+        <div className="relative w-10 h-10 rounded-md overflow-hidden">
+          <img className="w-full h-full object-cover" src={item.image} alt="Song Cover" />
+          <button
+            onClick={() => handleSelectSong(item)}
+            className="absolute inset-0 flex items-center justify-center shadow-lg text-white opacity-0 group-hover:opacity-100 transition-opacity"
+          >
+            {currentSong?._id === item._id && isPlaying ? (
+              <FontAwesomeIcon icon={faPause} />
+            ) : (
+              <FontAwesomeIcon icon={faPlay} />
+            )}
+          </button>
         </div>
+        <Link to={`/singleSong/${item._id}`}>
+          <span className="text-white hover:underline text-sm md:text-base">{item.name}</span>
+        </Link>
       </div>
+
+      {/* Middle Section */}
+      <div className="hidden sm:flex justify-between items-center text-sm w-1/3 pr-6">
+        <Link to={`/singleSong/${item._id}`}>
+          <p className="truncate hover:underline">{item?.album || "Unknown Album"}</p>
+        </Link>
+        <p className="text-sm text-gray-400">{item?.duration || "0:00"}</p>
+      </div>
+
+      {/* Actions */}
+      <div className="flex items-center space-x-4 w-1/3 justify-end pr-2 sm:pr-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <FontAwesomeIcon icon={faThumbsUp} className="cursor-pointer hover:text-white" />
+        <FontAwesomeIcon icon={faThumbsDown} className="cursor-pointer hover:text-white" />
+        {status === STATUS.SUCCESS && subscription ? (
+          <FontAwesomeIcon
+            icon={faDownload}
+            className="cursor-pointer hover:text-white"
+            onClick={() => handleDownload(item)}
+          />
+        ) : null}
+        <OptionsMenu songId={item._id} />
+      </div>
+    </div>
+  ))}
+</div>
+
       {/* <Player /> */}
     </div>
   );

@@ -10,6 +10,7 @@ import Footer from '../../globals/components/footer/Footer'
 import DisplayAlbum from '../pages/album/DisplayAlbum'
 import TopListeningSong from '../pages/recommendation/TopListeningSong'
 import LatestSystemSong from '../pages/recommendation/LatestSystemSong'
+import LatestAlbum from '../pages/album/LatestAlbum'
 
 const DisplayHome = () => {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ const DisplayHome = () => {
           {/* Navigation menu with left gap */}
           <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10">
             <div className="p-2 sm:p-4 flex flex-wrap justify-start items-center gap-2 sm:gap-4 mt-2 mx-auto max-w-7xl">
-              <Link to={`/allPlaylist`}>
+              <Link to={`/publicPlaylist`}>
                 <div className="px-3 py-1.5 sm:px-4 sm:py-2 bg-stone-950 text-white text-xs sm:text-sm md:text-base rounded-md hover:bg-gray-900 transition-colors">
                   Playlists
                 </div>
@@ -89,10 +90,14 @@ const DisplayHome = () => {
         <div className='mb-6'>
           <LatestSystemSong />
         </div>
+        <div className='mb-6'>
+        <LatestAlbum/>
+        </div>
 
         <div className='mb-6'>
           <Footer />
         </div>
+        
 
       </div>
     </>
