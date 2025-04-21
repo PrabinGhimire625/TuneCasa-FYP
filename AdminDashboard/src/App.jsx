@@ -34,6 +34,7 @@ import SingleAlbum from './pages/form/album/SingleAlbum';
 import Settings from './pages/setting/Settings';
 import Checkout from './pages/checkout/Checkout';
 import Search from './pages/search/Search';
+import SingleCheckout from './pages/checkout/SingleCheckout';
 
 
 function App() {
@@ -73,7 +74,9 @@ function App() {
               <Route path='/singleEvent/:id' element={<ProtectedRoute> <SingleEvent /></ProtectedRoute>} />
               <Route path='/notification' element={<ProtectedRoute> <Notification /></ProtectedRoute>} />
               <Route path='/settings' element={<ProtectedRoute> <Settings /></ProtectedRoute>} />
+              <Route path='/checkout/:id' element={<ProtectedRoute> <SingleCheckout /></ProtectedRoute>} />
               <Route path='/checkout' element={<ProtectedRoute> <Checkout /></ProtectedRoute>} />
+
 
               <Route path='/search' element={<ProtectedRoute> <Search /></ProtectedRoute>} />
             </Routes>

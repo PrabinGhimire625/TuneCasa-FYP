@@ -1,13 +1,20 @@
 import {Router} from 'express';
 import { isAuthenticated } from '../middleware/authMiddleware.js';
-import { getArtistCheckoutHistory, getSingleCheckoutHistory } from '../controllers/checkoutHistoryController.js';
+import { completeCheckout, fetchAllCompletedCheckout, fetchArtistCompletedCheckoutHistory, fetchRequestedCheckout, fetchSingleRequestedCheckout, requestCheckout } from '../controllers/checkoutHistoryController.js';
+
 
 const router = Router();
 
 // Route to add a like
-router.route('/').get( isAuthenticated, getArtistCheckoutHistory);
-router.route('/:id').get( isAuthenticated, getSingleCheckoutHistory);
+router.route('/').post( isAuthenticated, requestCheckout)
 
+router.route('/requested').get(fetchRequestedCheckout );
+router.route('/completed').get(fetchAllCompletedCheckout );
+router.route('/artist/completed').get(isAuthenticated,fetchArtistCompletedCheckoutHistory );
+
+//router.route('/:id').get( isAuthenticated, getSingleCheckoutHistory);
+router.route('/:checkoutId').get( fetchSingleRequestedCheckout);
+router.route('/completed/:checkoutId').patch( completeCheckout);
 
 
 export default router;

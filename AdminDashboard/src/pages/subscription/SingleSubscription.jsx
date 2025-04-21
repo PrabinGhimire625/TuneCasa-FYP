@@ -75,7 +75,7 @@ const SingleSubscription = () => {
           <div className="p-4 bg-gray-800 rounded-lg shadow-lg border border-gray-700 text-center">
             <h4 className="text-blue-400 text-xl font-semibold">Amount</h4>
             <p className="text-2xl font-bold text-green-400">
-              ${singleSubscription.amount.toFixed(2)}
+              NPR {singleSubscription.amount.toFixed(2)}
             </p>
           </div>
 

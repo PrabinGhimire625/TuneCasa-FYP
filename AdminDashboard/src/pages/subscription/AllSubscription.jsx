@@ -25,7 +25,7 @@ const AllSubscription = () => {
           <div className="absolute top-6 right-6 bg-gray-700 text-white px-4 py-2 rounded-lg shadow-md">
             <span className="text-lg font-semibold">Current month total: </span>
             <span className="text-xl font-bold">
-              ${currentMonthSubscriptionAmount?.totalAmount}
+              NPR {currentMonthSubscriptionAmount?.totalAmount}
             </span>
           </div>
 
@@ -54,9 +54,9 @@ const AllSubscription = () => {
                   </div>
 
                   <div className="flex items-center gap-2 mt-2">
-                    <FaDollarSign className="text-green-400" />
+                   
                     <span className="text-sm text-gray-400">
-                      ${subItem.amount.toFixed(2)}
+                      NPR {subItem.amount.toFixed(2)}
                     </span>
                   </div>
 

@@ -96,7 +96,7 @@ const SingleSongAnalytics = () => {
           <div className="p-4 bg-gray-800 rounded-lg shadow-lg border border-gray-700 text-center">
             <h4 className="text-blue-400 text-xl font-semibold">Earnings</h4>
             <p className="text-2xl font-bold text-green-400">
-              ${parseFloat(singleSongAnalytics?.totalEarning || 0).toFixed(2)}
+              NPR {parseFloat(singleSongAnalytics?.totalEarning || 0).toFixed(2)}
             </p>
           </div>
         </div>

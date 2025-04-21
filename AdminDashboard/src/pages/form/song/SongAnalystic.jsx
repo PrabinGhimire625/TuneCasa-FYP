@@ -65,7 +65,7 @@ const SongAnalystic = () => {
                     <span className="text-sm text-gray-400">{songItem?.album || "Unknown Album"}</span>
                     <span className="text-xs text-gray-400">Views: {songItem?.totalViews || 0}</span>
                     <span className="text-xs text-gray-400">
-                      Total Earning: ${songItem?.totalEarning?.toFixed(2) || 0}
+                      Total Earning: NPR {songItem?.totalEarning?.toFixed(2) || 0}
                     </span>
                   </div>
 

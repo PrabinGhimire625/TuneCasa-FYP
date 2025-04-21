@@ -55,8 +55,9 @@ const Sidebar = () => {
 <SidebarLink to="/add-album" icon={<FiBook />} label="Add Album" />
 <SidebarLink to="/list-album" icon={<FiList />} label="List Album" />
 <SidebarLink to="/add-event" icon={<FiPlusCircle />} label="Add Event" />
-<SidebarLink to="/upcomingEvents" icon={<FiClock />} label="List Event" />
+<SidebarLink to="/upcomingEvents" icon={<FiList />} label="List Event" />
 <SidebarLink to="/songAnalytics" icon={<FiMusic />} label="Song Analytics" />
+<SidebarLink to="/checkoutHistory" icon={<FiClock />} label="Checkout history" />
 
   </div>
 

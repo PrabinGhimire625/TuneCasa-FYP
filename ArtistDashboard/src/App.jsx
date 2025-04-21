@@ -26,8 +26,6 @@ import ListEvent from "./pages/Tables/ListEvent";
 import EditEvent from "./pages/EditForm/EditEvent";
 import SongAnalytics from "./pages/Tables/SongAnalytics";
 import SingleSongAnalytics from "./pages/Tables/SingleSongAnalytics";
-import Checkout from "./pages/checkout/Checkout";
-import SingleCheckout from "./pages/checkout/SingleCheckout";
 import Footer from "./globals/components/Footer";
 import SingleSong from "./pages/SinglePages/SingleSong";
 import SongByAlbum from "./pages/Tables/SongByAlbum";
@@ -42,6 +40,7 @@ import HelpCenter from "./pages/support/HelpCenter";
 import PageNotFound from "./pages/pageNotFound/PageNotFound";
 import Notification from "./pages/notification/Notification";
 import Search from "./pages/search/Search";
+import CheckoutHistory from "./pages/checkout/CheckoutHistory";
 
 function App() {
   return (
@@ -84,8 +83,8 @@ function App() {
                 <Route path="/songAnalytics" element={<ProtectedRoute> <SongAnalytics /></ProtectedRoute>} />
                 <Route path="/singleSongAnalytics/:id" element={<ProtectedRoute> <SingleSongAnalytics /></ProtectedRoute>} />
 
-                <Route path="/checkout" element={<ProtectedRoute> <Checkout /></ProtectedRoute>} />
-                <Route path="/:id" element={<ProtectedRoute> <SingleCheckout /></ProtectedRoute>} />
+            
+                <Route path="/checkoutHistory" element={<ProtectedRoute> <CheckoutHistory /></ProtectedRoute>} />
              
                 <Route path="/upcomingEvents" element={<ProtectedRoute> <UpComingEvent /></ProtectedRoute>}/>
                 <Route path="/followerList" element={<ProtectedRoute> <FollowerList /></ProtectedRoute>} />

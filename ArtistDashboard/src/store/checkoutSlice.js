@@ -6,13 +6,13 @@ import { API, APIAuthenticated } from "../http";
 const genreSlice = createSlice({
     name: "checkout",
     initialState: {
-        checkoutData: [],
+        checkoutHistory: [],
         singleCheckout: null,
         status: STATUS.LOADING,
     },
     reducers: {
-        setCheckoutData(state, action) {
-            state.checkoutData = action.payload;
+        setArtistCheckoutHistory(state, action) {
+            state.checkoutHistory = action.payload;
         },
         setSingleCheckout(state, action) {
             state.singleCheckout = action.payload;
@@ -23,20 +23,41 @@ const genreSlice = createSlice({
     },
 });
 
-export const { setCheckoutData, setSingleCheckout, setStatus } = genreSlice.actions;
+export const { setArtistCheckoutHistory, setSingleCheckout, setStatus } = genreSlice.actions;
 export default genreSlice.reducer;
 
 
 
-// List All Genres
+// Checkout slice action (frontend)
+export function requestCheckout(totalEarnings) {
+    return async function requestCheckoutThunk(dispatch) {
+        dispatch(setStatus(STATUS.LOADING));
+        try {
+            const response = await APIAuthenticated.post("/api/checkout", {
+                totalEarnings, // Pass totalEarnings to the backend
+            });
+
+            if (response.status === 200) {
+                dispatch(setStatus(STATUS.SUCCESS));
+            } else {
+                dispatch(setStatus(STATUS.ERROR));
+            }
+        } catch (err) {
+            console.error(err);
+            dispatch(setStatus(STATUS.ERROR));
+        }
+    };
+}
+
+
 export function artistCheckoutHistory() {
     return async function artistCheckoutHistoryThunk(dispatch) {
         dispatch(setStatus(STATUS.LOADING));
         try {
-            const response = await APIAuthenticated.get("/api/checkout");
+            const response = await APIAuthenticated.get("/api/checkout/artist/completed");
             if (response.status === 200) {
                 // console.log("Response",response.data.data)
-                dispatch(setCheckoutData(response.data.data));
+                dispatch(setArtistCheckoutHistory(response.data.data));
                 dispatch(setStatus(STATUS.SUCCESS));
             } else {
                 dispatch(setStatus(STATUS.ERROR));
@@ -48,22 +69,3 @@ export function artistCheckoutHistory() {
     };
 }
 
-
-// Get Single Genre
-export function singleArtistCheckoutHistory(id) {
-    return async function singleArtistCheckoutHistoryThunk(dispatch) {
-        dispatch(setStatus(STATUS.LOADING));
-        try {
-            const response = await APIAuthenticated.get(`/api/checkout/${id}`);
-            if (response.status === 200) {
-                dispatch(setSingleCheckout(response.data.data));
-                dispatch(setStatus(STATUS.SUCCESS));
-            } else {
-                dispatch(setStatus(STATUS.ERROR));
-            }
-        } catch (err) {
-            console.error(err);
-            dispatch(setStatus(STATUS.ERROR));
-        }
-    };
-}

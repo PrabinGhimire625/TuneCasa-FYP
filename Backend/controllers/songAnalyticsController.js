@@ -344,58 +344,6 @@ export const fetchMonthlyArtistEarnings = async (req, res) => {
   }
 };
 
-//direct calculate by the userid 
-export const fetchMonthlyEarning = async (req, res) => {
-  try {
-    const userId = req.user.id;
-
-    // Validate ObjectId format for userId
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(400).json({ message: "Invalid artist ID format." });
-    }
-
-    // Find all songs created by the given artist (userId)
-    const artistSongs = await songModel.find(
-      { userId: new mongoose.Types.ObjectId(userId) },
-      { _id: 1 } // Only fetch the _id (songId)
-    );
-
-    if (!artistSongs.length) {
-      return res.status(404).json({ message: "No songs found for this artist." });
-    }
-
-    const songIds = artistSongs.map(song => song._id); // Extract song IDs
-
-    // Fetch total earnings for these songs (all time)
-    const totalEarnings = await songAnalyticsModel.aggregate([
-      {
-        $match: {
-          songId: { $in: songIds }
-        }
-      },
-      {
-        $group: {
-          _id: null,
-          totalEarnings: { $sum: "$totalEarning" }
-        }
-      }
-    ]);
-
-    const total = totalEarnings.length ? totalEarnings[0].totalEarnings : 0;
-
-    res.status(200).json({
-      message: "Total earnings for the artist fetched successfully",
-      data: {
-        userId,
-        totalEarnings: total
-      }
-    });
-  } catch (error) {
-    console.error("Error fetching total earnings for the artist:", error);
-    res.status(500).json({ message: "Server error", error: error.message });
-  }
-};
-
 
 //fetcht the song 
 export const fetchArtist = async (req, res) => {
@@ -476,62 +424,6 @@ export const fetchArtist = async (req, res) => {
   }
 };
 
-
-//checkout artist earning
-export const artistCheckout = async (req, res) => {
-  try {
-    const userId = req.user.id;
-
-    // 1. Validate artist ID
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(400).json({ message: "Invalid artist ID." });
-    }
-
-    // 2. Get all songs by the artist
-    const songs = await songModel.find({ userId }, { _id: 1 });
-    if (!songs.length) {
-      return res.status(404).json({ message: "No songs found for this artist." });
-    }
-    const songIds = songs.map(song => song._id);
-
-    // 3. Calculate total earnings
-    const earnings = await songAnalyticsModel.aggregate([
-      { $match: { songId: { $in: songIds } } },
-      {
-        $group: {
-          _id: null,
-          totalEarnings: { $sum: "$totalEarning" }
-        }
-      }
-    ]);
-    const totalEarnings = earnings.length ? earnings[0].totalEarnings : 0;
-
-    if (totalEarnings < 1000) {
-      return res.status(400).json({ message: "Minimum earnings of NPR 1000 not reached." });
-    }
-
-    // ✅ 4. Save checkout history
-    await new Checkout({
-      userId,
-      amount: totalEarnings
-    }).save();
-
-    // ✅ 5. Reset totalEarning for each song
-    await songAnalyticsModel.updateMany(
-      { songId: { $in: songIds } },
-      { $set: { totalEarning: 0 } }
-    );
-
-    return res.status(200).json({
-      message: "Checkout successful. Earnings reset to 0.",
-      totalPayout: totalEarnings
-    });
-
-  } catch (error) {
-    console.error("Artist checkout error:", error);
-    res.status(500).json({ message: "Server error", error: error.message });
-  }
-};
 
 //fetch artist song analytics
 export const fetchArtistTrendingSong = async (req, res) => {
@@ -636,4 +528,114 @@ export const getRecommendedSongsForUser = async (req, res) => {
 };
 
 
+
+//checkout artist earning
+// export const artistCheckout = async (req, res) => {
+//   try {
+//     const userId = req.user.id;
+
+//     // 1. Validate artist ID
+//     if (!mongoose.Types.ObjectId.isValid(userId)) {
+//       return res.status(400).json({ message: "Invalid artist ID." });
+//     }
+
+//     // 2. Get all songs by the artist
+//     const songs = await songModel.find({ userId }, { _id: 1 });
+//     if (!songs.length) {
+//       return res.status(404).json({ message: "No songs found for this artist." });
+//     }
+//     const songIds = songs.map(song => song._id);
+
+//     // 3. Calculate total earnings
+//     const earnings = await songAnalyticsModel.aggregate([
+//       { $match: { songId: { $in: songIds } } },
+//       {
+//         $group: {
+//           _id: null,
+//           totalEarnings: { $sum: "$totalEarning" }
+//         }
+//       }
+//     ]);
+//     const totalEarnings = earnings.length ? earnings[0].totalEarnings : 0;
+
+//     if (totalEarnings < 1000) {
+//       return res.status(400).json({ message: "Minimum earnings of NPR 1000 not reached." });
+//     }
+
+//     // ✅ 4. Save checkout history
+//     // await new Checkout({
+//     //   userId,
+//     //   amount: totalEarnings,
+//     //   status:"pending"
+//     // }).save();
+
+//     // ✅ 5. Reset totalEarning for each song
+//     await songAnalyticsModel.updateMany(
+//       { songId: { $in: songIds } },
+//       { $set: { totalEarning: 0 } }
+//     );
+
+//     return res.status(200).json({
+//       message: "Checkout successful. Earnings reset to 0.",
+//       totalPayout: totalEarnings
+//     });
+
+//   } catch (error) {
+//     console.error("Artist checkout error:", error);
+//     res.status(500).json({ message: "Server error", error: error.message });
+//   }
+// };
+
+
+//direct calculate by the userid 
+export const fetchMonthlyEarning = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // Validate ObjectId format for userId
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "Invalid artist ID format." });
+    }
+
+    // Find all songs created by the given artist (userId)
+    const artistSongs = await songModel.find(
+      { userId: new mongoose.Types.ObjectId(userId) },
+      { _id: 1 } // Only fetch the _id (songId)
+    );
+
+    if (!artistSongs.length) {
+      return res.status(404).json({ message: "No songs found for this artist." });
+    }
+
+    const songIds = artistSongs.map(song => song._id); // Extract song IDs
+
+    // Fetch total earnings for these songs (all time)
+    const totalEarnings = await songAnalyticsModel.aggregate([
+      {
+        $match: {
+          songId: { $in: songIds }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalEarnings: { $sum: "$totalEarning" }
+        }
+      }
+    ]);
+
+    const total = totalEarnings.length ? totalEarnings[0].totalEarnings : 0;
+
+    res.status(200).json({
+      message: "Total earnings for the artist fetched successfully",
+      data: {
+        userId,
+        totalEarnings: total
+      }
+    });
+  } catch (error) {
+    console.error("Error fetching total earnings for the artist:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
 
