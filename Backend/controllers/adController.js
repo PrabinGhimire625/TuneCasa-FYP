@@ -100,12 +100,17 @@ export const createAds = async (req, res) => {
 
 // Get All Ads
 export const getAllAds = async (req, res) => {
-  const allAds = await Ads.find();
-  if (allAds.length < 1) {
-    return res.status(404).json({ message: "Ads not found" });
+  try {
+    const allAds = await Ads.find().sort({ createdAt: -1 });
+    if (allAds.length < 1) {
+      return res.status(404).json({ message: "Ads not found" });
+    }
+    res.status(200).json({ message: "Successfully fetched all ads", data: allAds });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
   }
-  res.status(200).json({ message: "Successfully fetched all ads", data: allAds });
 };
+
 
 // Fetch Single Ad
 export const fetchSingleAds = async (req, res) => {

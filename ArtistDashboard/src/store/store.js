@@ -7,6 +7,7 @@ import eventSlice from "./eventSlice"
 import analyticSlice from "./analyticSlice"
 import checkoutSlice from "./checkoutSlice"
 import notiticationSlice from "./notificationSlice"
+import searchSlice from "./searchSlice"
 
 const store=configureStore({
     reducer:{
@@ -18,6 +19,7 @@ const store=configureStore({
         analytics:analyticSlice,
         checkout:checkoutSlice,
         notifications:notiticationSlice,
+        search:searchSlice,
 
     }
 })

@@ -27,7 +27,7 @@ const Footer = () => {
           </h3>
           <ul className="space-y-2 text-sm text-gray-400">
             <li><a href="/about" className="hover:text-white hover:underline hover:decoration-white transition">About Us</a></li>
-            <li><a href="/artists" className="hover:text-white hover:underline hover:decoration-white transition">Find Artists</a></li>
+            <li><a href="/artistList" className="hover:text-white hover:underline hover:decoration-white transition">Find Artists</a></li>
             <li><a href="/events" className="hover:text-white hover:underline hover:decoration-white transition">Events</a></li>
             <li><a href="/contact" className="hover:text-white hover:underline hover:decoration-white transition">Contact</a></li>
           </ul>
@@ -36,12 +36,12 @@ const Footer = () => {
         {/* Artist Section */}
         <div>
           <h3 className="text-gray-200 uppercase text-sm mb-4 font-bold tracking-wide">
-            For Artists
+            For More
           </h3>
           <ul className="space-y-2 text-sm text-gray-400">
-            <li><a href="/artist/register" className="hover:text-white hover:underline hover:decoration-white transition">Join as Artist</a></li>
-            <li><a href="/artist/dashboard" className="hover:text-white hover:underline hover:decoration-white transition">Artist Dashboard</a></li>
-            <li><a href="/bookings" className="hover:text-white hover:underline hover:decoration-white transition">Manage Bookings</a></li>
+            <li><a href="http://localhost:5174/login" className="hover:text-white hover:underline hover:decoration-white transition">Join as Artist</a></li>
+            <li><a href="/mainSubcription" className="hover:text-white hover:underline hover:decoration-white transition">Tunecasa plan</a></li>
+            <li><a href="/artistList" className="hover:text-white hover:underline hover:decoration-white transition">Message to artist</a></li>
           </ul>
         </div>
 

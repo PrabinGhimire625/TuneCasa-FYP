@@ -23,13 +23,25 @@ export const createPlaylist = async (req, res) => {
 };
 
 //get all playlist
-export const getAllPlaylist=async(req,res)=>{
-  const allPlaylist=await Playlist.find();
-  if(allPlaylist.length<1){
-      return res.status(404).json({message:"allPlaylist not found"});   
+export const getAllPlaylist = async (req, res) => {
+  try {
+    const allPlaylist = await Playlist.find().sort({ createdAt: -1 });
+
+    if (allPlaylist.length < 1) {
+      return res.status(404).json({ message: "No playlists found." });
+    }
+
+    res.status(200).json({
+      message: "Successfully fetched all playlists sorted by latest.",
+      data: allPlaylist,
+    });
+
+  } catch (error) {
+    console.error("Error fetching playlists:", error);
+    res.status(500).json({ message: "Something went wrong while fetching playlists." });
   }
-  res.status(200).json({message: "Successfull get all the Playlist",data:allPlaylist});
-}
+};
+
 
 //get single playlist
 export const getSinglePlaylist = async (req, res) => {

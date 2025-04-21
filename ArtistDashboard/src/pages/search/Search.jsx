@@ -1,18 +1,18 @@
 import { useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { searchSongAlbumArtist } from "../../../store/searchSlice";
-import { STATUS } from "../../../globals/components/enumStatus/Status";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faThumbsDown, faThumbsUp, faPlay } from "@fortawesome/free-solid-svg-icons";
-import OptionsMenu from "../singleSong/OptionsMenu";
+import { searchSongAlbumArtist } from "../../store/searchSlice";
+import { STATUS } from "../../globals/components/Status";
+
 
 const Search = () => {
   const dispatch = useDispatch();
   const location = useLocation();
 
   const query = new URLSearchParams(location.search).get("query");
-  const { songs, albums, artists, status } = useSelector((state) => state.search);
+  const { songs, albums, status } = useSelector((state) => state.search);
 
   useEffect(() => {
     if (query?.trim()) {
@@ -42,7 +42,7 @@ const Search = () => {
                       {songs.map((song, index) => (
                         <div
                           key={song._id}
-                          className="flex justify-between items-center p-3 rounded-lg shadow-[0_0_10px_2px_rgba(255,255,255,0.1)] hover:bg-[#1f1f1f] transition-all duration-200 group"
+                          className="flex justify-between items-center p-3 rounded-lg shadow-[0_0_10px_2px_rgba(255,255,255,0.1)] hover:bg-gray-800 transition-all duration-200 group"
                         >
                           {/* Left */}
                           <Link to={`/singleSong/${song._id}`} className="flex items-center gap-3 w-1/3">
@@ -78,7 +78,7 @@ const Search = () => {
                           <div className="flex items-center space-x-4 w-1/3 justify-end pr-2 sm:pr-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                             <FontAwesomeIcon icon={faThumbsUp} className="cursor-pointer hover:text-white" />
                             <FontAwesomeIcon icon={faThumbsDown} className="cursor-pointer hover:text-white" />
-                            <OptionsMenu />
+                          
                           </div>
                         </div>
                       ))}
@@ -95,7 +95,7 @@ const Search = () => {
                       {albums.map((album) => (
                         <div
                           key={album._id}
-                          className="flex flex-col items-center text-center group bg-[#111] rounded-lg overflow-hidden transition duration-300 shadow-md hover:shadow-lg hover:bg-[#1a1a1a]"
+                          className="flex flex-col items-center text-center group rounded-lg overflow-hidden transition duration-300 shadow-md hover:shadow-lg hover:bg-[#1a1a1a]"
                         >
                           <Link to={`/album/${album?.name}`} className="w-full">
                             <div className="relative w-36 h-36 sm:w-40 sm:h-40 md:w-44 md:h-44 overflow-hidden cursor-pointer rounded-md transition duration-300 group">
@@ -110,36 +110,6 @@ const Search = () => {
                           <h3 className="mt-3 text-sm md:text-base font-medium truncate w-full px-2 text-gray-100 transition duration-300 hover:underline">
                             {album.name}
                           </h3>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-
-                {/* Artists */}
-                {artists.length > 0 && (
-                  <div className="mb-10">
-                    <h2 className="text-2xl font-semibold mb-4">Artists</h2>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
-                      {artists.map((artist) => (
-                        <div
-                          key={artist._id}
-                          className="flex flex-col items-center space-y-3 transition-transform duration-300 hover:scale-105"
-                        >
-                          <Link to={`/artistDetails/${artist._id}`} className="w-full aspect-square block">
-                            <div className="w-full aspect-square rounded-full overflow-hidden bg-gray-700 hover:shadow-lg transition-shadow duration-300">
-                              <img
-                                src={artist?.userId?.image || "https://via.placeholder.com/150"}
-                                alt={artist?.userId?.username || "Artist"}
-                                className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
-                              />
-                            </div>
-                          </Link>
-                          <h3 className="text-lg font-medium text-center truncate w-full">
-                            {artist?.userId?.username || "Unknown Artist"}
-                          </h3>
-
                         </div>
                       ))}
                     </div>

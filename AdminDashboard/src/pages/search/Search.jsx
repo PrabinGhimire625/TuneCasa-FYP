@@ -1,11 +1,8 @@
 import { useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { searchSongAlbumArtist } from "../../../store/searchSlice";
-import { STATUS } from "../../../globals/components/enumStatus/Status";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faThumbsDown, faThumbsUp, faPlay } from "@fortawesome/free-solid-svg-icons";
-import OptionsMenu from "../singleSong/OptionsMenu";
+import { searchSongAlbumArtist } from "../../store/searchSlice";
+import { STATUS } from "../../globals/enumStatus/Status";
 
 const Search = () => {
   const dispatch = useDispatch();
@@ -42,10 +39,10 @@ const Search = () => {
                       {songs.map((song, index) => (
                         <div
                           key={song._id}
-                          className="flex justify-between items-center p-3 rounded-lg shadow-[0_0_10px_2px_rgba(255,255,255,0.1)] hover:bg-[#1f1f1f] transition-all duration-200 group"
+                          className="flex justify-between items-center p-3 rounded-lg shadow-[0_0_10px_2px_rgba(255,255,255,0.1)] hover:bg-gray-800 transition-all duration-200 group"
                         >
                           {/* Left */}
-                          <Link to={`/singleSong/${song._id}`} className="flex items-center gap-3 w-1/3">
+                          <div className="flex items-center gap-3 w-1/3">
                             <span className="w-6 text-center text-sm text-gray-400">{index + 1}</span>
                             <div className="relative w-10 h-10 rounded-md overflow-hidden">
                               <img
@@ -53,20 +50,12 @@ const Search = () => {
                                 src={song.image || "https://via.placeholder.com/40"}
                                 alt="Song Thumbnail"
                               />
-
-                              {/* Pause icon centered on image */}
-                              <div className="absolute inset-0 flex items-center justify-center text-white">
-                                <FontAwesomeIcon icon={faPlay} className="text-lg" />
-                              </div>
-
-                              {/* Play button on hover */}
                               <button className="absolute inset-0 flex items-center justify-center shadow-lg text-white opacity-0 group-hover:opacity-100 transition-opacity">
                                 <i className="fas fa-play"></i>
                               </button>
                             </div>
-
                             <span className="text-white hover:underline text-sm md:text-base">{song.name}</span>
-                          </Link>
+                          </div>
 
                           {/* Middle */}
                           <div className="hidden sm:flex justify-between items-center text-sm w-1/3 pr-6">
@@ -74,15 +63,9 @@ const Search = () => {
                             <p className="text-sm text-gray-400">{song.duration}</p>
                           </div>
 
-                          {/* Actions */}
-                          <div className="flex items-center space-x-4 w-1/3 justify-end pr-2 sm:pr-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <FontAwesomeIcon icon={faThumbsUp} className="cursor-pointer hover:text-white" />
-                            <FontAwesomeIcon icon={faThumbsDown} className="cursor-pointer hover:text-white" />
-                            <OptionsMenu />
-                          </div>
+
                         </div>
                       ))}
-
                     </div>
                   </div>
                 )}
@@ -95,9 +78,9 @@ const Search = () => {
                       {albums.map((album) => (
                         <div
                           key={album._id}
-                          className="flex flex-col items-center text-center group bg-[#111] rounded-lg overflow-hidden transition duration-300 shadow-md hover:shadow-lg hover:bg-[#1a1a1a]"
+                          className="flex flex-col items-center text-center group  rounded-lg overflow-hidden transition duration-300 shadow-md hover:shadow-lg hover:bg-[#1a1a1a]"
                         >
-                          <Link to={`/album/${album?.name}`} className="w-full">
+                          <Link to={`/album/${album._id}`} className="w-full">
                             <div className="relative w-36 h-36 sm:w-40 sm:h-40 md:w-44 md:h-44 overflow-hidden cursor-pointer rounded-md transition duration-300 group">
                               <img
                                 src={album.image || "https://via.placeholder.com/150"}
@@ -127,7 +110,7 @@ const Search = () => {
                           key={artist._id}
                           className="flex flex-col items-center space-y-3 transition-transform duration-300 hover:scale-105"
                         >
-                          <Link to={`/artistDetails/${artist._id}`} className="w-full aspect-square block">
+                          <Link to={`/singleArtist/${artist._id}`} className="w-full aspect-square block">
                             <div className="w-full aspect-square rounded-full overflow-hidden bg-gray-700 hover:shadow-lg transition-shadow duration-300">
                               <img
                                 src={artist?.userId?.image || "https://via.placeholder.com/150"}

@@ -12,6 +12,7 @@ import { ArtistProfile } from "../../store/authSlice";
 
 
 
+
 const Sidebar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -60,6 +61,9 @@ const Sidebar = () => {
         <Link to="/artistRequest" className="flex items-center p-3 rounded-lg hover:bg-gray-700">
           <FaUsers className="mr-3" /> Artist Request
         </Link>
+        <Link to="/checkout" className="flex items-center p-3 rounded-lg hover:bg-gray-700">
+          <FaMoneyCheckAlt className="mr-3" /> Checkout Request
+        </Link>
 
         <Link to="/users" className="flex items-center p-3 rounded-lg hover:bg-gray-700">
           <FaUserCog className="mr-3" /> User Management
@@ -83,9 +87,9 @@ const Sidebar = () => {
           {openDropdown === "music" && (
             <div className="ml-6">
               {/* <Link to="/allSong" className="block p-2 text-sm hover:bg-gray-700 rounded-md"> <FaArrowRight className="ml-3" /> All Songs</Link> */}
-              <Link to="/songAnalystic" className="flex items-center p-2 text-sm hover:bg-gray-700 rounded-md">
+              <Link to="/allsong" className="flex items-center p-2 text-sm hover:bg-gray-700 rounded-md">
                 <FaArrowRight className="mr-2" />
-                Song Analytics
+                All song
               </Link>
               <Link to="/allAlbum" className="flex items-center p-2 text-sm hover:bg-gray-700 rounded-md">
                 <FaArrowRight className="mr-2" />
@@ -102,6 +106,10 @@ const Sidebar = () => {
               <Link to="/allGenre" className="flex items-center p-2 text-sm hover:bg-gray-700 rounded-md">
                 <FaArrowRight className="mr-2" />
                 List Genre
+              </Link>
+              <Link to="/songAnalystic" className="flex items-center p-2 text-sm hover:bg-gray-700 rounded-md">
+                <FaArrowRight className="mr-2" />
+                Song Analytics
               </Link>
             </div>
           )}

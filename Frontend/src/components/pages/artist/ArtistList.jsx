@@ -41,7 +41,7 @@ const ArtistList = () => {
                             >
                                 <div className="w-full aspect-square rounded-full overflow-hidden bg-gray-700 hover:shadow-lg transition-shadow duration-300">
                                     <img
-                                        src={item.image || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9nFbCnqa-fAIyStp-cQG9M-LezEqxUz0HYg&s'}
+                                        src={item.image || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxefhNkXqWRGkpA53l-oBhVZLrxfGke1VG8w&s'}
                                         alt={`Artist ${item.username}`}
                                         className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
                                     />

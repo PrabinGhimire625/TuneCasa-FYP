@@ -56,7 +56,7 @@ const ArtistDetails = () => {
         <div className="py-10 flex flex-col md:flex-row gap-8 items-center md:items-end shadow-lg relative">
           <div className="flex justify-center md:justify-start mb-6 md:mb-0">
             <img
-              src={singleUser?.user?.image || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9nFbCnqa-fAIyStp-cQG9M-LezEqxUz0HYg&s"}
+              src={singleUser?.user?.image || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxefhNkXqWRGkpA53l-oBhVZLrxfGke1VG8w&s"}
               alt="Artist Cover"
               className="w-32 h-32 sm:w-40 sm:h-40 md:w-44 md:h-44 rounded-full object-cover transition-all duration-300"
             />

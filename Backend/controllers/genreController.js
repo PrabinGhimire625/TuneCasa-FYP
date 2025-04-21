@@ -31,14 +31,20 @@ export const addGenre = async (req, res) => {
 };
 
 
-//get all genre
-export const getAllGenre=async(req,res)=>{
-    const allGenre=await genreModel.find();
-    if(allGenre.length<1){
-        return res.status(404).json({message:"Genre not found"});   
+
+// Get all genres sorted by latest
+export const getAllGenre = async (req, res) => {
+    try {
+        const allGenre = await genreModel.find().sort({ createdAt: -1 });
+        if (allGenre.length < 1) {
+            return res.status(404).json({ message: "Genre not found" });
+        }
+        res.status(200).json({ message: "Successfully fetched all genres", data: allGenre });
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error });
     }
-    res.status(200).json({message:"Successfully get all the genre", data:allGenre})
-}
+};
+
 
 //get single genre
 export const fetchSingleGenre=async(req,res)=>{

@@ -57,7 +57,7 @@ const Form = ({ type, onSubmit }) => {
             className="w-16 h-16 mx-auto mb-2 rounded-full"
           />
           <h1 className="text-3xl font-extrabold text-white">
-            {type === "register" ? "Create Account" : "Welcome Back"}
+            {type === "register" ? "Register as an Artist" : "Artist login"}
           </h1>
           <p className="text-sm text-gray-400 mt-1">
             {type === "register"
@@ -98,24 +98,24 @@ const Form = ({ type, onSubmit }) => {
           </div>
 
           <div className="relative">
-  <label htmlFor="password" className="text-white mb-2 block text-sm">
-    Password
-  </label>
-  <input
-    name="password"
-    onChange={handleChange}
-    type={passwordVisible ? "text" : "password"}
-    placeholder="Password"
-    className="w-full px-4 py-3 pr-12 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-white"
-    required
-  />
-  <span
-    onClick={togglePasswordVisibility}
-    className="absolute top-10 right-4 text-sm text-gray-400 cursor-pointer select-none"
-  >
-    {passwordVisible ? "Hide" : "Show"}
-  </span>
-</div>
+            <label htmlFor="password" className="text-white mb-2 block text-sm">
+              Password
+            </label>
+            <input
+              name="password"
+              onChange={handleChange}
+              type={passwordVisible ? "text" : "password"}
+              placeholder="Password"
+              className="w-full px-4 py-3 pr-12 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-white"
+              required
+            />
+            <span
+              onClick={togglePasswordVisibility}
+              className="absolute top-10 right-4 text-sm text-gray-400 cursor-pointer select-none"
+            >
+              {passwordVisible ? "Hide" : "Show"}
+            </span>
+          </div>
 
 
           {type === "register" && (
@@ -163,6 +163,15 @@ const Form = ({ type, onSubmit }) => {
                 <Link to="/register" className="text-white underline">
                   Register now
                 </Link>
+                <div className="mt-3">
+                  <button
+                    onClick={() => window.location.href = "http://localhost:5173/login"}
+                    className="mt-2 px-4 py-2 bg-gray-900 text-white font-semibold rounded hover:bg-gray-600 transition"
+                  >
+                   Login as user
+                  </button>
+
+                </div>
               </>
             )}
           </p>

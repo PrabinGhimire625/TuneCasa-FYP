@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
 import { assets } from "../../../assets/frontend-assets/assets";
 import { Link } from "react-router-dom";
-import Playlist from "../playlist/Playlist"; 
+import Playlist from "../playlist/Playlist";
 import { useDispatch, useSelector } from "react-redux";
 import { listAllPlaylist } from "../../../store/playlistSlice";
 import AllPlaylist from "../playlist/AllPlaylist";
+import { CalendarCheck } from "lucide-react"; // Book-related icon
 
 const Sidebar = () => {
   const dispatch = useDispatch();
@@ -12,7 +13,7 @@ const Sidebar = () => {
   const { playlist } = useSelector((state) => state.playlist);
 
   // Sidebar resizable state
-  const [sidebarWidth, setSidebarWidth] = useState(300); 
+  const [sidebarWidth, setSidebarWidth] = useState(300);
   const sidebarRef = useRef(null);
 
   useEffect(() => {
@@ -29,7 +30,7 @@ const Sidebar = () => {
   const handleMouseMove = (e) => {
     if (sidebarRef.current) {
       const newWidth = e.clientX - sidebarRef.current.getBoundingClientRect().left;
-      if (newWidth > 250 && newWidth < 500) { 
+      if (newWidth > 250 && newWidth < 500) {
         setSidebarWidth(newWidth);
       }
     }
@@ -72,11 +73,11 @@ const Sidebar = () => {
             <span>Library</span>
           </Link>
           <Link
-            to="/displayArtist"
+            to="/artistList"
             className="flex items-center space-x-3 py-3 px-4 rounded-lg hover:bg-[#121212] text-xl"
           >
-            <img className="w-6" src={assets.stack_icon} alt="Artist Booking" />
-            <span>Artist Booking</span>
+            <CalendarCheck className="w-6 h-6 text-white" />
+            <span>Book Artist</span>
           </Link>
         </nav>
 
@@ -97,12 +98,12 @@ const Sidebar = () => {
 
         {/* Display Playlist */}
         <div>
-           <Link to={`/likeSong`}>
-                <div className="mt-5 ml-2">
-                  <h2 className="text-lg font-bold">Liked music</h2>
-                  <p className="text-gray-400 text-sm mb-2 ml">🎵 Auto playlist</p>
-                </div>
-              </Link>
+          <Link to={`/likeSong`}>
+            <div className="mt-5 ml-2">
+              <h2 className="text-lg font-bold">Liked music</h2>
+              <p className="text-gray-400 text-sm mb-2 ml">🎵 Auto playlist</p>
+            </div>
+          </Link>
           <AllPlaylist />
         </div>
       </div>

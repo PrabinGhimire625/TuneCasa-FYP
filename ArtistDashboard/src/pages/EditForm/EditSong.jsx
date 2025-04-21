@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { listSingleSong, updateSong } from "../../store/songSlice";
 import { STATUS } from "../../globals/components/Status";
+import { toast } from "react-toastify";
 
 const EditSong = () => {
   const { id } = useParams();
@@ -50,9 +51,9 @@ const EditSong = () => {
     dispatch(updateSong({ id, songData }))
       .then(() => {
         if (status === STATUS.SUCCESS) {
-          alert("Successfully updated the song");
+          toast.success("Successfully updated the song");
         } else {
-          alert("Failed to update song");
+          toast.error("Failed to update song");
         }
       });
   };

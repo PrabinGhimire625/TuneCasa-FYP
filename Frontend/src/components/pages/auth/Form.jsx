@@ -145,14 +145,35 @@ const Form = ({ type, onSubmit }) => {
               <Link className="text-white underline" to="/login">
                 Sign in here
               </Link>
+
+
+
             </>
           ) : (
             <>
-              Not a member?{" "}
-              <Link className="text-white underline" to="/register">
-                Register now
-              </Link>
+              <div className="text-sm text-gray-300 mt-4">
+                <p>
+                  Not a member?{" "}
+                  <Link
+                    className="text-white underline underline-offset-2 hover:text-gray-100 transition"
+                    to="/register"
+                  >
+                    Register now
+                  </Link>
+                </p>
+
+                <div className="mt-3">
+                  <button
+                    onClick={() => window.location.href = "http://localhost:5174/login"}
+                    className="mt-2 px-4 py-2 bg-gray-900 text-white font-semibold rounded hover:bg-gray-800 transition"
+                  >
+                   Login as artist
+                  </button>
+
+                </div>
+              </div>
             </>
+
           )}
         </p>
 

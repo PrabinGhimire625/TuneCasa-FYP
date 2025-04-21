@@ -23,7 +23,7 @@ const Login = () => {
     } 
     // Optional: handle error as well
     else if (status === STATUS.ERROR) {
-      toast.error("Login failed! Check your email or password.");
+      toast.error("Your email or password is incorrect");
       dispatch(resetStatus());
     }
   }, [status, navigate, dispatch]);

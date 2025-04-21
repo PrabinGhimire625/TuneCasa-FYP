@@ -3,6 +3,7 @@ import { deleteGenre, listAllGenre } from '../../../store/genreSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Search } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 const ListGenre = () => {
   const dispatch = useDispatch();
@@ -15,9 +16,10 @@ const ListGenre = () => {
   }, [dispatch]);
 
   const handleDeleteGenre = (genreId) => {
-    if (window.confirm("Are you sure you want to delete this genre?")) {
+
       dispatch(deleteGenre(genreId));
-    }
+      toast.success("Genre deleted");
+
   };
 
   const filteredGenres = genre.filter((item) =>

@@ -12,6 +12,7 @@ import eventSlice from "./eventSlice"
 import adsSlice from "./adsSlice"
 import notificationSlice from "./notificationSlice"
 import analyticSlice from "./analyticSlice"
+import searchSlice from "./searchSlice"
 
 
 const store=configureStore({
@@ -29,6 +30,7 @@ const store=configureStore({
         ads:adsSlice,
         notifications:notificationSlice,
         analytics:analyticSlice,
+        search:searchSlice,
     }
 })
 

@@ -1,5 +1,20 @@
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { FiSearch, FiMusic, FiUsers, FiHeadphones, FiList, FiPlusCircle, FiFacebook, FiInstagram } from "react-icons/fi";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+import {
+  FiMusic,
+  FiUsers,
+  FiHeadphones,
+  FiList,
+  FiPlusCircle,
+} from "react-icons/fi";
 import { FaChartLine } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
@@ -10,48 +25,28 @@ import { countArtistFollower } from "../../store/authSlice";
 import { calculateArtistMonthlyEarning } from "../../store/analyticSlice";
 import TrendingSong from "../mostPlaySong/TrendingSong";
 
-
+// Sample listener data
 const data = [
-  { year: "2018", listeners: 1000, prevListeners: 800 },
-  { year: "2019", listeners: 5000, prevListeners: 3000 },
-  { year: "2020", listeners: 12000, prevListeners: 7000 },
-  { year: "2021", listeners: 25000, prevListeners: 18000 },
-  { year: "2022", listeners: 40000, prevListeners: 32000 },
-  { year: "2023", listeners: 70000, prevListeners: 55000 },
+  { month: "Jan", listeners: 100 },
+  { month: "Feb", listeners: 500 },
+  { month: "Mar", listeners: 1200 },
+  { month: "Apr", listeners: 2500 },
+  { month: "May", listeners: 4000 },
+  { month: "Jun", listeners: 7000 },
+  { month: "Jul", listeners: 8500 },
+  { month: "Aug", listeners: 9200 },
+  { month: "Sep", listeners: 10400 },
+  { month: "Oct", listeners: 11700 },
+  { month: "Nov", listeners: 13000 },
+  { month: "Dec", listeners: 14500 },
 ];
 
-const trendingSongs = [
-  {
-    title: "Rise Above",
-    artist: "Aria Melody",
-    plays: 25000,
-    img: "/images/song1.jpg",
-  },
-  {
-    title: "Echoes of the Night",
-    artist: "Skyler Beats",
-    plays: 22000,
-    img: "/images/song2.jpg",
-  },
-  {
-    title: "Into the Horizon",
-    artist: "Echo Rhythms",
-    plays: 18000,
-    img: "/images/song3.jpg",
-  },
-  {
-    title: "Vibes of Neon",
-    artist: "Neon Vibes",
-    plays: 15000,
-    img: "/images/song4.jpg",
-  },
-  {
-    title: "Waves of Sound",
-    artist: "Horizon Tunes",
-    plays: 12000,
-    img: "/images/song5.jpg",
-  },
-];
+// Generate Y-axis ticks dynamically from 0 to max
+const maxListeners = Math.max(...data.map((d) => d.listeners));
+const yAxisTicks = Array.from(
+  { length: Math.ceil(maxListeners / 1000) + 1 },
+  (_, i) => i * 1000
+);
 
 export default function ArtistDashboard() {
   const dispatch = useDispatch();
@@ -63,15 +58,12 @@ export default function ArtistDashboard() {
   useEffect(() => {
     dispatch(countArtistSong());
     dispatch(CountArtistUpcommingEvent());
-    dispatch(countArtistFollower())
+    dispatch(countArtistFollower());
     dispatch(calculateArtistMonthlyEarning());
   }, [dispatch]);
 
-  console.log("artistUpcomingEvent, ", artistUpcomingEvent)
-
   return (
     <div className="bg-gray-900 text-white p-5 min-h-screen">
-
       {/* Dashboard Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
         {[
@@ -108,7 +100,6 @@ export default function ArtistDashboard() {
             key={index}
             className="bg-gray-800 p-5 rounded-xl flex items-center gap-4 hover:bg-gray-700 transition duration-300 shadow-md"
           >
-            {/* Wrap the whole div in a Link */}
             {stat.link ? (
               <Link to={stat.link} className="w-full flex items-center gap-4">
                 <div className={`text-3xl ${stat.color}`}>{stat.icon}</div>
@@ -118,7 +109,7 @@ export default function ArtistDashboard() {
                 </div>
               </Link>
             ) : (
-              <div className={`w-full flex items-center gap-4`}>
+              <div className="w-full flex items-center gap-4">
                 <div className={`text-3xl ${stat.color}`}>{stat.icon}</div>
                 <div>
                   <p className="text-xl font-bold">{stat.value}</p>
@@ -130,40 +121,53 @@ export default function ArtistDashboard() {
         ))}
       </div>
 
-      {/* Listeners Growth Chart */}
-      <div className="bg-gray-800 p-6 rounded-lg mt-8 shadow-lg">
+      {/* Listener Growth Chart (Monthly) */}
+      <div className="bg-gray-800 p-6 rounded-lg mt-6 shadow-lg">
         <h3 className="text-lg font-semibold flex items-center gap-2 mb-4">
-          <FaChartLine className="text-green-400" /> Listener Growth
+          <FaChartLine className="text-green-400" /> Monthly Listener Growth
         </h3>
         <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={data}>
+          <LineChart>
             <CartesianGrid strokeDasharray="3 3" stroke="#444" />
-            <XAxis dataKey="year" tick={{ fill: "white" }} />
-            <YAxis tick={{ fill: "white" }} />
+            <XAxis dataKey="month" tick={{ fill: "white" }} />
+            <YAxis
+              tick={{ fill: "white" }}
+              ticks={yAxisTicks}
+              domain={[0, "dataMax"]}
+            />
             <Tooltip />
             <Legend />
+
+            {/* Green line: Jan to Apr */}
             <Line
               type="monotone"
               dataKey="listeners"
+              data={data.slice(0, 4)} // Jan to Apr
               stroke="#4CAF50"
               strokeWidth={2}
               dot={{ fill: "#4CAF50" }}
+              name="Real (Listener)"
             />
+
+            {/* Blue line: Apr to Dec (for continuity, start from Apr) */}
             <Line
               type="monotone"
-              dataKey="prevListeners"
-              stroke="#2196F3"
+              dataKey="listeners"
+              data={data.slice(3)} // Apr to Dec
+              stroke="#3B82F6"
               strokeWidth={2}
-              dot={{ fill: "#2196F3" }}
+              dot={{ fill: "#3B82F6" }}
+              name="Projected (Listener)"
             />
           </LineChart>
         </ResponsiveContainer>
+
+
       </div>
 
       {/* Trending Songs */}
-      <div className="">
+      <div className="mt-6">
         <TrendingSong />
-
       </div>
 
       {/* Upcoming Events */}
@@ -174,7 +178,7 @@ export default function ArtistDashboard() {
         <Link to="/upcomingEvents">
           <ul className="space-y-2 list-disc list-inside text-gray-300">
             {artistUpcomingEvent?.events
-              ?.filter((event) => new Date(event.eventDate) >= new Date()) // Optional: show only future events
+              ?.filter((event) => new Date(event.eventDate) >= new Date())
               .slice(0, 5)
               .map((event) => {
                 const date = new Date(event.eventDate);
@@ -192,7 +196,6 @@ export default function ArtistDashboard() {
               })}
           </ul>
         </Link>
-
       </div>
     </div>
   );

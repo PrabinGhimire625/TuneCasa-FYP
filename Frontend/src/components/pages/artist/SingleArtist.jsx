@@ -53,7 +53,7 @@ const SingleArtist = () => {
               <img
                 src={
                   singleUser?.user?.image ||
-                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9nFbCnqa-fAIyStp-cQG9M-LezEqxUz0HYg&s"
+                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxefhNkXqWRGkpA53l-oBhVZLrxfGke1VG8w&s"
                 }
                 alt="Artist Cover"
                 className="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover shadow-lg"
@@ -100,7 +100,7 @@ const SingleArtist = () => {
                     />
                     <div>
                       <h4 className="text-xl font-semibold">{event.title}</h4>
-                      <p className="text-gray-300">{event.description}</p>
+                      {/* <p className="text-gray-300">{event.description}</p> */}
                       <p className="text-sm text-gray-400 mt-2">Date: {event.eventDate}</p>
                       <p className="text-sm text-gray-400">Location: {event.location}</p>
                     </div>

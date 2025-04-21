@@ -41,6 +41,7 @@ import ContactSupport from "./pages/support/ContactSupport";
 import HelpCenter from "./pages/support/HelpCenter";
 import PageNotFound from "./pages/pageNotFound/PageNotFound";
 import Notification from "./pages/notification/Notification";
+import Search from "./pages/search/Search";
 
 function App() {
   return (
@@ -96,6 +97,7 @@ function App() {
                 <Route path="/notification" element={<ProtectedRoute> <Notification /></ProtectedRoute>} />
 
                 <Route path="/*" element={<PageNotFound />} />
+                <Route path="/search" element={<Search />} />
               </Routes>
             </div>
           </div>

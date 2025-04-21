@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { Mail, Key } from 'lucide-react'; // Optional: For icons
+import { toast } from 'react-toastify';
 
 const VerifyOtp = () => {
   const [email, setEmail] = useState('');
@@ -9,7 +11,6 @@ const VerifyOtp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       const response = await axios.post("http://localhost:3000/api/user/verifyOtp", {
         email,
@@ -17,45 +18,53 @@ const VerifyOtp = () => {
       });
 
       if (response.status === 200) {
-        alert(response.data.message); 
-        navigate("/resetPassword"); 
+        toast.success(response.data.message);
+        navigate("/resetPassword");
       }
     } catch (err) {
       console.log("Error:", err);
-      alert(err.response?.data?.message || "Error verifying OTP. Please try again.");
+      toast.error(err.response?.data?.message || "Error verifying OTP. Please try again.");
     }
   };
 
   return (
-    <div className="flex  justify-center bg-stone-900 h-screen overflow-hidden ">
-      <div className=" bg-stone-800 w-17/12 lg:w-5/12 md:w-6/12 shadow-3xl mt-10 h-[380px]">
-        <form className="p-3 md:p-10" onSubmit={handleSubmit}>
-          <h1 className="text-lg md:text-2xl mb-6">Verify OTP</h1>
-          <div className="flex items-center mb-6 text-lg md:mb-8">
+    <div className="px-4 py-10">
+      <div className="w-full  p-8 border border-white rounded-2xl shadow-xl bg-[#121212]">
+        <h1 className="text-2xl font-semibold text-center text-white mb-6">Verify OTP</h1>
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="relative">
+            <Mail className="absolute top-3.5 left-3 text-gray-500 w-5 h-5" />
             <input
               type="email"
               id="email"
               name="email"
-              className="w-full py-2 pl-12 bg-gray-200 md:py-4 focus:outline-none"
+              className="w-full pl-10 pr-4 py-3 rounded-md bg-gray-200 focus:outline-none text-black"
               placeholder="Email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
-          <div className="flex items-center mb-6 text-lg md:mb-8">
+
+          <div className="relative">
+            <Key className="absolute top-3.5 left-3 text-gray-500 w-5 h-5" />
             <input
               type="text"
               id="otp"
               name="otp"
-              className="w-full py-2 pl-12 bg-gray-200 md:py-4 focus:outline-none"
-              placeholder="OTP"
+              className="w-full pl-10 pr-4 py-3 rounded-md bg-gray-200 focus:outline-none text-black"
+              placeholder="Enter OTP"
               required
               value={otp}
               onChange={(e) => setOtp(e.target.value)}
             />
           </div>
-          <button className="w-full p-2 font-medium text-white uppercase bg-gradient-to-b from-gray-700 to-gray-900 md:p-4">
+
+          <button
+            type="submit"
+            className="w-full py-3 text-white font-semibold rounded-md bg-gradient-to-r from-gray-700 to-gray-900 hover:from-gray-600 hover:to-gray-800 transition"
+          >
             Verify OTP
           </button>
         </form>

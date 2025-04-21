@@ -228,35 +228,19 @@ export const fetchAndCountArtistUpcomingEvents = async (req, res) => {
       return res.status(404).json({ message: "Artist not found." });
     }
 
-    // 🔧 Fix: Use string for comparison
     const today = moment().format("YYYY-MM-DD");
 
     // ✅ Count upcoming events
     const upcomingEventCount = await Event.countDocuments({
       userId,
-      eventDate: { $gte: today }, // eventDate is likely stored as a string
+      eventDate: { $gte: today },
     });
 
-    // 📦 Fetch all events (still as full objects)
-    const allEvents = await Event.find({ userId });
-
-    // 🧠 Sort: Upcoming first, Past later
-    const sortedEvents = allEvents.sort((a, b) => {
-      const now = new Date();
-      const aDate = new Date(a.eventDate);
-      const bDate = new Date(b.eventDate);
-
-      const isAUpcoming = aDate >= now;
-      const isBUpcoming = bDate >= now;
-
-      if (isAUpcoming && !isBUpcoming) return -1;
-      if (!isAUpcoming && isBUpcoming) return 1;
-
-      return aDate - bDate;
-    });
+    // 🔄 Fetch events sorted by latest (newest first)
+    const sortedEvents = await Event.find({ userId }).sort({ eventDate: -1 });
 
     res.status(200).json({
-      message: "Fetched all events with count of upcoming ones.",
+      message: "Fetched all events sorted by latest with count of upcoming ones.",
       data: {
         count: upcomingEventCount,
         events: sortedEvents,

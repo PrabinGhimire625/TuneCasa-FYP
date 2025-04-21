@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ArtistProfile, setToken } from '../../store/authSlice';
 import tunecasaLogo from "../../assets/tunecasaLogo.png";
 import { FiLogOut, FiMusic, FiBell, FiUser } from "react-icons/fi";
@@ -12,13 +12,33 @@ const Navbar = () => {
     const { token, profile } = useSelector((state) => state.auth);
     const [isLoggedIn, setIsloggedIn] = useState(false);
 
-    const {unreadCount} = useSelector((state) => state.notifications);
+    const { unreadCount } = useSelector((state) => state.notifications);
     console.log(unreadCount, "unreadCount")
-  
+
+    const [searchQuery, setSearchQuery] = useState("");
+    const location = useLocation();
+
     useEffect(() => {
-      dispatch(getEventAndMusicNotifications());
+        const debounce = setTimeout(() => {
+            if (searchQuery.trim()) {
+                const newUrl = `/search?query=${searchQuery.trim()}`;
+
+                // ✅ Navigate only if not already on that search URL
+                if (location.pathname !== '/search' || location.search !== `?query=${searchQuery.trim()}`) {
+                    navigate(newUrl);
+                }
+            }
+        }, 300); // debounce to reduce spam
+
+        return () => clearTimeout(debounce);
+    }, [searchQuery]);
+
+
+
+    useEffect(() => {
+        dispatch(getEventAndMusicNotifications());
     }, [dispatch]);
-  
+
 
     useEffect(() => {
         const localStorageToken = localStorage.getItem('token');
@@ -45,29 +65,31 @@ const Navbar = () => {
                     <img src={tunecasaLogo} alt="logo" className="w-[60px] h-[60px] rounded-full" />
                     <span className="ml-3 text-xl font-bold">TuneCasa</span>
                 </Link>
-                
+
                 <div className="relative w-full max-w-md mx-auto">
-                    <input 
-                        type="text" 
-                        placeholder="Search..." 
-                        className="w-full bg-gray-800 border border-gray-700 rounded-full py-2 px-4 text-white focus:ring-2 focus:ring-blue-500 outline-none" 
+                    <input
+                        type="text"
+                        placeholder="Search..."
+                        className="w-full bg-gray-800 border border-gray-700 rounded-full py-2 px-4 text-white focus:ring-2 focus:ring-gray-400 outline-none"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
                     />
                 </div>
 
                 <div className="flex items-center space-x-6">
                     {isLoggedIn && (
                         <>
-                         {/* Notifications Icon */}
-                         <Link to="/notification" className="relative">
-      <p className="flex items-center gap-2">
-        <FiBell className="w-6 h-6" />
-        {unreadCount > 0 && (
-          <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-            {unreadCount}
-          </span>
-        )}
-      </p>
-    </Link>
+                            {/* Notifications Icon */}
+                            <Link to="/notification" className="relative">
+                                <p className="flex items-center gap-2">
+                                    <FiBell className="w-6 h-6" />
+                                    {unreadCount > 0 && (
+                                        <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                            {unreadCount}
+                                        </span>
+                                    )}
+                                </p>
+                            </Link>
                         </>
                     )}
 

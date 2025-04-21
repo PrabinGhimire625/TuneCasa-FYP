@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { STATUS } from '../../../globals/components/enumStatus/Status';
 import { fetchAllArtists } from '../../../store/artistSlice';
+import Footer from '../../../globals/components/footer/Footer';
 
 const DisplayArtist = () => {
   const dispatch = useDispatch();
@@ -68,6 +69,7 @@ const DisplayArtist = () => {
           ))}
         </div>
       </div>
+  
     </div>
   );
 };

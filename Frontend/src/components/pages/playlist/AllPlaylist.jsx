@@ -20,7 +20,7 @@ const AllPlaylist = () => {
           <li key={index} className="mb-3">
             <Link
               to={`/singlePlaylist/${item._id}`}
-              className="flex items-center justify-between p-2 rounded-lg hover:bg-[#1a1a1a] transition"
+              className="flex items-center justify-between p-2 rounded-lg hover:bg-stone-900 transition"
             >
             <div className="flex justify-between items-center">
               <img 

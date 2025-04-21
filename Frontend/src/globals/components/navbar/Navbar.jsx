@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { assets } from '../../../assets/frontend-assets/assets';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { resetStatus, userProfile } from '../../../store/authSlice';
 import { FaBars, FaTimes } from 'react-icons/fa';
 import { Bell } from "lucide-react";
 import { fetchAllNotificationsOfSingleUser, markAllNotificationsAsRead } from '../../../store/notificationSlice';
+import { searchSongAlbumArtist } from '../../../store/searchSlice';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -15,6 +16,27 @@ const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const dropdownRef = useRef(null);
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const location = useLocation();
+
+  useEffect(() => {
+    const debounce = setTimeout(() => {
+      if (searchQuery.trim()) {
+        const newUrl = `/search?query=${searchQuery.trim()}`;
+
+        // ✅ Navigate only if not already on that search URL
+        if (location.pathname !== '/search' || location.search !== `?query=${searchQuery.trim()}`) {
+          navigate(newUrl);
+        }
+      }
+    }, 300); // debounce to reduce spam
+
+    return () => clearTimeout(debounce);
+  }, [searchQuery]);
+
+  
+  
 
   //notification
   // const { notifications } = useSelector((state) => state.notifications);
@@ -46,7 +68,7 @@ const Navbar = () => {
   const handleLogout = async () => {
     localStorage.removeItem('token');
     setIsLoggedIn(false);
-     dispatch(resetStatus());
+    dispatch(resetStatus());
     navigate("/login");
   };
 
@@ -74,20 +96,23 @@ const Navbar = () => {
         {/* Logo */}
         <div className="flex items-center gap-4">
           <Link to="/">
-          <div className="w-[50px] h-[50px] rounded-full overflow-hidden">
-            <img src={assets.tunecasaLogo} alt="logo" className="w-full h-full object-cover" />
-          </div>
+            <div className="w-[50px] h-[50px] rounded-full overflow-hidden">
+              <img src={assets.tunecasaLogo} alt="logo" className="w-full h-full object-cover" />
+            </div>
           </Link>
         </div>
 
         {/* Search input (hidden on small screens) */}
         <div className="hidden md:flex items-center gap-2">
-          <input
-            type="text"
-            placeholder="Search"
-            className="w-72 bg-[#121212] p-2 border-white rounded-md text-white text-sm"
-          />
-          <img className="w-5" src={assets.search_icon} alt="search" />
+        <input
+        type="text"
+        placeholder="Search"
+        className="w-96 bg-[#121212] p-2 border-white rounded-md text-white text-sm"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+      />
+
+          {/* <img className="w-5" src={assets.search_icon} alt="search" /> */}
         </div>
 
         {/* Desktop Nav / Auth */}
@@ -99,15 +124,15 @@ const Navbar = () => {
               </Link>
 
               <Link to="/notification" className="relative">
-      <p className="flex items-center gap-2">
-        <Bell className="w-6 h-6" />
-        {unreadCount > 0 && (
-          <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-            {unreadCount}
-          </span>
-        )}
-      </p>
-    </Link>
+                <p className="flex items-center gap-2">
+                  <Bell className="w-6 h-6" />
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                      {unreadCount}
+                    </span>
+                  )}
+                </p>
+              </Link>
 
               <div className="relative" ref={dropdownRef}>
                 <div
@@ -118,11 +143,10 @@ const Navbar = () => {
                 </div>
 
                 <ul
-                  className={`absolute right-0 mt-2 bg-black text-white shadow-lg rounded-md overflow-auto max-h-96 z-[1000] text-sm w-48 ${
-                    dropdownOpen ? 'block' : 'hidden'
-                  }`}
+                  className={`absolute right-0 mt-2 bg-black text-white shadow-lg rounded-md overflow-auto max-h-96 z-[1000] text-sm w-48 ${dropdownOpen ? 'block' : 'hidden'
+                    }`}
                 >
-                  
+
                   <li className="hover:bg-gray-100 hover:text-red-700 px-4 py-2">
                     <Link to="/profile">Profile</Link>
                   </li>

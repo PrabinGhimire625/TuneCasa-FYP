@@ -66,7 +66,7 @@ const Login = () => {
           />
         </div>
         <h1 className="text-xl font-bold text-center leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-          Login
+          Admin Login
         </h1>
         <form onSubmit={handleSubmit} className="space-y-4 mt-6">
           <div>

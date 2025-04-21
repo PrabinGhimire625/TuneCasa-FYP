@@ -228,10 +228,10 @@ useEffect(() => {
   return (
     <div className="fixed bottom-0 left-0 w-full bg-black text-white px-4 h-[100px] flex justify-between items-center">
       <div className="hidden lg:flex items-center gap-4">
-        <img className="w-12" src={isAdPlaying ? currentAd.image : currentSong.image} alt="Cover" />
+        <img className="w-16" src={isAdPlaying ? currentAd.image : currentSong.image} alt="Cover" />
         <div>
           <p>{isAdPlaying ? currentAd.name : currentSong.name}</p>
-          {!isAdPlaying && <p>{currentSong.desc?.slice(0, 12)}</p>}
+          {/* {!isAdPlaying && <p>{currentSong.desc?.slice(0, 12)}</p>} */}
         </div>
       </div>
 
@@ -239,7 +239,7 @@ useEffect(() => {
       {isAdPlaying ? (
   <div className="flex flex-col items-center gap-4">
     {showSkipButton && (
-      <button onClick={handleSkipAd} className="bg-red-500 text-white py-1 px-4 rounded">
+      <button onClick={handleSkipAd} className="bg-white text-black py-1 px-4 rounded">
         Skip Ad
       </button>
     )}

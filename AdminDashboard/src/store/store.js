@@ -11,6 +11,7 @@ import eventSlice from "./eventSlice"
 import analyticSlice from "./analyticSlice"
 import subscriptionSlice from "./subscriptionSlice"
 import notificationSlice from "./notificationSlice"
+import searchSlice from "./searchSlice"
 
 const store=configureStore({
     reducer:{
@@ -26,10 +27,7 @@ const store=configureStore({
         analytics:analyticSlice,
         subscription:subscriptionSlice,
         notifications:notificationSlice,
-
-        
-        
-
+        search:searchSlice,
     }
 })
 

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
 
 const ForgetPassword = () => {
   const [email, setEmail] = useState("");
@@ -13,17 +14,17 @@ const ForgetPassword = () => {
       .post("http://localhost:3000/api/user/forgetPassword", { email })
       .then((res) => {
         console.log("Response:", res); 
-        alert("Check your email for the reset password link!");
+        toast.success("Check your email for the OTP");
         navigate("/verifyOtp"); 
       })
       .catch((err) => {
         console.error("Error:", err); 
-        alert("Email is not regster in the system");
+        toast.error("Email is not regster in the system");
       });
   };
 
   return (
-    <div className="flex  bg-stone-900 justify-center min-h-screen bg-cover bg-center bg-[url('path/to/your/background.jpg')]">
+    <div className="flex justify-center  bg-center bg-[url('path/to/your/background.jpg')]">
       <div className="w-[420px] bg-transparent mt-16 h-[250px] text-white rounded-lg border-2 border-white/20 shadow-lg backdrop-blur-md p-8">
         <form onSubmit={handleSubmit}>
           <h1 className="text-3xl text-center font-bold mb-6">Forgot Password</h1>
@@ -45,6 +46,7 @@ const ForgetPassword = () => {
           </button>
         </form>
       </div>
+      
     </div>
   );
 };

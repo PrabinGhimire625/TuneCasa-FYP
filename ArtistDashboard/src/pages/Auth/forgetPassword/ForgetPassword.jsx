@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
 
 const ForgetPassword = () => {
   const [email, setEmail] = useState("");
@@ -13,12 +14,12 @@ const ForgetPassword = () => {
       .post("http://localhost:3000/api/user/forgetPassword", { email })
       .then((res) => {
         console.log("Response:", res); 
-        alert("Check your email for the reset password link!");
+        toast.success("Check your email for OTP code");
         navigate("/verifyOtp"); 
       })
       .catch((err) => {
         console.error("Error:", err); 
-        alert("Failed to send reset link. Please try again later.");
+        toast.error("Failed to send reset link. Please try again later.");
       });
   };
 

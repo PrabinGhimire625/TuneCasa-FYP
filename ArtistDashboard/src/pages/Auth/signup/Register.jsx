@@ -22,7 +22,7 @@ const Register = () => {
       dispatch(resetStatus()); 
       navigate("/login"); 
     } else if (status === STATUS.ERROR) {
-      toast.error("Something went wrong");
+      toast.error("Email already register");
       dispatch(resetStatus()); 
     }
   }, [status, dispatch, navigate]);

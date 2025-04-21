@@ -50,6 +50,7 @@ import TopListeningSong from "./components/pages/recommendation/TopListeningSong
 import LatestArtistSong from "./components/pages/recommendation/LatestArtistSong";
 import LatestSystemSong from "./components/pages/recommendation/LatestSystemSong";
 import PublicPlaylist from "./components/pages/playlist/PublicPlaylist";
+import Search from "./components/pages/search/Search";
 
 
 
@@ -114,6 +115,9 @@ function App() {
                 <Route path="/topListeningSong" element={<TopListeningSong />} />
                 <Route path="/latestArtistSong" element={<LatestArtistSong />} />
                 <Route path="/latestSystemSong" element={<LatestSystemSong />} />
+
+
+                <Route path="/search" element={<Search />} />
                 
                 {/* GoogleLogin Route */}
                 <Route 

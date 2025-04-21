@@ -3,6 +3,7 @@ import { STATUS } from '../../../globals/enumStatus/Status';
 import { useDispatch, useSelector } from 'react-redux';
 import { listSingleGenre, updateGenre } from '../../../store/genreSlice';
 import { useParams, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const EditGenre = () => {
   const { id } = useParams();
@@ -43,10 +44,10 @@ const EditGenre = () => {
     dispatch(updateGenre({ id, genreData }));
 
     if (status === STATUS.SUCCESS) {
-      alert('Successfully updated the genre!');
-      navigate('/tables');
+      toast.success('Successfully updated the genre!');
+      navigate('/allGenre');
     } else {
-      alert('Failed to update the genre!');
+      toast.success('Failed to update the genre!');
     }
   };
 

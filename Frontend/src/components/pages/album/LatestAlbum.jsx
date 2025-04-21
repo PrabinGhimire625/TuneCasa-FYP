@@ -26,7 +26,7 @@ const LatestAlbum = () => {
                                                 <img className="w-full h-full object-cover" src={item?.image} alt={item?.name} />
                                             </div>
                                             <p className="text-slate-200 font-bold ml-3 mt-2 mb-1 truncate">{item?.name}</p>
-                                            <p className="text-slate-500  ml-3 text-sm truncate">{item?.desc}</p>
+                                            {/* <p className="text-slate-500  ml-3 text-sm truncate">{item?.desc}</p> */}
                                         </div>
                                     </div>
                                 </Link>

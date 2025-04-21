@@ -49,7 +49,7 @@ const SingleSubscription = () => {
               <span className="text-xl font-semibold">
                 {singleSubscription?.userId?.username || "Unknown User"}
               </span>
-              <p className="text-gray-400 text-sm">{singleSubscription?.userId?.email || "No Email"}</p>
+              {/* <p className="text-gray-400 text-sm">{singleSubscription?.userId?.email || "No Email"}</p> */}
             </div>
           </div>
 

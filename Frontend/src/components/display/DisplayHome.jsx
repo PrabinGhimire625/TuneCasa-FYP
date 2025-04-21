@@ -35,17 +35,10 @@ const DisplayHome = () => {
               </Link>
 
 
-              <div className="px-3 py-1.5 sm:px-4 sm:py-2 bg-stone-950 text-white text-xs sm:text-sm md:text-base rounded-md hover:bg-gray-900 transition-colors">
-                Songs
-              </div>
 
-              <div className="px-3 py-1.5 sm:px-4 sm:py-2 bg-stone-950 text-white text-xs sm:text-sm md:text-base rounded-md hover:bg-gray-900 transition-colors">
-                Albums
-              </div>
-
-              <Link to="/artistList">
+              <Link to="/allAlbum">
                 <div className="px-3 py-1.5 sm:px-4 sm:py-2 bg-stone-950 text-white text-xs sm:text-sm md:text-base rounded-md hover:bg-gray-900 transition-colors">
-                  Artists
+                  Albums
                 </div>
               </Link>
 
@@ -54,6 +47,21 @@ const DisplayHome = () => {
                   Genre
                 </div>
               </Link>
+              
+              <Link to="/artistList">
+                <div className="px-3 py-1.5 sm:px-4 sm:py-2 bg-stone-950 text-white text-xs sm:text-sm md:text-base rounded-md hover:bg-gray-900 transition-colors">
+                  Event
+                </div>
+              </Link>
+
+
+              <Link to="/artistList">
+                <div className="px-3 py-1.5 sm:px-4 sm:py-2 bg-stone-950 text-white text-xs sm:text-sm md:text-base rounded-md hover:bg-gray-900 transition-colors">
+                  Artists
+                </div>
+              </Link>
+
+             
             </div>
           </div>
         </div>
@@ -91,13 +99,13 @@ const DisplayHome = () => {
           <LatestSystemSong />
         </div>
         <div className='mb-6'>
-        <LatestAlbum/>
+          <LatestAlbum />
         </div>
 
         <div className='mb-6'>
           <Footer />
         </div>
-        
+
 
       </div>
     </>

@@ -184,7 +184,7 @@ const SinglePlaylist = () => {
 
             <p className="text-white text-lg">{singleplaylist?.description}</p>
 
-            <div className="flex items-center space-x-8 ml-10 mt-5">
+            <div className="flex items-center space-x-8 ml-32 mt-5">
               <button onClick={handleEditClick} className="bg-[#1c1c1c] w-10 h-10 rounded-full flex items-center justify-center">
                 <FontAwesomeIcon icon={faPen} className="text-white w-4 h-4" />
               </button>

@@ -14,6 +14,7 @@ import AdsTrackingRoutes from "./routes/adTrackingRoute.js"
 import adsRouter from "./routes/adRoutes.js"
 import notificationRouter from "./routes/notificationRoute.js"
 import checkoutRouter from "./routes/checkoutRoute.js"
+import searchRouter from "./routes/searchRoute.js"
 import connectDB from "./config/mongoDb.js";
 import connectCloudinary from "./config/cloudinary.js";
 import adminSeeder from "./adminSeeder.js";
@@ -49,6 +50,7 @@ app.use("/api/song-analytics",songAnalyticsRoutes)
 app.use("/api/ads-tracking",AdsTrackingRoutes)
 app.use("/api/notification",notificationRouter)
 app.use("/api/checkout",checkoutRouter)
+app.use("/api/search",searchRouter)
 
 app.listen(port,()=>{
     console.log(`Server is running on the PORT ${port}`)

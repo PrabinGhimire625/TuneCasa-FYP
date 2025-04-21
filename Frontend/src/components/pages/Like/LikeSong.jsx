@@ -14,12 +14,14 @@ const LikeSong = () => {
     dispatch(listAllLikeSong());
   }, [dispatch]);
 
+  console.log("Like", like )
+
   console.log("all the like song", like);
 
   return (
-    <div className="text-white min-h-screen p-6 flex gap-10">
+    <div className="text-white  w-full  p-6 flex gap-10">
       {/* Left Section: Fixed Width */}
-      <div className="flex-none w-[500px] mt-5">
+      <div className="flex-none  mt-5">
         <div className="flex flex-col items-center gap-6">
           <div className="bg-blue-700 w-80 h-80 flex items-center justify-center rounded-lg shadow-lg">
             <div className="relative">

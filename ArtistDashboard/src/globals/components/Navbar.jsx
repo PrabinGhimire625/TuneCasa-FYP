@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { assets } from '../../assets/artist-assets/assets'
 import { artistProfile, resetStatus, setToken } from "../../store/authSlice"
 import { Bell } from 'lucide-react';
@@ -12,6 +12,25 @@ const Navbar = () => {
     const dispatch = useDispatch();
     const { token, status, profile } = useSelector((state) => state.auth);
     const [isLoggedIn, setIsloggedIn] = useState(false);
+    
+  const [searchQuery, setSearchQuery] = useState("");
+  const location = useLocation();
+
+  useEffect(() => {
+    const debounce = setTimeout(() => {
+      if (searchQuery.trim()) {
+        const newUrl = `/search?query=${searchQuery.trim()}`;
+
+        // ✅ Navigate only if not already on that search URL
+        if (location.pathname !== '/search' || location.search !== `?query=${searchQuery.trim()}`) {
+          navigate(newUrl);
+        }
+      }
+    }, 300); // debounce to reduce spam
+
+    return () => clearTimeout(debounce);
+  }, [searchQuery]);
+
 
 
     
@@ -69,6 +88,8 @@ const Navbar = () => {
                                 type="text"
                                 placeholder="Search something..."
                                 className="w-full bg-gray-800 focus:bg-gray-700 text-white px-6 rounded h-11 border border-gray-600 focus:border-gray-400 outline-none text-sm transition-all placeholder-gray-400"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
                             />
 
                             <div className="absolute mt-1 w-full bg-white border border-gray-200 shadow-md z-50 hidden">

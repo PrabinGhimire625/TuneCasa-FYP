@@ -32,6 +32,8 @@ import SingleAds from './pages/form/ads/SingleAds'
 import Notification from './pages/notification/Notification';
 import SingleAlbum from './pages/form/album/SingleAlbum';
 import Settings from './pages/setting/Settings';
+import Checkout from './pages/checkout/Checkout';
+import Search from './pages/search/Search';
 
 
 function App() {
@@ -71,6 +73,9 @@ function App() {
               <Route path='/singleEvent/:id' element={<ProtectedRoute> <SingleEvent /></ProtectedRoute>} />
               <Route path='/notification' element={<ProtectedRoute> <Notification /></ProtectedRoute>} />
               <Route path='/settings' element={<ProtectedRoute> <Settings /></ProtectedRoute>} />
+              <Route path='/checkout' element={<ProtectedRoute> <Checkout /></ProtectedRoute>} />
+
+              <Route path='/search' element={<ProtectedRoute> <Search /></ProtectedRoute>} />
             </Routes>
           </div>
         </div>
