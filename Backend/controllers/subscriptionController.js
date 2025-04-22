@@ -336,3 +336,52 @@ export const fetchSingleSubscription = async (req, res) => {
     });
   }
 };
+
+
+//delete subscription 
+export const deleteSubscription=async(req, res)=>{
+  const id=req.params.id;
+  const subscription=await Subscription.findByIdAndDelete(id);
+  if(!subscription){
+    return res.status(400).json({message:"Subcription not found"});
+  }
+  res.status(200).json(({message: " Subcription deleted successfully"}));
+}
+
+//user payment history
+
+
+export const getUserPaymentHistory = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // Step 1: Find all subscriptions for the user
+    const subscriptions = await Subscription.find({ userId }).select('_id');
+
+    if (!subscriptions || subscriptions.length === 0) {
+      return res.status(404).json({ message: "No subscriptions found for this user." });
+    }
+
+    const subscriptionIds = subscriptions.map(sub => sub._id);
+
+    // Step 2: Find all payments for the user's subscriptions
+    const payments = await Payment.find({
+      subscriptionId: { $in: subscriptionIds }
+    })
+    .populate("subscriptionId") // optional: populate subscription details
+    .sort({ createdAt: -1 });
+
+    if (!payments || payments.length === 0) {
+      return res.status(404).json({ message: "No payment history found for this user." });
+    }
+
+    res.status(200).json({
+      message: "Payment history retrieved successfully.",
+      data: payments,
+    });
+
+  } catch (error) {
+    console.error("Error fetching payment history:", error);
+    res.status(500).json({ message: "Server error while retrieving payment history." });
+  }
+};

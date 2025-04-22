@@ -27,7 +27,6 @@ import Library from "./components/pages/library/Library";
 import LikeSong from "./components/pages/Like/LikeSong";
 import AllPlaylist from "./components/pages/playlist/AllPlaylist";
 import GenreBasedSong from "./components/pages/genre/GenreBasedSong";
-import Payment from "./components/pages/payment/Payment";
 import Plan from "./components/pages/payment/Plan";
 import Checkout from "./components/pages/payment/Checkout";
 import VerifyPayment from "./components/pages/payment/VerifyPayment";
@@ -51,6 +50,7 @@ import LatestArtistSong from "./components/pages/recommendation/LatestArtistSong
 import LatestSystemSong from "./components/pages/recommendation/LatestSystemSong";
 import PublicPlaylist from "./components/pages/playlist/PublicPlaylist";
 import Search from "./components/pages/search/Search";
+import PaymentHistory from "./components/pages/payment/PaymentHistory";
 
 
 
@@ -72,52 +72,58 @@ function App() {
               <div className="flex-1 h-screen overflow-y-auto bg-[#121212] pb-[100px] px-4 md:px-6 flex  justify-center">
                 <Routes>
                 <Route path="/" element={<DisplayHome />} />
-                <Route path="/form" element={<Form />} />
+
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
-                <Route path="/profile" element={<Profile /> } />
-
-                <Route path="/editProfile/:id" element={<EditProfile />} />
                 <Route path="/forgetPassword" element={<ForgetPassword />} />
                 <Route path="/verifyOtp" element={<VerifyOtp />} />
                 <Route path="/resetPassword" element={<ResetPassword />} />
-                <Route path="/allAlbum" element={<AllAlbum />} />
+
+                <Route path="/profile"  element={ <ProtectedRoute> <Profile /></ProtectedRoute>} />
+                <Route path="/editProfile/:id"  element={ <ProtectedRoute> <EditProfile /></ProtectedRoute>}/>
+              
+                <Route path="/allAlbum"  element={ <ProtectedRoute> <AllAlbum /></ProtectedRoute>} />
                 <Route path="/album/:name" element={<ProtectedRoute> <SingleAlbum /></ProtectedRoute>} />
-                <Route path="/singleSong/:id" element={<SingleSong />} />
+
+                <Route path="/singleSong/:id"  element={ <ProtectedRoute> <SingleSong /></ProtectedRoute>} />
+
+                <Route path="/artistList"  element={ <ProtectedRoute> <ArtistList /></ProtectedRoute>} />
+                <Route path="/displayArtist"  element={ <ProtectedRoute> <DisplayArtist /></ProtectedRoute>} />
+                <Route path="/singleArtist/:id"  element={ <ProtectedRoute> <SingleArtist /></ProtectedRoute>} />
                 <Route path="/artistDetails/:id"  element={ <ProtectedRoute> <ArtistDetails /></ProtectedRoute>}/>
-       
-                <Route path="/artistList" element={<ArtistList />} />
-                <Route path="/displayArtist" element={<DisplayArtist />} />
-                <Route path="/singlePlaylist/:id" element={<ProtectedRoute> <SinglePlaylist /></ProtectedRoute>} />
-                <Route path="/editplaylist/:id" element={<EditPlaylist />} />
-                {/* <Route path="/playlist" element={<Playlist />} /> */}
+
+               
                 <Route path="/playlist" element={<ProtectedRoute> <Playlist /></ProtectedRoute>}/>
-                <Route path="/allPlaylist" element={<AllPlaylist />} />
-                <Route path="/publicPlaylist" element={<PublicPlaylist />} />
+                <Route path="/allPlaylist"  element={ <ProtectedRoute> <AllPlaylist /></ProtectedRoute>} />
+                <Route path="/singlePlaylist/:id" element={<ProtectedRoute> <SinglePlaylist /></ProtectedRoute>} />
+                <Route path="/editplaylist/:id" element={ <ProtectedRoute> <EditPlaylist /></ProtectedRoute>} />
+                <Route path="/publicPlaylist"  element={ <ProtectedRoute> <PublicPlaylist /></ProtectedRoute>} />
   
                 <Route path="/allGenre" element={<Genre />} />
-                <Route path="/genreDetails/:genre" element={<GenreDetails />} />
-                <Route path="/genreBasedSong/:genre" element={<GenreBasedSong />} />
+                <Route path="/genreDetails/:genre"  element={ <ProtectedRoute> <GenreDetails /></ProtectedRoute>} />
+                <Route path="/genreBasedSong/:genre"  element={ <ProtectedRoute> <GenreBasedSong /></ProtectedRoute>}/>
+
                 <Route path="/library" element={<ProtectedRoute> <Library /></ProtectedRoute>} />
                 <Route path="/likeSong"  element={<ProtectedRoute> <LikeSong /></ProtectedRoute>}/>
-                <Route path="/payment" element={<Payment />} />
-                <Route path="/mainSubcription" element={<MainSubscription />} />
-                <Route path="/plan" element={<Plan />} />
-                <Route path="/checkout/:planName" element={<Checkout />} />
-                <Route path="/verifyPayment" element={<VerifyPayment />} />
-                <Route path="/singleArtist/:id" element={<SingleArtist />} />
-                <Route path="/singleEvent/:id" element={<SingleEvent />} />
-                <Route path="/listAds" element={<ListAds />} />
+
+               
+                <Route path="/mainSubcription"  element={ <ProtectedRoute> <MainSubscription /></ProtectedRoute>} />
+                <Route path="/plan"  element={ <ProtectedRoute> <Plan /></ProtectedRoute>} />
+                <Route path="/checkout/:planName"  element={ <ProtectedRoute> <Checkout /></ProtectedRoute>} />
+                <Route path="/verifyPayment"  element={ <ProtectedRoute> <VerifyPayment /></ProtectedRoute>} />
+                <Route path="/paymentHistory"  element={ <ProtectedRoute> <PaymentHistory /></ProtectedRoute>} />
+
+                <Route path="/topListeningSong"  element={ <ProtectedRoute> <TopListeningSong /></ProtectedRoute>} />
+                <Route path="/latestArtistSong"  element={ <ProtectedRoute> <LatestArtistSong /></ProtectedRoute>} />
+                <Route path="/latestSystemSong"  element={ <ProtectedRoute> <LatestSystemSong /></ProtectedRoute>} />
+
+                <Route path="/singleEvent/:id"  element={ <ProtectedRoute> <SingleEvent /></ProtectedRoute>} />
+                <Route path="/listAds"  element={ <ProtectedRoute> <ListAds /></ProtectedRoute>} />
                 <Route path="/about" element={<AboutUs />} />
                 <Route path="/setting" element={<Settings />} />
-                <Route path="/following" element={<Following />} />
-                <Route path="/notification" element={<Notification />} />
-                <Route path="/topListeningSong" element={<TopListeningSong />} />
-                <Route path="/latestArtistSong" element={<LatestArtistSong />} />
-                <Route path="/latestSystemSong" element={<LatestSystemSong />} />
-
-
-                <Route path="/search" element={<Search />} />
+                <Route path="/following"  element={ <ProtectedRoute> <Following /></ProtectedRoute>} />
+                <Route path="/notification" element={ <ProtectedRoute> <Notification /></ProtectedRoute>} />
+                <Route path="/search" element={ <ProtectedRoute> <Search /></ProtectedRoute>} />
                 
                 {/* GoogleLogin Route */}
                 <Route 

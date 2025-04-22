@@ -157,13 +157,15 @@ export const completeCheckout = async (req, res) => {
 //fetch all checkout history
 export const fetchAllCompletedCheckout = async (req, res) => {
   try {
-    // Fetch all checkouts with status "completed" and populate user info
+    // Fetch all checkouts with status "completed", populate user info, and sort by createdAt in descending order
     const completedCheckouts = await Checkout.find({
       status: "completed"
-    }).populate({
-      path: "userId",
-      select: "username email" // Fetch only the username and email from user
-    });
+    })
+      .populate({
+        path: "userId",
+        select: "username email" // Fetch only the username and email from user
+      })
+      .sort({ createdAt: -1 }); // Sort by createdAt in descending order (latest first)
 
     if (completedCheckouts.length === 0) {
       return res.status(404).json({ message: "No completed checkouts found." });
@@ -180,18 +182,23 @@ export const fetchAllCompletedCheckout = async (req, res) => {
   }
 };
 
+
+
 // Fetch completed checkout history of the logged-in user
 export const fetchArtistCompletedCheckoutHistory = async (req, res) => {
   try {
     const userId = req.user.id; // Assuming you're using a middleware to attach user to req
 
+    // Fetch completed checkouts for the logged-in user, sorted by createdAt in descending order
     const userCheckouts = await Checkout.find({
       status: "completed",
       userId: userId
-    }).populate({
-      path: "userId",
-      select: "username email"
-    });
+    })
+      .populate({
+        path: "userId",
+        select: "username email"
+      })
+      .sort({ createdAt: -1 }); // Sort by createdAt in descending order (latest first)
 
     if (userCheckouts.length === 0) {
       return res.status(404).json({ message: "No completed checkouts found for this user." });

@@ -1,5 +1,5 @@
 import {Router} from "express";
-import { checkActiveSubscription, createSubscription, fetchSingleSubscription, getAllSubscription, getTotalSubscribedUsers, getTotalSubscriptionAmount, khaltiVerification } from "../controllers/subscriptionController.js";
+import { checkActiveSubscription, createSubscription, deleteSubscription, fetchSingleSubscription, getAllSubscription, getTotalSubscribedUsers, getTotalSubscriptionAmount, getUserPaymentHistory, khaltiVerification } from "../controllers/subscriptionController.js";
 import { isAuthenticated } from "../middleware/authMiddleware.js";
 import {checkSubscription} from "../middleware/checkSubscription.js";
 import errorHandler from "../services/catchAsyncError.js";
@@ -13,7 +13,12 @@ router.route("/check-active-subscription").get(isAuthenticated, checkActiveSubsc
 router.route("/total/count").get( getTotalSubscribedUsers)
 router.route("/totalAmount-per-month").get( errorHandler(getTotalSubscriptionAmount))
 
+
+router.route("/payment/history").get(isAuthenticated, getUserPaymentHistory)
+
+
 router.route("/:id").get( errorHandler(fetchSingleSubscription))
+.delete(errorHandler(deleteSubscription))
 
 router.route("/premium-content")
   .get(isAuthenticated, checkSubscription, (req, res) => {

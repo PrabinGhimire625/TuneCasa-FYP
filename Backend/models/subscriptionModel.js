@@ -35,10 +35,10 @@ const SubscriptionSchema = new mongoose.Schema(
       enum: ["active", "expired", "canceled", "pending"],
       default: "pending",
     },
-    payment: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Payment",
-    },
+    // payment: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "Payment",
+    // },
     startDate: {
       type: Date,
     },
