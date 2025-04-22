@@ -58,7 +58,9 @@ export const login = async (req, res) => {
     const payload = { id: user.id, username: user.username, role: user.role };
     const token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: "1h",});
    // res.cookie("token", token);
+   console.log("noraml user response", user)
     res.status(200).json({ message: "Login successful", token, data: user });
+   
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error, please try again later" });
@@ -74,30 +76,40 @@ export const googleLogin = async (req, res) => {
       return res.status(400).json({ message: 'Authorization code missing' });
     }
 
-    // Exchange authorization code for tokens
     const { tokens } = await oauth2Client.getToken(code);
     oauth2Client.setCredentials(tokens);
 
-    // Fetch user information from Google API
     const userResponse = await axios.get(
       `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${tokens.access_token}`
     );
 
-    const { email, username, image } = userResponse.data;
+    const { email, name, picture } = userResponse.data;
 
-    // Check if the user already exists in the database
     let user = await User.findOne({ email });
+
     if (!user) {
-      user = await User.create({ username, email, image });
+      user = await User.create({ 
+        username: name, 
+        email, 
+        image: picture, 
+        role: "user" // Add a default role if not set
+      });
     }
 
-    const { _id } = user;
+    // Match the payload structure of normal login
+    const payload = { 
+      id: user._id, 
+      username: user.username, 
+      role: user.role 
+    };
 
-    // Generate JWT for the user
-    const token = jwt.sign({ _id, email }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_TIMEOUT });
+    const token = jwt.sign(payload, process.env.JWT_SECRET, {
+      expiresIn: process.env.JWT_TIMEOUT
+    });
 
-    // Send response with JWT and user information
-    return res.status(200).json({ message: 'Success', token, user });
+    console.log("Google login user response:", user);
+    return res.status(200).json({ message: 'Login successful', token, data: user });
+
   } catch (err) {
     console.error('Google login error:', err);
     return res.status(500).json({ message: 'Internal server error', error: err.message });

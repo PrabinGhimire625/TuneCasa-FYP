@@ -1,51 +1,70 @@
-import React from 'react'
-import {useGoogleLogin} from "@react-oauth/google"
-import { useNavigate } from 'react-router-dom'
-import { googleAuth } from '../../../../http/index';
-
+import React from 'react';
+import { useGoogleLogin } from "@react-oauth/google";
+import { useNavigate } from 'react-router-dom';
+import { googleAuth } from '../../../../http';
+import { toast } from 'react-toastify';
+import { setProfile, setToken } from '../../../../store/authSlice';
+import { useDispatch } from 'react-redux';
 
 const GoogleLogin = () => {
-    const navigate=useNavigate();
-    const responseGoogle=async(authResult)=>{
-        try{
-            if(authResult['code']){
-                const result=await googleAuth(authResult['code']);
-                const {email,username, image}=result.data.user;
-                const token=result.data.token;
-                const obj={email,token,username,image};
-                localStorage.setItem('user-info',JSON.stringify(obj));
-			
-                console.log(result.data.user);
-                console.log(result.data.token);
-                navigate('/dashboard');
-            }else{
-                console.log(authResult);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    const responseGoogle = async (authResult) => {
+        try {
+            if (authResult['code']) {
+                const result = await googleAuth(authResult['code']);
+                const { token, data: user } = result.data;
+    
+                // Save token and profile in Redux
+                dispatch(setToken(token));
+                dispatch(setProfile(user));
+    
+                localStorage.setItem('token', token);
+    
+                toast.success("Successfully logged in with Google");
+                navigate('/');
+            } else {
+                console.log("Google login error", authResult);
             }
-            
-
-        }catch(err){
-            console.log("Error while requesting google code",err);
+        } catch (err) {
+            console.error("Error while requesting Google code", err);
         }
-    }
+    };
+    
+    
 
-
-    const handleGoogleLogin=useGoogleLogin({
-        onSuccess:responseGoogle ,
+    const handleGoogleLogin = useGoogleLogin({
+        onSuccess: responseGoogle,
         onError: responseGoogle,
-        flow:'auth-code'
+        flow: 'auth-code'
+    });
 
-    })
+    return (
+        <div className="flex items-center justify-center min-h-screen">
+            <button
+                onClick={handleGoogleLogin}
+                className="flex items-center bg-white dark:bg-gray-900 border border-gray-300 rounded-lg shadow-md px-6 py-2 text-sm font-medium text-gray-800 dark:text-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+            >
+                <svg
+                    className="h-6 w-6 mr-2"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="-0.5 0 48 48"
+                    version="1.1"
+                    width="800px"
+                    height="800px"
+                >
+                    <g fill="none" fillRule="evenodd">
+                        <path fill="#FBBC05" d="M9.827 24c0-1.524.253-2.985.705-4.356L2.623 13.604C1.082 16.734.214 20.26.214 24c0 3.737.868 7.262 2.407 10.39l7.905-6.051A14.11 14.11 0 019.827 24z" />
+                        <path fill="#EB4335" d="M23.714 10.133c3.311 0 6.302 1.174 8.652 3.094l6.836-6.827C35.036 2.773 29.695.533 23.714.533 14.427.533 6.445 5.844 2.623 13.604l7.909 6.04c1.823-5.532 7.017-9.511 13.182-9.511z" />
+                        <path fill="#34A853" d="M23.714 37.867c-6.165 0-11.36-3.978-13.182-9.51l-7.909 6.038C6.445 42.156 14.427 47.467 23.714 47.467c5.732 0 11.204-2.035 15.311-5.848l-7.507-5.804a13.97 13.97 0 01-7.804 2.052z" />
+                        <path fill="#4285F4" d="M46.145 24c0-1.387-.213-2.88-.533-4.267H23.714v9.066h12.605c-.63 3.091-2.345 5.468-4.8 7.014l7.507 5.804C43.34 37.614 46.145 31.649 46.145 24z" />
+                    </g>
+                </svg>
+                <span>Continue with Google</span>
+            </button>
+        </div>
+    );
+};
 
-  return (
-  <>
-   <div className="flex items-center justify-center min-h-screen">
-        <button onClick={handleGoogleLogin} className="flex items-center bg-white dark:bg-gray-900 border border-gray-300 rounded-lg shadow-md px-6 py-2 text-sm font-medium text-gray-800 dark:text-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-            <svg className="h-6 w-6 mr-2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="800px" height="800px" viewBox="-0.5 0 48 48" version="1.1"> <title>Google-color</title> <desc>Created with Sketch.</desc> <defs> </defs> <g id="Icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <g id="Color-" transform="translate(-401.000000, -860.000000)"> <g id="Google" transform="translate(401.000000, 860.000000)"> <path d="M9.82727273,24 C9.82727273,22.4757333 10.0804318,21.0144 10.5322727,19.6437333 L2.62345455,13.6042667 C1.08206818,16.7338667 0.213636364,20.2602667 0.213636364,24 C0.213636364,27.7365333 1.081,31.2608 2.62025,34.3882667 L10.5247955,28.3370667 C10.0772273,26.9728 9.82727273,25.5168 9.82727273,24" id="Fill-1" fill="#FBBC05"> </path> <path d="M23.7136364,10.1333333 C27.025,10.1333333 30.0159091,11.3066667 32.3659091,13.2266667 L39.2022727,6.4 C35.0363636,2.77333333 29.6954545,0.533333333 23.7136364,0.533333333 C14.4268636,0.533333333 6.44540909,5.84426667 2.62345455,13.6042667 L10.5322727,19.6437333 C12.3545909,14.112 17.5491591,10.1333333 23.7136364,10.1333333" id="Fill-2" fill="#EB4335"> </path> <path d="M23.7136364,37.8666667 C17.5491591,37.8666667 12.3545909,33.888 10.5322727,28.3562667 L2.62345455,34.3946667 C6.44540909,42.1557333 14.4268636,47.4666667 23.7136364,47.4666667 C29.4455,47.4666667 34.9177955,45.4314667 39.0249545,41.6181333 L31.5177727,35.8144 C29.3995682,37.1488 26.7323182,37.8666667 23.7136364,37.8666667" id="Fill-3" fill="#34A853"> </path> <path d="M46.1454545,24 C46.1454545,22.6133333 45.9318182,21.12 45.6113636,19.7333333 L23.7136364,19.7333333 L23.7136364,28.8 L36.3181818,28.8 C35.6879545,31.8912 33.9724545,34.2677333 31.5177727,35.8144 L39.0249545,41.6181333 C43.3393409,37.6138667 46.1454545,31.6490667 46.1454545,24" id="Fill-4" fill="#4285F4"> </path> </g> </g> </g> </svg>
-            <span>Continue with Google</span>
-        </button>
-    </div>
-  </>
-  )
-}
-
-export default GoogleLogin
+export default GoogleLogin;

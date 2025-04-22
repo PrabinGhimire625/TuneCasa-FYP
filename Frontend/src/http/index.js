@@ -23,6 +23,7 @@ const APIAuthenticated = axios.create({
 APIAuthenticated.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('token');  // Fetch the latest token
+        console.log("Token from the local storage", token)
         if (token) {
             config.headers['Authorization'] = `${token}`;
         }
@@ -36,6 +37,7 @@ APIAuthenticated.interceptors.request.use(
 export { API, APIAuthenticated };
 
 
+//google login
 const api = axios.create({
     baseURL: "http://localhost:3000/api/auth/",
     headers: {

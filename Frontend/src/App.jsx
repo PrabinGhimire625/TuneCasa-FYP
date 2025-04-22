@@ -52,11 +52,13 @@ import PublicPlaylist from "./components/pages/playlist/PublicPlaylist";
 import Search from "./components/pages/search/Search";
 import PaymentHistory from "./components/pages/payment/PaymentHistory";
 
-
-
 function App() {
+
+
+
   return (
     <>  
+     <GoogleOAuthProvider clientId="367198580889-lrju1tdv122lcn4ra3j7aigss8nl8988.apps.googleusercontent.com">
       <Provider store={store}>
         <BrowserRouter>
           <ToastContainer position="top-right" autoClose={3000} />
@@ -79,6 +81,8 @@ function App() {
                 <Route path="/verifyOtp" element={<VerifyOtp />} />
                 <Route path="/resetPassword" element={<ResetPassword />} />
 
+                <Route path="/googleLogin" element={<GoogleLogin />} />
+
                 <Route path="/profile"  element={ <ProtectedRoute> <Profile /></ProtectedRoute>} />
                 <Route path="/editProfile/:id"  element={ <ProtectedRoute> <EditProfile /></ProtectedRoute>}/>
               
@@ -92,7 +96,6 @@ function App() {
                 <Route path="/singleArtist/:id"  element={ <ProtectedRoute> <SingleArtist /></ProtectedRoute>} />
                 <Route path="/artistDetails/:id"  element={ <ProtectedRoute> <ArtistDetails /></ProtectedRoute>}/>
 
-               
                 <Route path="/playlist" element={<ProtectedRoute> <Playlist /></ProtectedRoute>}/>
                 <Route path="/allPlaylist"  element={ <ProtectedRoute> <AllPlaylist /></ProtectedRoute>} />
                 <Route path="/singlePlaylist/:id" element={<ProtectedRoute> <SinglePlaylist /></ProtectedRoute>} />
@@ -151,6 +154,7 @@ function App() {
           </div>
         </BrowserRouter>
       </Provider>
+      </GoogleOAuthProvider>
     </>
   );
 }
