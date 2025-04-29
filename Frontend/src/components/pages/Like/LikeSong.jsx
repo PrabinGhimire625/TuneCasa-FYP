@@ -69,7 +69,6 @@ const LikeSong = () => {
               <div key={song._id} className="flex justify-between items-center bg-stone-900 p-3 rounded-lg cursor-pointer group hover:bg-[#ffffff2b] transition duration-300">
                 <div className="flex items-center w-1/4 gap-5">
                   <div className="relative w-12 h-12 bg-gray-500 rounded-md overflow-hidden">
-                    {/* Use the song image URL if available */}
                     <img className="w-full h-full object-cover" src={song.songId?.image || "https://via.placeholder.com/150"} alt="Song Cover" />
                   </div>
                   <div className="w-3/4">

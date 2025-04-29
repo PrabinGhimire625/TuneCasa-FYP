@@ -78,7 +78,7 @@ const Search = () => {
                           <div className="flex items-center space-x-4 w-1/3 justify-end pr-2 sm:pr-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                             <FontAwesomeIcon icon={faThumbsUp} className="cursor-pointer hover:text-white" />
                             <FontAwesomeIcon icon={faThumbsDown} className="cursor-pointer hover:text-white" />
-                          
+
                           </div>
                         </div>
                       ))}

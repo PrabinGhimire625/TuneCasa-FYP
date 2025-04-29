@@ -9,8 +9,6 @@ export const addGenre = async (req, res) => {
         if (!name) {
             return res.status(400).json({ message: "Please provide a name." });
         }
-
-        // Check if genre with the same name already exists
         const existingGenre = await genreModel.findOne({ name });
         if (existingGenre) {
             return res.status(409).json({ message: "Genre already exists." });
@@ -32,7 +30,7 @@ export const addGenre = async (req, res) => {
 
 
 
-// Get all genres sorted by latest
+// Get all genres 
 export const getAllGenre = async (req, res) => {
     try {
         const allGenre = await genreModel.find().sort({ createdAt: -1 });
@@ -45,43 +43,41 @@ export const getAllGenre = async (req, res) => {
     }
 };
 
-
 //get single genre
-export const fetchSingleGenre=async(req,res)=>{
-    const id=req.params.id;
-    const singleGenre=await genreModel.findById(id);
-    if(!singleGenre){
-        return res.status(404).json({message:"Genre not found"});   
+export const fetchSingleGenre = async (req, res) => {
+    const id = req.params.id;
+    const singleGenre = await genreModel.findById(id);
+    if (!singleGenre) {
+        return res.status(404).json({ message: "Genre not found" });
     }
-    res.status(200).json({message:"Successfully fetch the single genre",data:singleGenre});
+    res.status(200).json({ message: "Successfully fetch the single genre", data: singleGenre });
 }
 
-
 //delete genre
-export const deleteGenre=async(req,res)=>{
-    const id=req.params.id;
-    const deleteGenre=await genreModel.findByIdAndDelete(id);
-    if(!deleteGenre){
-        return res.status(404).json({message:"Genre not found"});
+export const deleteGenre = async (req, res) => {
+    const id = req.params.id;
+    const deleteGenre = await genreModel.findByIdAndDelete(id);
+    if (!deleteGenre) {
+        return res.status(404).json({ message: "Genre not found" });
     }
-    res.status(200).json({message:"Successfully delete the genre"})
+    res.status(200).json({ message: "Successfully delete the genre" })
 }
 
 //update genre
 export const updateGenre = async (req, res) => {
-    const id = req.params.id; 
-      const { name ,bgColour } = req.body; 
-      const updateData = {};
-      if (name) updateData.name = name;
-      if (bgColour) updateData.bgColour = bgColour;
-      const updatedGenre = await genreModel.findByIdAndUpdate(
+    const id = req.params.id;
+    const { name, bgColour } = req.body;
+    const updateData = {};
+    if (name) updateData.name = name;
+    if (bgColour) updateData.bgColour = bgColour;
+    const updatedGenre = await genreModel.findByIdAndUpdate(
         id,
         { $set: updateData },
-        { new: true } 
-      );
-  
-      if (!updatedGenre) {
+        { new: true }
+    );
+
+    if (!updatedGenre) {
         return res.status(404).json({ message: "Genre not found" });
-      }
-      res.status(200).json({ message: "Genre updated successfully", data: updatedGenre });
+    }
+    res.status(200).json({ message: "Genre updated successfully", data: updatedGenre });
 };

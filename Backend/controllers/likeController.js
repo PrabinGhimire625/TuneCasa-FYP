@@ -1,19 +1,16 @@
 import Like from '../models/likeModel.js';
 
-// Add a Like (add to favorites)
+// Add a Like
 export const addLike = async (req, res) => {
-  const songId = req.params.songId; // Access the correct parameter name
+  const songId = req.params.songId;
   const userId = req.user.id;
 
   try {
-    // Check if the user has already liked this song
     const existingLike = await Like.findOne({ userId, songId });
 
     if (existingLike) {
       return res.status(400).json({ message: 'You have already liked this song.' });
     }
-
-    // Create a new like
     const newLike = new Like({ userId, songId });
     await newLike.save();
 
@@ -24,12 +21,10 @@ export const addLike = async (req, res) => {
 };
 
 
-// Fetch all likes by a user (or all likes for a song)
+// Fetch all likes
 export const getLikes = async (req, res) => {
-  const userId = req.user.id; // Get the logged-in user's ID
-
+  const userId = req.user.id;
   try {
-    // Fetch all likes for the logged-in user
     const likes = await Like.find({ userId }).populate('songId', 'name album image file');
 
     if (!likes.length) {
@@ -43,13 +38,12 @@ export const getLikes = async (req, res) => {
 };
 
 
-// Delete a Like (remove from favorites)
+// Delete a Like 
 export const deleteLike = async (req, res) => {
-  const songId = req.params.songId; // Access the correct parameter name
+  const songId = req.params.songId;
   const userId = req.user.id;
-
   try {
-    // Find the like to delete
+
     const like = await Like.findOneAndDelete({ userId, songId });
 
     if (!like) {
@@ -62,31 +56,32 @@ export const deleteLike = async (req, res) => {
   }
 };
 
+//get total like per song
 export const getTotalLikesPerSong = async (req, res) => {
   try {
     const totalLikes = await Like.aggregate([
       {
         $group: {
-          _id: "$songId", // Group by songId
-          totalLikes: { $sum: 1 }, // Count total likes for each song
+          _id: "$songId",
+          totalLikes: { $sum: 1 },
         },
       },
       {
         $lookup: {
-          from: "songs", // Ensure this matches your actual songs collection name
+          from: "songs",
           localField: "_id",
           foreignField: "_id",
           as: "song",
         },
       },
       {
-        $unwind: { path: "$song", preserveNullAndEmptyArrays: true }, // Handle missing song details
+        $unwind: { path: "$song", preserveNullAndEmptyArrays: true },
       },
       {
         $project: {
           _id: 0,
           songId: "$_id",
-          songName: { $ifNull: ["$song.name", "Unknown"] }, // Fetch song name
+          songName: { $ifNull: ["$song.name", "Unknown"] },
           totalLikes: 1,
         },
       },

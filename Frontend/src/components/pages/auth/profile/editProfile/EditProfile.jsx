@@ -56,11 +56,8 @@ const EditProfile = () => {
       }
     });
   };
-  
 
   return (
-
-
         <div className="flex items-start justify-center flex-1 ">
           <form
             className="flex items-start  px-12 py-12 rounded-lg shadow-[0_0_10px_2px_rgba(255,255,255,0.1)] mt-2 mx-5 relative"
@@ -109,18 +106,14 @@ const EditProfile = () => {
             >
               Save
             </button>
-
-     
             {/* <button
               type="button"
               className="absolute bottom-4 right-4 bg-red-600 hover:bg-red-800 text-white font-bold py-2 px-6 rounded-lg shadow-lg transition"
             >
               Request to be a artist
             </button> */}
-            
           </form>
         </div>
-
   );
 };
 

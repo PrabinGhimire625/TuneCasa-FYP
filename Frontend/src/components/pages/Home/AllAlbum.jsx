@@ -7,18 +7,16 @@ import Footer from '../../../globals/components/footer/Footer';
 
 const AllAlbum = () => {
   const dispatch = useDispatch();
-  const { albums } = useSelector((state) => state.album); 
+  const { albums } = useSelector((state) => state.album);
 
   useEffect(() => {
-    dispatch(listAllAlbum()); 
+    dispatch(listAllAlbum());
   }, [dispatch]);
 
   return (
     <div className="text-white px-4 md:px-8 py-10">
       <div className="max-w-7xl mx-auto">
         <h1 className="my-5 font-bold text-2xl">Popular Albums</h1>
-
-        {/* Responsive grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
           {albums && albums.length > 0 ? (
             albums.map((item) => (
@@ -36,7 +34,7 @@ const AllAlbum = () => {
           )}
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </div>
   );
 };

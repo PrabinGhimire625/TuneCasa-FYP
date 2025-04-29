@@ -168,7 +168,7 @@ const Form = ({ type, onSubmit }) => {
                     onClick={() => window.location.href = "http://localhost:5173/login"}
                     className="mt-2 px-4 py-2 bg-gray-900 text-white font-semibold rounded hover:bg-gray-600 transition"
                   >
-                   Login as user
+                    Login as user
                   </button>
 
                 </div>

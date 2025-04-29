@@ -13,12 +13,9 @@ const Users = () => {
     dispatch(fetchAllUser());
   }, [dispatch]);
 
-  // Optimistically remove the user from the UI and refetch the data
-  const handleDeleteUser = (id) => {
-    // Optimistically remove the user from the state
-    dispatch(deleteUser(id));
 
-    // Refetch data after deletion
+  const handleDeleteUser = (id) => {
+    dispatch(deleteUser(id));
     dispatch(fetchAllUser());
   };
 

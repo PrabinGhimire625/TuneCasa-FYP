@@ -23,7 +23,6 @@ const ListAds = () => {
                   className="flex items-center gap-4 bg-stone-800 p-3 rounded-lg shadow-md transition duration-300 hover:bg-gray-700 cursor-pointer"
                 >
                   <div className="w-14 h-14 bg-gray-600 rounded-md overflow-hidden">
-                    {/* Replace image with video player */}
                     <video
                       controls
                       className="w-full h-full object-cover"

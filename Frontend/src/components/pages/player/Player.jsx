@@ -19,12 +19,11 @@ const Player = () => {
 
   console.log("Tracksong analytics", songAnalytics)
 
-  // ✅ Load & Play New Song or Ad
+  // Load & Play New Song or Ad
   useEffect(() => {
     const audioElement = audioRef.current;
 
     if (currentAd) {
-      // If an ad is playing, set ad file and play it
       if (audioElement.src !== currentAd.file) {
         audioElement.pause();
         audioElement.src = currentAd.file;
@@ -32,7 +31,6 @@ const Player = () => {
         audioElement.play().then(() => dispatch(playAd()));
       }
 
-      // Set the ad's duration after metadata is loaded
       audioElement.onloadedmetadata = () => {
         console.log("Ad Duration:", audioElement.duration);
         setDuration(audioElement.duration);
@@ -45,7 +43,6 @@ const Player = () => {
         audioElement.load();
         audioElement.play();
       }
-      // Set the song's duration after metadata is loaded
       audioElement.onloadedmetadata = () => {
         setDuration(audioElement.duration);
       };
@@ -56,12 +53,11 @@ const Player = () => {
     }
 
     return () => {
-      // Ensure we stop audio when switching to another song or ad
       audioElement.pause();
     };
   }, [currentSong, currentAd, isPlaying]);
 
-  // ✅ Handle Play/Pause
+  //  Handle Play/Pause
   useEffect(() => {
     if (!currentAd && isPlaying) {
       audioRef.current.play();
@@ -70,72 +66,68 @@ const Player = () => {
     }
   }, [isPlaying, currentAd]);
 
-  // ✅ Update Progress Bar Every 500ms (for both song and ad)
-// ✅ Track Listening Time and Send Analytics
 
-// Add this new useEffect to reset hasViewed when song changes
-useEffect(() => {
-  setHasViewed(false);
-}, [currentSong?._id]);
+  // Add this new useEffect to reset hasViewed when song changes
+  useEffect(() => {
+    setHasViewed(false);
+  }, [currentSong?._id]);
 
-const [hasViewed, setHasViewed] = useState(false);
+  const [hasViewed, setHasViewed] = useState(false);
 
-useEffect(() => {
-  let totalWatchTime = 0;
-  const watchTimeThreshold = 1; // Track every 1 second of ad watch time
-  const duration = audioRef.current.duration;
-  const midPoint = duration * 0.5;
-  const lastTenSeconds = duration - 10;
+  useEffect(() => {
+    let totalWatchTime = 0;
+    const watchTimeThreshold = 1;
+    const duration = audioRef.current.duration;
+    const midPoint = duration * 0.5;
+    const lastTenSeconds = duration - 10;
 
-  const interval = setInterval(() => {
-    if (!isDragging && (isPlaying || isAdPlaying)) {
-      const currentTime = audioRef.current.currentTime;
-      setLocalProgress(currentTime);
-      dispatch(updateProgress(currentTime));
+    const interval = setInterval(() => {
+      if (!isDragging && (isPlaying || isAdPlaying)) {
+        const currentTime = audioRef.current.currentTime;
+        setLocalProgress(currentTime);
+        dispatch(updateProgress(currentTime));
 
-      // ✅ Only for Ad: Show skip button after 5 seconds
-      if (isAdPlaying && currentTime >= 5 && !showSkipButton) {
-        setShowSkipButton(true);
-      }
-
-      // Track ad views and analytics
-      if (isAdPlaying) {
-        totalWatchTime += 0.5;
-
-        // Track ad view once at the mid-point or last 10 seconds
-        if (!hasViewed && (currentTime >= midPoint || currentTime >= lastTenSeconds)) {
-          dispatch(trackAdView({ adId: currentAd._id }));  // Track ad view
-          setHasViewed(true);  // Mark ad as viewed
+        // Only for Ad: Show skip button after 5 seconds
+        if (isAdPlaying && currentTime >= 5 && !showSkipButton) {
+          setShowSkipButton(true);
         }
 
-        // Track total watch time for the ad
-        if (totalWatchTime >= watchTimeThreshold) {
-          dispatch(trackAdAnalytics({ adId: currentAd._id, watchTime: totalWatchTime }));
-          totalWatchTime = 0;
+        // Track ad views and analytics
+        if (isAdPlaying) {
+          totalWatchTime += 0.5;
+
+          // Track ad view once at the mid-point or last 10 seconds
+          if (!hasViewed && (currentTime >= midPoint || currentTime >= lastTenSeconds)) {
+            dispatch(trackAdView({ adId: currentAd._id }));
+            setHasViewed(true);
+          }
+
+          if (totalWatchTime >= watchTimeThreshold) {
+            dispatch(trackAdAnalytics({ adId: currentAd._id, watchTime: totalWatchTime }));
+            totalWatchTime = 0;
+          }
         }
-      }
 
-      // Track song views (for songs only)
-      if (!isAdPlaying) {
-        totalWatchTime += 0.5;
+        if (!isAdPlaying) {
+          totalWatchTime += 0.5;
 
-        if (!hasViewed && (currentTime >= midPoint || currentTime >= lastTenSeconds)) {
-          dispatch(trackSongView({ songId: currentSong._id }));
-          setHasViewed(true);
-        }
+          if (!hasViewed && (currentTime >= midPoint || currentTime >= lastTenSeconds)) {
+            dispatch(trackSongView({ songId: currentSong._id }));
+            setHasViewed(true);
+          }
 
-        if (totalWatchTime >= watchTimeThreshold) {
-          dispatch(trackSongAnalytic({ songId: currentSong._id, watchTime: totalWatchTime }));
-          totalWatchTime = 0;
+          if (totalWatchTime >= watchTimeThreshold) {
+            dispatch(trackSongAnalytic({ songId: currentSong._id, watchTime: totalWatchTime }));
+            totalWatchTime = 0;
+          }
         }
       }
-    }
-  }, 500);
+    }, 500);
 
-  return () => clearInterval(interval);
-}, [isPlaying, isDragging, isAdPlaying, currentSong?._id, currentAd?._id, hasViewed, showSkipButton]);
+    return () => clearInterval(interval);
+  }, [isPlaying, isDragging, isAdPlaying, currentSong?._id, currentAd?._id, hasViewed, showSkipButton]);
 
-  // ✅ Handle Song/Ad End & Auto-Next
+
   useEffect(() => {
     audioRef.current.onended = () => {
       if (isAdPlaying) {
@@ -145,7 +137,7 @@ useEffect(() => {
     };
   }, [isAdPlaying]);
 
-  // ✅ Handle Seek (Click + Drag)
+
   const handleSeekStart = (e) => {
     setIsDragging(true);
     handleSeek(e);
@@ -190,7 +182,7 @@ useEffect(() => {
   }, [isDragging]);
 
   const handlePlayPause = () => {
-    if (!currentSong || isAdPlaying) return; // Prevent play/pause if ad is playing
+    if (!currentSong || isAdPlaying) return;
     dispatch(playPause());
   };
 
@@ -210,13 +202,13 @@ useEffect(() => {
 
   const handleSkipAd = async () => {
     if (isAdPlaying) {
-      dispatch(stopAd());  // Stop the ad
-      dispatch(handlePlayNext());  // Play the next song after the ad
+      dispatch(stopAd());
+      dispatch(handlePlayNext());
     }
   };
 
 
-  
+
 
   console.log("localProgress", localProgress)
   console.log("Progress", progress)
@@ -236,22 +228,22 @@ useEffect(() => {
       </div>
 
       <div className="flex flex-col items-center gap-1 m-auto">
-      {isAdPlaying ? (
-  <div className="flex flex-col items-center gap-4">
-    {showSkipButton && (
-      <button onClick={handleSkipAd} className="bg-white text-black py-1 px-4 rounded">
-        Skip Ad
-      </button>
-    )}
-    <div className="flex gap-5">
-      <p>{Math.floor(localProgress / 60)}:{String(Math.floor(localProgress % 60)).padStart(2, "0")}</p>
-      <div className="w-[60vw] max-w-[500px] bg-gray-500 rounded-full h-1.5 relative">
-        <div className="h-1.5 bg-white rounded-full" style={{ width: `${(localProgress / (duration || 1)) * 100}%` }} />
-      </div>
-      <p>{Math.floor(duration / 60)}:{String(Math.floor(duration % 60)).padStart(2, "0")}</p>
-    </div>
-  </div>
-) : (
+        {isAdPlaying ? (
+          <div className="flex flex-col items-center gap-4">
+            {showSkipButton && (
+              <button onClick={handleSkipAd} className="bg-white text-black py-1 px-4 rounded">
+                Skip Ad
+              </button>
+            )}
+            <div className="flex gap-5">
+              <p>{Math.floor(localProgress / 60)}:{String(Math.floor(localProgress % 60)).padStart(2, "0")}</p>
+              <div className="w-[60vw] max-w-[500px] bg-gray-500 rounded-full h-1.5 relative">
+                <div className="h-1.5 bg-white rounded-full" style={{ width: `${(localProgress / (duration || 1)) * 100}%` }} />
+              </div>
+              <p>{Math.floor(duration / 60)}:{String(Math.floor(duration % 60)).padStart(2, "0")}</p>
+            </div>
+          </div>
+        ) : (
           <>
             <div className="flex gap-4">
               <img className="w-4 cursor-pointer" src={assets.prev_icon} alt="" onClick={handlePrev} />
@@ -260,7 +252,7 @@ useEffect(() => {
             </div>
             <div className="flex items-center gap-5">
               <p>{Math.floor(localProgress / 60)}:{String(Math.floor(localProgress % 60)).padStart(2, "0")}</p>
-              <div ref={progressBarRef} className="w-[60vw] max-w-[500px] bg-gray-500 rounded-full cursor-pointer h-1.5 relative" 
+              <div ref={progressBarRef} className="w-[60vw] max-w-[500px] bg-gray-500 rounded-full cursor-pointer h-1.5 relative"
                 onMouseDown={handleSeekStart}>
                 <div className="h-1.5 bg-white rounded-full transition-all duration-100" style={{ width: `${(localProgress / (duration || 1)) * 100}%` }} />
               </div>

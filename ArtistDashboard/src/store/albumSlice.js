@@ -45,11 +45,9 @@ const albumSlice = createSlice({
             // Also remove the album from the artist-specific album list
             const artistIndex = state.albumOfArtist.findIndex(album => album._id === albumId);  
             if (artistIndex !== -1) {
-                state.albumOfArtist.splice(artistIndex, 1); // Remove from the artist's list
+                state.albumOfArtist.splice(artistIndex, 1);
             }
         }
-        
-        
     },
 });
 

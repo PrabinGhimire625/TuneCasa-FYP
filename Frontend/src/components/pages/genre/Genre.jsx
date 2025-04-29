@@ -1,13 +1,13 @@
 import React, { useRef, useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { listAllGenre } from "../../../store/genreSlice";
-import { Link } from 'react-router-dom'; // Import Link
+import { Link } from 'react-router-dom'; 
 import LatestAlbum from "../album/LatestAlbum";
 import Footer from "../../../globals/components/footer/Footer";
 
 const Genre = () => {
     const dispatch = useDispatch();
-    const { genre } = useSelector((state) => state.genre); // Default to empty array to avoid errors
+    const { genre } = useSelector((state) => state.genre); 
     const scrollRef = useRef(null);
     console.log("All the genres:", genre);
 
@@ -31,9 +31,6 @@ const Genre = () => {
         <div className="text-white px-4 md:px-8 py-10">
                 <div className="max-w-7xl mx-auto">
             <LatestAlbum/>
-            {/* Header Section */}
-          
-
             {/* Scrollable Genre List */}
             <div className="ml-10 mt-5">
             <div className="flex justify-between items-center mb-5">
@@ -44,7 +41,7 @@ const Genre = () => {
                     <div className="flex flex-wrap gap-4">
                         {genre.map((item, index) => (
                             <Link 
-                                to={`/genreDetails/${encodeURIComponent(item.name)}`} // Dynamic route based on genre ID
+                                to={`/genreDetails/${encodeURIComponent(item.name)}`} 
                                 key={item._id}
                                 className="flex items-center bg-stone-800 text-white px-6 py-3 rounded-md w-48"
                             >

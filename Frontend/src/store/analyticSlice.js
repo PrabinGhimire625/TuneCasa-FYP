@@ -1,12 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { STATUS } from "../globals/components/enumStatus/Status";
-import { APIAuthenticated } from "../http/index"; // Ensure APIAuthenticated is imported correctly
+import { APIAuthenticated } from "../http/index"; 
 
 const analyticSlice = createSlice({
   name: "analytics",
   initialState: {
     songRecommendation: [],
-    status: STATUS.IDLE, // Add a status field for loading states
+    status: STATUS.IDLE, 
   },
   reducers: {
     setStatus(state, action) {
@@ -19,10 +19,7 @@ const analyticSlice = createSlice({
 });
 
 export const { setStatus, setSongRecommendation } = analyticSlice.actions;
-
 export default analyticSlice.reducer;
-
-
 
 
 // checkout 

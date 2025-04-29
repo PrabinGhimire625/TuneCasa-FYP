@@ -7,7 +7,7 @@ import { calculateArtistMonthlyEarning, fetchArtistSongAnalytics } from '../../s
 import { Link } from "react-router-dom";
 
 const SingleArtist = () => {
-  const { id } = useParams(); // Artist ID from URL
+  const { id } = useParams();
   const dispatch = useDispatch();
   const { eventOfArtist } = useSelector((state) => state.event);
   const { singleUser } = useSelector((state) => state.auth);
@@ -22,8 +22,8 @@ const SingleArtist = () => {
     }
   }, [dispatch, id]);
 
-  console.log("artistSongAnalytics",artistSongAnalytics)
-  console.log("artistMonthlyEarning",artistMonthlyEarning)
+  console.log("artistSongAnalytics", artistSongAnalytics)
+  console.log("artistMonthlyEarning", artistMonthlyEarning)
 
   return (
     <div className="w-full min-h-screen bg-gray-900 text-white p-6">
@@ -47,16 +47,14 @@ const SingleArtist = () => {
         <p className="text-4xl font-bold text-green-400">NPR {artistMonthlyEarning?.totalEarnings || "0.00"}</p>
       </div>
 
-
-
-        {/* song section */}
+      {/* song section */}
       <div className="flex flex-col space-y-4  ml-5">
-            <h3 className="text-2xl text-white font-bold mt-5">Most played Song of {singleUser?.user?.username || "Unknown Artist"}</h3>
+        <h3 className="text-2xl text-white font-bold mt-5">Most played Song of {singleUser?.user?.username || "Unknown Artist"}</h3>
         {artistSongAnalytics?.length > 0 ? (
           artistSongAnalytics.map((item, index) => (
             <Link to={`/${item._id}`} key={index}>
               <div className="flex items-center bg-gray-900 text-white rounded-lg shadow-lg hover:shadow-2xl transition duration-300 ease-in-out p-2">
-                
+
                 {/* Song Image (Square) */}
                 <div className="w-12 h-12 bg-gray-600 rounded-md overflow-hidden">
                   <img src={item.image || "/default-image.jpg"} alt={item.songName} className="w-full h-full object-cover" />
@@ -65,10 +63,8 @@ const SingleArtist = () => {
                 {/* Song Details */}
                 <div className="ml-4 flex flex-col flex-1">
                   <span className="text-xl font-semibold">{item?.songName || "Unknown Song"}</span>
-                  {/* <span className="text-sm text-gray-400">{item?.album || "Unknown Album"}</span> */}
                   <span className="text-xs text-gray-400">Views: {item?.totalViews || 0}</span>
                   <span className="text-xs text-gray-400">Watch Time: {item?.totalWatchTime || 0} sec</span>
-                  {/* <span className="text-xs text-gray-400">Total Earning: {item?.totalEarning || 0}</span> */}
                 </div>
 
                 {/* Arrow Icon */}
@@ -83,7 +79,7 @@ const SingleArtist = () => {
         ) : (
           <p className="text-center text-gray-400">No songs available</p>
         )}
-    </div>
+      </div>
 
       {/* Events Section */}
       <div className="py-4 px-7 bg-gray-900 text-white mt-5">

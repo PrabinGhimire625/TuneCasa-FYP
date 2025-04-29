@@ -4,7 +4,6 @@ import { isAuthenticated } from '../middleware/authMiddleware.js';
 
 const router = Router();
 
-// Route to add a like
 router.route('/:songId').post( isAuthenticated, addLike);
 router.route('/').get( isAuthenticated, getLikes);
 router.route('/total').get(getTotalLikesPerSong);

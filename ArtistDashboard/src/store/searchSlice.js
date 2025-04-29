@@ -14,8 +14,6 @@ const searchSlice = createSlice({
     initialState,
     reducers: {
         setSearchData(state, action) {
-            // Ensure to log the correct data structure you're dispatching.
-            console.log("Data in setSearchData", action.payload);
             state.songs = action.payload.data.songs || [];  
             state.albums = action.payload.data.albums || [];  
             
@@ -35,10 +33,8 @@ export function searchSongAlbumArtist(query) {
         dispatch(setStatus(STATUS.LOADING));
         try {
             const response = await APIAuthenticated.get(`/api/search?query=${query}`);
-            console.log("response from the search", response);  // Log the full response for debugging
 
             if (response.status === 200) {
-                // Assuming response.data contains songs, albums, and artists directly
                 dispatch(setSearchData(response.data));
                 dispatch(setStatus(STATUS.SUCCESS));
             } else {

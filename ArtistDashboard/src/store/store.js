@@ -20,7 +20,6 @@ const store=configureStore({
         checkout:checkoutSlice,
         notifications:notiticationSlice,
         search:searchSlice,
-
     }
 })
 

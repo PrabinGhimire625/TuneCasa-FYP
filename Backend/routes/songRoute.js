@@ -4,10 +4,10 @@ import { addSong, countAllSong, countAndListArtistSongs, deleteSong, fetchArtist
 
 import upload from "../middleware/multer.js";
 import errorHandler from "../services/catchAsyncError.js";
-import { isAuthenticated } from "../middleware/authMiddleware.js";
+import { isAuthenticated, restrictTo, Role } from "../middleware/authMiddleware.js";
 const router=Router();
 
-router.route("/").post(isAuthenticated, upload.fields([{name:'image',maxCount:1},{name:'audio',maxCount:1}]),addSong)
+router.route("/").post(isAuthenticated, upload.fields([{name:'image',maxCount:1},{name:'audio',maxCount:1}]),restrictTo(Role.Artist), errorHandler(addSong))
 .get( errorHandler(getAllSong))
 
 router.route("/total/count").get( errorHandler(countAllSong))
@@ -17,18 +17,15 @@ router.route("/:album").get( errorHandler(fetchSongsByAlbum))
 router.route("/songByGenre/genres/:genre").get( errorHandler(fetchSongByGenre))
 router.route("/artist/:userId").get( errorHandler(fetchArtistSongs))
 
-
-
 router.route("/singleSong/:id").get(isAuthenticated, errorHandler((fetchSingleSong)))
 
-//recommend song
 router.route("/recommend/artistSong/:userId").get(errorHandler(getLatestSongsByArtist));
 router.route("/recommend/systemSong").get(errorHandler(getLatestSongs));
 
 
 router.route("/:id").get(isAuthenticated, errorHandler((fetchSingleSong)))
-.delete(isAuthenticated, errorHandler(deleteSong))
-.patch(isAuthenticated, upload.fields([{ name: 'image', maxCount: 1 }]),errorHandler(updateSong))
+.delete(isAuthenticated, restrictTo(Role.Artist),  errorHandler(deleteSong))
+.patch(isAuthenticated, upload.fields([{ name: 'image', maxCount: 1 }]),restrictTo(Role.Artist), errorHandler(updateSong))
 
 
 

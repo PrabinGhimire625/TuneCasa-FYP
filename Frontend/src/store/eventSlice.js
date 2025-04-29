@@ -154,7 +154,7 @@ export function updateEvent({ id, eventData }) {
             });
             if (response.status === 200) {
                 const { data } = response.data;
-                dispatch(setUpdateEvent({ id, eventData: data })); // Fix payload structure
+                dispatch(setUpdateEvent({ id, eventData: data })); 
                 dispatch(setStatus(STATUS.SUCCESS));
             } else {
                 dispatch(setStatus(STATUS.ERROR));

@@ -25,13 +25,8 @@ const SingleSong = () => {
   const handleDelete = async () => {
     if (id) {
       try {
-        // Dispatch the delete song action
         await dispatch(deleteSong(id)); 
-        
-        // Show success toast
         toast.success("Song deleted");
-  
-        // Navigate to the all songs page
         navigate("/allSong");
       } catch (error) {
         toast.error("Error deleting song");

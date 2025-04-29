@@ -12,13 +12,13 @@ const notificationsSlice = createSlice({
   reducers: {
     setNotificationData(state, action) {
       state.notifications = action.payload;
-      state.unreadCount = action.payload.filter(n => !n.isRead).length; // Recalculate unread count
+      state.unreadCount = action.payload.filter(n => !n.isRead).length; 
     },
     setStatus(state, action) {
       state.status = action.payload;
     },
     clearUnreadCount(state) {
-      state.unreadCount = 0; // Reset unread count
+      state.unreadCount = 0; 
     }
   },
 });
@@ -26,14 +26,14 @@ const notificationsSlice = createSlice({
 export const { setNotificationData, setStatus, clearUnreadCount } = notificationsSlice.actions;
 export default notificationsSlice.reducer;
 
-// Thunk to fetch notifications for the authenticated user
+//fetch notification of single user
 export function fetchAllNotificationsOfSingleUser() {
   return async function (dispatch) {
     dispatch(setStatus(STATUS.LOADING));
     try {
       const response = await APIAuthenticated.get("/api/notification/singleUser");
       if (response.status === 200) {
-        dispatch(setNotificationData(response.data.data)); // Update notifications and unread count
+        dispatch(setNotificationData(response.data.data)); 
         dispatch(setStatus(STATUS.SUCCESS));
       } else {
         dispatch(setStatus(STATUS.ERROR));
@@ -51,8 +51,8 @@ export function markAllNotificationsAsRead() {
     try {
       const response = await APIAuthenticated.patch("/api/notification/read-all");
       if (response.status === 200) {
-        dispatch(fetchAllNotificationsOfSingleUser()); // Refetch notifications after marking as read
-        dispatch(clearUnreadCount()); // Reset unread count to 0 (if needed)
+        dispatch(fetchAllNotificationsOfSingleUser());
+        dispatch(clearUnreadCount()); 
       }
     } catch (err) {
       console.error("Error marking notifications as read:", err);

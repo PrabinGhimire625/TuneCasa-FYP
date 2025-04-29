@@ -8,7 +8,7 @@ const songAnalyticsSchema = new mongoose.Schema(
     watchTime: { type: Number, default: 0 },
     totalEarning: { type: Number, default: 0 },
   },
-  { timestamps: true } // This automatically adds createdAt and updatedAt fields
+  { timestamps: true } 
 );
 
 // Pre-save hook to calculate totalEarning before saving the document
@@ -19,7 +19,6 @@ songAnalyticsSchema.pre("save", function (next) {
   next();
 });
 
-// Check and create if "songAnalytics" model is not created
 const songAnalyticsModel =
   mongoose.models.songAnalytics || mongoose.model("songAnalytics", songAnalyticsSchema);
 

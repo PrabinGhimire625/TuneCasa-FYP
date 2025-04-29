@@ -7,12 +7,12 @@ const Notification = () => {
   const { notifications, unreadCount } = useSelector((state) => state.notifications);
 
   useEffect(() => {
-    dispatch(fetchAllNotificationsOfSingleUser()); // Fetch notifications on mount
+    dispatch(fetchAllNotificationsOfSingleUser());
   }, [dispatch]);
 
   useEffect(() => {
     if (notifications.length > 0 && unreadCount > 0) {
-      dispatch(markAllNotificationsAsRead()); // Mark notifications as read after fetching
+      dispatch(markAllNotificationsAsRead());
     }
   }, [dispatch, notifications, unreadCount]);
 
@@ -21,9 +21,8 @@ const Notification = () => {
       {notifications?.map((notification) => (
         <div
           key={notification._id}
-          className={`border rounded-lg shadow p-4 flex items-center gap-3 ${
-            !notification.isRead ? 'bg-gray-100' : ''
-          }`}
+          className={`border rounded-lg shadow p-4 flex items-center gap-3 ${!notification.isRead ? 'bg-gray-100' : ''
+            }`}
         >
           <img
             src={notification.image}

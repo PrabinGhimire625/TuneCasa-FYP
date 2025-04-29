@@ -1,11 +1,11 @@
 import { v2 as cloudinary } from "cloudinary";
 import User from "../models/userModel.js";
 import Checkout from "../models/checkoutModel.js";
-
 import songAnalyticsModel from "../models/SongAnalyticsModel .js";
 import songModel from "../models/songModel.js";
 
 
+//artist request for chekout after the 1000
 export const requestCheckout = async (req, res) => {
   const userId = req.user?.id;
   const { totalEarnings } = req.body;
@@ -19,7 +19,6 @@ export const requestCheckout = async (req, res) => {
   }
 
   try {
-    // Check if a pending checkout already exists for this user
     const existingCheckout = await Checkout.findOne({
       userId,
       status: "requested"
@@ -51,14 +50,14 @@ export const requestCheckout = async (req, res) => {
   }
 };
 
+//fetch all the requested checkout on the admin side
 export const fetchRequestedCheckout = async (req, res) => {
   try {
-    // Fetch all checkouts with status "requested" and populate user info
     const requestedCheckouts = await Checkout.find({
       status: "requested"
     }).populate({
       path: "userId",
-      select: "username email" // Fetch only the username and email from user
+      select: "username email"
     });
 
     if (requestedCheckouts.length === 0) {
@@ -76,7 +75,7 @@ export const fetchRequestedCheckout = async (req, res) => {
   }
 };
 
-
+//fetch single requested checkout on the admin side
 export const fetchSingleRequestedCheckout = async (req, res) => {
   const { checkoutId } = req.params; // Get checkoutId from the URL params
 
@@ -102,12 +101,10 @@ export const fetchSingleRequestedCheckout = async (req, res) => {
   }
 };
 
-
+//admin done the complete checkout
 export const completeCheckout = async (req, res) => {
-  const { checkoutId } = req.params;  // Checkout ID passed as a URL parameter
-
+  const { checkoutId } = req.params;
   try {
-    // Fetch the checkout record by its ID and populate the 'userId' field
     const checkout = await Checkout.findById(checkoutId).populate('userId');
 
     if (!checkout) {
@@ -119,25 +116,20 @@ export const completeCheckout = async (req, res) => {
       return res.status(400).json({ message: "Checkout status is not 'requested'. Cannot complete it." });
     }
 
-    // Update the checkout status to 'completed'
     checkout.status = "completed";
     await checkout.save();
 
-    // Get userId from the checkout record to update song earnings
     const userId = checkout.userId._id;
-
-    // 2. Get all songs by the artist (userId)
-    const songs = await songModel.find({ userId }, { _id: 1 }); // Get all songs for this user (only the _id)
+    const songs = await songModel.find({ userId }, { _id: 1 });
     if (songs.length === 0) {
       return res.status(404).json({ message: "No songs found for this artist." });
     }
 
-    // Extract all songIds from the songs retrieved
     const songIds = songs.map(song => song._id);
 
-    // 3. Update the song analytics, resetting totalEarning to 0 for all songs by this user
+    // Update the song analytics, resetting totalEarning to 0 for all songs by this user
     const result = await songAnalyticsModel.updateMany(
-      { songId: { $in: songIds } },  // Find all song analytics by songId from the list of songIds
+      { songId: { $in: songIds } },
       { $set: { totalEarning: 0 } }  // Reset earnings to 0
     );
 
@@ -157,15 +149,14 @@ export const completeCheckout = async (req, res) => {
 //fetch all checkout history
 export const fetchAllCompletedCheckout = async (req, res) => {
   try {
-    // Fetch all checkouts with status "completed", populate user info, and sort by createdAt in descending order
     const completedCheckouts = await Checkout.find({
       status: "completed"
     })
       .populate({
         path: "userId",
-        select: "username email" // Fetch only the username and email from user
+        select: "username email"
       })
-      .sort({ createdAt: -1 }); // Sort by createdAt in descending order (latest first)
+      .sort({ createdAt: -1 });
 
     if (completedCheckouts.length === 0) {
       return res.status(404).json({ message: "No completed checkouts found." });
@@ -182,14 +173,11 @@ export const fetchAllCompletedCheckout = async (req, res) => {
   }
 };
 
-
-
 // Fetch completed checkout history of the logged-in user
 export const fetchArtistCompletedCheckoutHistory = async (req, res) => {
   try {
-    const userId = req.user.id; // Assuming you're using a middleware to attach user to req
+    const userId = req.user.id;
 
-    // Fetch completed checkouts for the logged-in user, sorted by createdAt in descending order
     const userCheckouts = await Checkout.find({
       status: "completed",
       userId: userId
@@ -198,7 +186,7 @@ export const fetchArtistCompletedCheckoutHistory = async (req, res) => {
         path: "userId",
         select: "username email"
       })
-      .sort({ createdAt: -1 }); // Sort by createdAt in descending order (latest first)
+      .sort({ createdAt: -1 });
 
     if (userCheckouts.length === 0) {
       return res.status(404).json({ message: "No completed checkouts found for this user." });

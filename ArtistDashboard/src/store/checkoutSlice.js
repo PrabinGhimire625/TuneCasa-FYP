@@ -56,7 +56,6 @@ export function artistCheckoutHistory() {
         try {
             const response = await APIAuthenticated.get("/api/checkout/artist/completed");
             if (response.status === 200) {
-                // console.log("Response",response.data.data)
                 dispatch(setArtistCheckoutHistory(response.data.data));
                 dispatch(setStatus(STATUS.SUCCESS));
             } else {

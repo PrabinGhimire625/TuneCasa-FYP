@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { STATUS } from "../globals/enumStatus/Status";
-import { API } from "../http/index";
+import { API, APIAuthenticated } from "../http/index";
 
 const dataSlice = createSlice({
   name: "data",
@@ -21,12 +21,10 @@ const dataSlice = createSlice({
     },
     approveArtist(state, action) {
       const artistId = action.payload;
-      // Remove the approved artist from the pending artists list
       state.artists = state.artists.filter((artist) => artist._id !== artistId);
     },
     rejectArtist(state, action) {
       const artistId = action.payload;
-      // Remove the rejected artist from the pending artists list
       state.artists = state.artists.filter((artist) => artist._id !== artistId);
     },
   },
@@ -40,7 +38,7 @@ export function fetchAllUser() {
   return async function fetchAllUserThunk(dispatch) {
     dispatch(setStatus(STATUS.LOADING));
     try {
-      const response = await API.get("/api/user");
+      const response = await APIAuthenticated.get("/api/user");
       console.log(response);
       if (response.status === 200) {
         const { data } = response.data;
@@ -85,7 +83,7 @@ export function fetchAllPendingArtists() {
   return async function fetchAllPendingArtistsThunk(dispatch) {
     dispatch(setStatus(STATUS.LOADING));
     try {
-      const response = await API.get("/api/artist/pendingArtist");
+      const response = await APIAuthenticated.get("/api/artist/pendingArtist");
       console.log(response);
       if (response.status === 200) {
         const { data } = response.data;
@@ -106,10 +104,9 @@ export function fetchAllPendingArtists() {
 export function approveArtistHandler(artistId) {
   return async function approveArtistThunk(dispatch) {
     try {
-      const response = await API.get(`/api/admin/approve-artist/${artistId}`);
+      const response = await APIAuthenticated.get(`/api/admin/approve-artist/${artistId}`);
       console.log('Approve Response:', response);
       if (response.status === 200) {
-        // Approve artist by removing them from pending
         dispatch(approveArtist(artistId));
       }
     } catch (error) {
@@ -122,10 +119,9 @@ export function approveArtistHandler(artistId) {
 export function rejectArtistHandler(artistId) {
   return async function rejectArtistThunk(dispatch) {
     try {
-      const response = await API.get(`/api/admin/reject-artist/${artistId}`);
+      const response = await APIAuthenticated.get(`/api/admin/reject-artist/${artistId}`);
       console.log('Reject Response:', response);
       if (response.status === 200) {
-        // Reject artist by removing them from pending
         dispatch(rejectArtist(artistId));
       }
     } catch (error) {

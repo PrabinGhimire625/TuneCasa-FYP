@@ -40,7 +40,7 @@ const ListAlbum = () => {
             type="text"
             placeholder="Search albums..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)} // Update search query
+            onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full px-4 py-2 text-black rounded-lg bg-gray-900 border border-gray-600 focus:outline-none focus:bg-gray-700 focus:text-white"
           />
         </div>

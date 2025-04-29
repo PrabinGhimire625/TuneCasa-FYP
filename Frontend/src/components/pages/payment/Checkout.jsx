@@ -24,13 +24,12 @@ const Checkout = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(createSubscription(planName));
-    // Optionally redirect to success page
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center  px-4 py-10">
       <div className="bg-gray-800 rounded-3xl shadow-xl w-full max-w-md p-8 sm:p-10 text-white">
-        
+
         <h2 className="text-3xl font-bold text-center mb-6 text-gray-100">
           Complete Your Subscription
         </h2>
@@ -42,7 +41,7 @@ const Checkout = () => {
             <p className="text-xl font-semibold text-gray-200">Music Premium Membership</p>
             <p className="text-sm text-gray-400">Ad-free, unlimited music + exclusive perks</p>
           </div>
-        </div> 
+        </div>
 
         {/* Pricing Details */}
         <div className="mb-6">
@@ -60,7 +59,7 @@ const Checkout = () => {
         </div>
 
         {/* Payment Button */}
-        <div 
+        <div
           onClick={handleSubmit}
           className="flex items-center justify-center bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 rounded-lg transition duration-300 cursor-pointer"
         >

@@ -19,7 +19,7 @@ import connectDB from "./config/mongoDb.js";
 import connectCloudinary from "./config/cloudinary.js";
 import adminSeeder from "./adminSeeder.js";
 
-import './cron/expireSubscription.js'; // Import the cron job file
+import './cron/expireSubscription.js'; 
 
 dotenv.config()
 

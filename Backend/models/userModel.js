@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 
-// Define the user schema
 const userSchema = new mongoose.Schema({
     username: { type: String, required: true },
     email: { 
@@ -39,6 +38,5 @@ userSchema.pre('save', function(next) {
     next(); 
 });
 
-// Create and export the User model
 const User = mongoose.model("User", userSchema);
 export default User;

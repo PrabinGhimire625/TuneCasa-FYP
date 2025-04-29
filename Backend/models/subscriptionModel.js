@@ -60,23 +60,14 @@ SubscriptionSchema.pre("validate", function (next) {
 // Middleware to set startDate and endDate when subscription is activated
 SubscriptionSchema.pre("save", function (next) {
   if (this.status === "active") {
-    // Set startDate only if not already set
     if (!this.startDate) {
       this.startDate = new Date();
     }
-    
     // Calculate endDate based on the plan duration
     const durationInDays = PLAN_DURATION[this.planName];
     
-    // Log for debugging
-    console.log("Plan Name:", this.planName);  // Log plan name
-    console.log("Duration in Days:", durationInDays);  // Log the duration
-    
     this.endDate = new Date(this.startDate);
     this.endDate.setDate(this.startDate.getDate() + durationInDays);
-    
-    // Log the calculated end date for debugging
-    console.log("End Date:", this.endDate);  // Log the calculated end date
   }
   next();
 });
@@ -85,14 +76,9 @@ SubscriptionSchema.pre("save", function (next) {
 SubscriptionSchema.pre("save", function (next) {
   if (this.status === "active") {
     if (this.isModified("planName")) {
-      // If the plan is changed, adjust the amount and extend the end date
       const durationInDays = PLAN_DURATION[this.planName];
       const currentEndDate = new Date(this.endDate);
-
-      // Add the new duration to the current end date if plan is updated
       this.endDate = new Date(currentEndDate.setDate(currentEndDate.getDate() + durationInDays));
-
-      // Add the amount of the new plan to the existing total amount
       this.amount += PLAN_PRICES[this.planName];
     }
   }

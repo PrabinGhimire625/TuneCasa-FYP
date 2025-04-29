@@ -171,16 +171,15 @@ export function countArtistSong(){
 }
 
 //fetch song by album
-export function fetchAllSongByAlbum(album) {  // Accept album as a parameter
+export function fetchAllSongByAlbum(album) {  
     return async function fetchAllSongByAlbumThunk(dispatch) {
         dispatch(setStatus(STATUS.LOADING));
         try {
-            const response = await API.get(`api/song/${album}`);  // Use album parameter in API request
-            console.log("response from the fetch all song by album ", response);
-            
+            const response = await API.get(`api/song/${album}`); 
+        
             if (response.status === 200) {
                 const { data } = response.data;
-                dispatch(setSongByAlbum(data));  // Dispatch the fetched data
+                dispatch(setSongByAlbum(data));  
                 dispatch(setStatus(STATUS.SUCCESS));
             }
         } catch (err) {

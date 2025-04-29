@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 
-// Define the artist schema
 const artistSchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     bio: { type: String, required: true },
@@ -12,6 +11,5 @@ const artistSchema = new mongoose.Schema({
     followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }] 
 });
 
-// Create and export the Artist model
 const Artist = mongoose.model("Artist", artistSchema);
 export default Artist;

@@ -6,12 +6,9 @@ import { RiPlayListFill, RiAdvertisementFill } from "react-icons/ri";
 import { FiLogOut } from "react-icons/fi";
 import { assets } from '../../assets/artist-assets/assets';
 import { FiPieChart, FiUsers, FiSettings, FiTable } from "react-icons/fi";
-import { FaArrowRight } from "react-icons/fa"; // Importing the arrow icon
+import { FaArrowRight } from "react-icons/fa";
 import { useDispatch, useSelector } from 'react-redux';
 import { ArtistProfile } from "../../store/authSlice";
-
-
-
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -86,7 +83,7 @@ const Sidebar = () => {
           </button>
           {openDropdown === "music" && (
             <div className="ml-6">
-              {/* <Link to="/allSong" className="block p-2 text-sm hover:bg-gray-700 rounded-md"> <FaArrowRight className="ml-3" /> All Songs</Link> */}
+
               <Link to="/allsong" className="flex items-center p-2 text-sm hover:bg-gray-700 rounded-md">
                 <FaArrowRight className="mr-2" />
                 All song
@@ -114,9 +111,6 @@ const Sidebar = () => {
             </div>
           )}
         </div>
-
-
-
 
         {/* Ads Management Dropdown */}
         <div>
@@ -152,11 +146,6 @@ const Sidebar = () => {
           <FaCog className="mr-3" /> Settings
         </Link>
       </nav>
-
-      {/* Logout Button
-      <button className="flex items-center p-3 rounded-lg hover:bg-red-600 mt-5 text-red-400 hover:text-white">
-        <FiLogOut className="mr-3" /> Logout
-      </button> */}
     </div>
   );
 };

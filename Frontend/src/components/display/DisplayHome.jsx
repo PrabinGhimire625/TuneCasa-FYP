@@ -20,10 +20,8 @@ const DisplayHome = () => {
       <div className='w-full px-4 md:px-6 pt-4 rounded bg-[#121212] text-white overflow-auto'>
         {/* Navigation arrows */}
 
-
         {/* Navigation menu */}
         <div className="w-full px-4 md:px-6 pt-4 rounded bg-[#121212] text-white overflow-auto">
-
 
           {/* Navigation menu with left gap */}
           <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10">
@@ -33,8 +31,6 @@ const DisplayHome = () => {
                   Playlists
                 </div>
               </Link>
-
-
 
               <Link to="/allAlbum">
                 <div className="px-3 py-1.5 sm:px-4 sm:py-2 bg-stone-950 text-white text-xs sm:text-sm md:text-base rounded-md hover:bg-gray-900 transition-colors">
@@ -47,7 +43,7 @@ const DisplayHome = () => {
                   Genre
                 </div>
               </Link>
-              
+
               <Link to="/artistList">
                 <div className="px-3 py-1.5 sm:px-4 sm:py-2 bg-stone-950 text-white text-xs sm:text-sm md:text-base rounded-md hover:bg-gray-900 transition-colors">
                   Event
@@ -60,20 +56,12 @@ const DisplayHome = () => {
                   Artists
                 </div>
               </Link>
-
-             
             </div>
           </div>
         </div>
 
-
         {/* Main content section */}
         <div className="">
-
-          {/* Book The Artist */}
-          {/* <div className="flex-1">
-    <ArtistBook />
-  </div> */}
 
           {/* Popular and Trending songs */}
           <div className="">
@@ -81,12 +69,10 @@ const DisplayHome = () => {
           </div>
         </div>
 
-        {/* Albums section */}
         <div className='mb-6'>
           <DisplayAlbum />
         </div>
 
-        {/* Artists section */}
         <div className='mb-6'>
           <DisplayArtist />
         </div>

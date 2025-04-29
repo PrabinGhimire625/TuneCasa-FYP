@@ -27,7 +27,7 @@ const FollowerList = () => {
                 {/* Avatar */}
                 <div className="w-16 h-16 rounded-full overflow-hidden">
                   <img
-                    src={follower?.image || 'https://via.placeholder.com/150'} // Fallback image if avatar doesn't exist
+                    src={follower?.image || 'https://via.placeholder.com/150'} 
                     alt={follower.username}
                     className="w-full h-full object-cover"
                   />

@@ -48,7 +48,7 @@ const AboutUs = () => {
         <div className="max-w-4xl mx-auto mb-20 text-center">
           <h2 className="text-3xl font-bold mb-4">Our Story</h2>
           <p className="text-gray-400 text-base sm:text-lg leading-relaxed">
-            We started TuneCasa with a simple idea: bring music back to its purest form. No paywalls, no endless ads—just authentic connection between creators and fans. 
+            We started TuneCasa with a simple idea: bring music back to its purest form. No paywalls, no endless ads—just authentic connection between creators and fans.
             We’re music lovers, developers, dreamers—and we built TuneCasa for people like you.
           </p>
         </div>
@@ -76,7 +76,7 @@ const AboutUs = () => {
         <div className="max-w-4xl mx-auto mb-20 text-center">
           <h2 className="text-3xl font-bold mb-4">Our Mission</h2>
           <p className="text-gray-400 text-base sm:text-lg leading-relaxed">
-            TuneCasa is more than just a music platform—it's a creative hub where artists thrive and listeners discover pure, uninterrupted sound. 
+            TuneCasa is more than just a music platform—it's a creative hub where artists thrive and listeners discover pure, uninterrupted sound.
             We aim to give power back to the creators and joy back to the listeners. No ads. No gatekeeping. Just music.
           </p>
         </div>
@@ -96,8 +96,6 @@ const AboutUs = () => {
           </a>
         </div>
       </div>
-
-      {/* Footer stays at the bottom */}
       <Footer />
     </div>
   );

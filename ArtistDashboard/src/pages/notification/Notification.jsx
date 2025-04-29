@@ -8,12 +8,12 @@ const Notification = () => {
     const { notifications, unreadCount } = useSelector((state) => state.notifications);
 
     useEffect(() => {
-      dispatch(fetchAllNotificationsOfArtist()); // Fetch notifications on mount
+      dispatch(fetchAllNotificationsOfArtist()); 
     }, [dispatch]);
   
     useEffect(() => {
       if (notifications.length > 0 && unreadCount > 0) {
-        dispatch(markAllNotificationsAsRead()); // Mark notifications as read after fetching
+        dispatch(markAllNotificationsAsRead()); 
       }
     }, [dispatch, notifications, unreadCount]);
 

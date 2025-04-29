@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { API } from "../http";
+import { API, APIAuthenticated } from "../http";
 import { STATUS } from "../globals/enumStatus/Status";
 
 
@@ -38,11 +38,11 @@ export function fetchAllRequestCheckout() {
     return async function fetchAllRequestCheckoutThunk(dispatch) {
       dispatch(setStatus(STATUS.LOADING));
       try {
-        const response = await API.get("/api/checkout/requested");
+        const response = await APIAuthenticated.get("/api/checkout/requested");
         console.log("Response", response);
   
         if (response.status === 200) {
-          dispatch(setCheckoutData(response.data.data)); // ✅ Fixed here
+          dispatch(setCheckoutData(response.data.data));
           dispatch(setStatus(STATUS.SUCCESS));
         } else {
           dispatch(setStatus(STATUS.ERROR));
@@ -55,7 +55,7 @@ export function fetchAllRequestCheckout() {
   }
   
 
-// make the reques completed
+// make the request completed
 export function fetchSingleCheckout(checkoutId) {
   return async function fetchSingleCheckoutThunk(dispatch) {
     dispatch(setStatus(STATUS.LOADING));
@@ -82,8 +82,7 @@ export function completeCheckout(id) {
   return async function completeCheckoutThunk(dispatch) {
     dispatch(setStatus(STATUS.LOADING));
     try {
-      const response = await API.patch(`/api/checkout/completed/${id}`);
-      console.log("Response", response);
+      const response = await APIAuthenticated.patch(`/api/checkout/completed/${id}`);
 
       if (response.status === 200) {
         dispatch(setStatus(STATUS.SUCCESS));

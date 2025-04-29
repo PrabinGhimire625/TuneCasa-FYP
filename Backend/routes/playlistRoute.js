@@ -13,7 +13,6 @@ router.route("/userPlaylist").get(isAuthenticated, errorHandler(getPlaylistOfSin
 router.route("/public").get(isAuthenticated, errorHandler(getPublicPlaylistsByUser))
 
 router.route("/add-song/:id").post(isAuthenticated, errorHandler(addSongToPlaylist))
-// router.route("/:playlistId/add-song/:songId").post(isAuthenticated, errorHandler(addSongToPlaylist))
 
 router.route("/:id").get(isAuthenticated, errorHandler(getSinglePlaylist))
 .delete(isAuthenticated, errorHandler(deletePlaylist))

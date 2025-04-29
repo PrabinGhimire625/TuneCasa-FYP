@@ -7,7 +7,6 @@ const adminSeeder = async () => {
         const existingAdmin = await User.findOne({ email: "pravinghimire625@gmail.com" });
 
         if (!existingAdmin) {
-            // Create the admin if no existing record is found
             await User.create({
                 username: "pravin",
                 email: "pravinghimire625@gmail.com",

@@ -15,8 +15,6 @@ const GoogleLogin = () => {
             if (authResult['code']) {
                 const result = await googleAuth(authResult['code']);
                 const { token, data: user } = result.data;
-    
-                // Save token and profile in Redux
                 dispatch(setToken(token));
                 dispatch(setProfile(user));
     
@@ -32,8 +30,6 @@ const GoogleLogin = () => {
         }
     };
     
-    
-
     const handleGoogleLogin = useGoogleLogin({
         onSuccess: responseGoogle,
         onError: responseGoogle,
@@ -41,10 +37,10 @@ const GoogleLogin = () => {
     });
 
     return (
-        <div className="flex items-center justify-center min-h-screen">
+        <div className="">
             <button
                 onClick={handleGoogleLogin}
-                className="flex items-center bg-white dark:bg-gray-900 border border-gray-300 rounded-lg shadow-md px-6 py-2 text-sm font-medium text-gray-800 dark:text-white hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                className="flex items-center bg-white dark:bg-gray-900 border border-gray-300 rounded-lg shadow-md px-6 py-2 text-sm font-medium text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
             >
                 <svg
                     className="h-6 w-6 mr-2"
@@ -61,7 +57,7 @@ const GoogleLogin = () => {
                         <path fill="#4285F4" d="M46.145 24c0-1.387-.213-2.88-.533-4.267H23.714v9.066h12.605c-.63 3.091-2.345 5.468-4.8 7.014l7.507 5.804C43.34 37.614 46.145 31.649 46.145 24z" />
                     </g>
                 </svg>
-                <span>Continue with Google</span>
+                <span>Login Google</span>
             </button>
         </div>
     );

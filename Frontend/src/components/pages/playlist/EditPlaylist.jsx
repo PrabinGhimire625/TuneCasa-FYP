@@ -7,7 +7,7 @@ import { updatePlaylist } from "../../../store/playlistSlice";
 const EditPlaylist = ({ id, playlistData, onClose }) => {
   const dispatch = useDispatch();
   const { status } = useSelector((state) => state.playlist);
-  
+
   const [formData, setFormData] = useState({
     title: "",
     description: "",

@@ -3,59 +3,13 @@ import Ads from "../models/adModel.js";
 import User from "../models/userModel.js";
 import subscriptionModel from "../models/subscriptionModel.js";
 
-// Create Ads
-// export const createAds = async (req, res) => {
-//     const { name } = req.body; // Only the name is required from the body
-//     const audioFile = req.files?.video?.[0]; // Use optional chaining to safely check for the file
-//     const userId = req.user.id; // Ensure userId is extracted correctly from authenticated user
-    
-//     // Ensure the userId is valid
-//     if (!userId) {
-//       return res.status(400).json({ message: "User not authenticated or userId missing" });
-//     }
-  
-//     const user = await User.findById(userId);
-//     if (!user) {
-//       return res.status(400).json({ message: "Invalid userId, user not found" });
-//     }
-  
-//     if (!audioFile) {
-//       return res.status(400).json({ message: "No video file uploaded" }); // Check if the file exists
-//     }
-  
-//     // Upload video file to Cloudinary
-//     const audioUpload = await cloudinary.uploader.upload(audioFile.path, { resource_type: "video" });
-  
-//     // Get the duration of the video from Cloudinary's response
-//     const duration = audioUpload.duration;
-  
-//     // Prepare ad data based on schema
-//     const adData = {
-//       name,
-//       userId, // Make sure userId is passed here
-//       file: audioUpload.secure_url, // URL of the uploaded video
-//       duration,
-//       isSkippable: true, // Default value is true
-//       totalPlays: 0, // Default value
-//       totalClicks: 0, // Default value
-//       totalSkips: 0, // Default value
-//       totalWatchTime: 0, // Default value
-//     };
-  
-//     // Create the ad in the database
-//     const ad = await Ads.create(adData);
-  
-//     // Respond with success message and ad details
-//     res.status(200).json({ message: "Ad is successfully added!", data: ad });
-//   };
-
+//add the ads to the system
 export const createAds = async (req, res) => {
-  const { name, totalPlays} = req.body; // Only the name is required from the body
+  const { name, totalPlays } = req.body;
   const audioFile = req?.files?.audio[0];
   const imageFile = req?.files?.image[0];
-  const userId = req.user.id; // Ensure userId is extracted correctly from authenticated user
-  
-  // Ensure the userId is valid
+  const userId = req.user.id;
+
   if (!userId) {
     return res.status(400).json({ message: "User not authenticated or userId missing" });
   }
@@ -66,37 +20,32 @@ export const createAds = async (req, res) => {
   }
 
   if (!audioFile) {
-    return res.status(400).json({ message: "No video file uploaded" }); // Check if the file exists
+    return res.status(400).json({ message: "No video file uploaded" });
   }
 
   const audioUpload = await cloudinary.uploader.upload(audioFile.path, { resource_type: "video" });
   const imageUpload = await cloudinary.uploader.upload(imageFile.path, { resource_type: "image" });
 
-  // Format the song duration in minutes and seconds
   const duration = Math.floor(audioUpload.duration); // Convert duration to a number (in seconds)
 
   // Prepare ad data based on schema
   const adData = {
     name,
-    userId, // Make sure userId is passed here
+    userId,
     totalPlays,
-    file: audioUpload.secure_url, // URL of the uploaded video
+    file: audioUpload.secure_url,
     image: imageUpload.secure_url,
     duration,
-    isSkippable: true, // Default value is true
-    totalPlays: totalPlays, // Default value
-    totalClicks: 0, // Default value
-    totalSkips: 0, // Default value
-    totalWatchTime: 0, // Default value
+    isSkippable: true,
+    totalPlays: totalPlays,
+    totalClicks: 0,
+    totalWatchTime: 0,
   };
 
   // Create the ad in the database
   const ad = await Ads.create(adData);
-
-  // Respond with success message and ad details
   res.status(200).json({ message: "Ad is successfully added!", data: ad });
 };
-  
 
 // Get All Ads
 export const getAllAds = async (req, res) => {
@@ -138,33 +87,28 @@ export const deleteAds = async (req, res) => {
 
 // Update Ad
 export const updateAds = async (req, res) => {
-  const { id } = req.params; // Get ad ID from URL params
-  const { name } = req.body; // Get updated fields from request body
+  const { id } = req.params;
+  const { name } = req.body;
   const audioFile = req?.files?.audio ? req.files.audio[0] : null;
   const imageFile = req?.files?.image ? req.files.image[0] : null;
 
   try {
-    // Find the ad by ID
     const ad = await Ads.findById(id);
     if (!ad) {
       return res.status(404).json({ message: "Ad not found" });
     }
 
-    // Update fields if provided
     if (name) ad.name = name;
-    
-    // Upload new audio file if provided
+
     if (audioFile) {
       try {
         const audioUpload = await cloudinary.uploader.upload(audioFile.path, { resource_type: "video" });
         ad.file = audioUpload.secure_url;
-        ad.duration = Math.floor(audioUpload.duration); // Update duration if audio changes
+        ad.duration = Math.floor(audioUpload.duration);
       } catch (error) {
         return res.status(500).json({ message: "Failed to upload audio file", error: error.message });
       }
     }
-
-    // Upload new image file if provided
     if (imageFile) {
       try {
         const imageUpload = await cloudinary.uploader.upload(imageFile.path, { resource_type: "image" });
@@ -174,7 +118,6 @@ export const updateAds = async (req, res) => {
       }
     }
 
-    // Save the updated ad
     await ad.save();
 
     res.status(200).json({ message: "Ad updated successfully", data: ad });
@@ -183,7 +126,6 @@ export const updateAds = async (req, res) => {
     res.status(500).json({ message: "Error updating ad", error: error.message });
   }
 };
-
 
 //get the random ads for the free user
 export const getAdsForFreeUsers = async (req, res) => {
@@ -197,8 +139,6 @@ export const getAdsForFreeUsers = async (req, res) => {
     if (activeSubscription) {
       return res.status(200).json({ message: "User is subscribed, no ads shown", data: null });
     }
-
-    // Fetch a single random ad with status 'active'
     const ad = await Ads.aggregate([
       { $match: { status: "active" } },
       { $sample: { size: 1 } }
@@ -218,13 +158,11 @@ export const getAdsForFreeUsers = async (req, res) => {
 //track ad view
 export const trackAdView = async (req, res) => {
   try {
-    const { id, watchTime } = req.body;  // Get the ad ID and watch time from the request body
+    const { id, watchTime } = req.body;
 
     if (!id || typeof watchTime !== 'number' || watchTime <= 0) {
       return res.status(400).json({ message: "Valid Ad ID and watch time are required" });
     }
-
-    // Find the ad by its ID
     const ad = await Ads.findById(id);
 
     if (!ad) {
@@ -238,10 +176,8 @@ export const trackAdView = async (req, res) => {
 
       // Check if the totalPlays equals totalViews, and set status to expired if true
       if (ad.totalPlays === ad.totalViews) {
-        ad.status = "expired";  // Change status to expired
+        ad.status = "expired";
       }
-
-      // Save the updated ad
       await ad.save();
 
       res.status(200).json({
@@ -258,55 +194,55 @@ export const trackAdView = async (req, res) => {
 };
 
 
-
+//track ad skip
 export const trackAdSkip = async (req, res) => {
   try {
-      const { id } = req.body;
+    const { id } = req.body;
 
-      if (!id) {
-          return res.status(400).json({ message: "Ad ID is required" });
-      }
+    if (!id) {
+      return res.status(400).json({ message: "Ad ID is required" });
+    }
 
-      const updatedAd = await Ads.findByIdAndUpdate(
-          id,
-          { $inc: { totalSkips: 1 } },
-          { new: true }
-      );
+    const updatedAd = await Ads.findByIdAndUpdate(
+      id,
+      { $inc: { totalSkips: 1 } },
+      { new: true }
+    );
 
-      if (!updatedAd) {
-          return res.status(404).json({ message: "Ad not found" });
-      }
+    if (!updatedAd) {
+      return res.status(404).json({ message: "Ad not found" });
+    }
 
-      res.status(200).json({ message: "Ad skip tracked successfully", data: updatedAd });
+    res.status(200).json({ message: "Ad skip tracked successfully", data: updatedAd });
   } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Error tracking ad skip" });
+    console.error(error);
+    res.status(500).json({ message: "Error tracking ad skip" });
   }
 };
 
-
+//track ad click
 export const trackAdClick = async (req, res) => {
   try {
-      const { id } = req.body;
+    const { id } = req.body;
 
-      if (!id) {
-          return res.status(400).json({ message: "Ad ID is required" });
-      }
+    if (!id) {
+      return res.status(400).json({ message: "Ad ID is required" });
+    }
 
-      const updatedAd = await Ads.findByIdAndUpdate(
-          id,
-          { $inc: { totalClicks: 1 } },
-          { new: true }
-      );
+    const updatedAd = await Ads.findByIdAndUpdate(
+      id,
+      { $inc: { totalClicks: 1 } },
+      { new: true }
+    );
 
-      if (!updatedAd) {
-          return res.status(404).json({ message: "Ad not found" });
-      }
+    if (!updatedAd) {
+      return res.status(404).json({ message: "Ad not found" });
+    }
 
-      res.status(200).json({ message: "Ad click tracked successfully", data: updatedAd });
+    res.status(200).json({ message: "Ad click tracked successfully", data: updatedAd });
   } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Error tracking ad click" });
+    console.error(error);
+    res.status(500).json({ message: "Error tracking ad click" });
   }
 };
 

@@ -34,9 +34,9 @@ const albumSlice = createSlice({
         }
         ,
         setDeleteAlbum(state, action) {
-            const index = state.albums.findIndex(album => album._id === action.payload.albumId);  // Use '===' instead of '='
+            const index = state.albums.findIndex(album => album._id === action.payload.albumId);  
             if (index !== -1) {
-                state.albums.splice(index, 1); // Remove the album from the list
+                state.albums.splice(index, 1); 
             }
         }
         

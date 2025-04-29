@@ -2,6 +2,7 @@ import songModel from "../models/songModel.js";
 import albumModel from "../models/albumModel.js";
 import Artist from "../models/artistModel.js";
 
+//search the system all song, albums and artist 
 export const searchSongAlbumArtist = async (req, res) => {
   try {
     const { query } = req.query;
@@ -9,8 +10,6 @@ export const searchSongAlbumArtist = async (req, res) => {
     if (!query) {
       return res.status(400).json({ message: "Search query is required" });
     }
-
-    // Search songs based on name or description
     const songs = await songModel.find({
       $or: [
         { name: { $regex: query, $options: "i" } },
@@ -23,15 +22,14 @@ export const searchSongAlbumArtist = async (req, res) => {
       name: { $regex: query, $options: "i" }
     });
 
-    // Search artists by bio (and populate user)
+    // Search artists by bio and populate user
     const artistsByBio = await Artist.find({
       bio: { $regex: query, $options: "i" }
     }).populate("userId", "username image");
 
-    // Filter artists with valid userId
     const artistsByBioFiltered = artistsByBio.filter(artist => artist.userId !== null);
 
-    // Search artists by username (via populated userId)
+    // Search artists by username via populated userId
     const artistByUsername = await Artist.find().populate({
       path: "userId",
       match: { username: { $regex: query, $options: "i" } },

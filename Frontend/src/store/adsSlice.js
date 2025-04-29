@@ -21,7 +21,7 @@ const adsSlice=createSlice({
             state.adsForFreeUsers=action.payload
         },
         setTrackAdsView(state, action) {
-            state.trackView = (state.trackView || 0) + 1; // Increment the view count
+            state.trackView = (state.trackView || 0) + 1; 
         },
         
         setTrackAdsSkips(state,action){
@@ -192,7 +192,7 @@ export function trackAdWatchTime({ id, watchTime }) {
             });
 
             if (response.status === 200) {
-                dispatch(setTrackAdsView(response.data)); // Store latest response
+                dispatch(setTrackAdsView(response.data)); 
                 dispatch(setStatus(STATUS.SUCCESS));
             } else {
                 dispatch(setStatus(STATUS.ERROR));

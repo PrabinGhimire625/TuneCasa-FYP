@@ -186,7 +186,7 @@ export const fetchTotalSubscriptionUsers = () => async (dispatch) => {
 export const fetchSongDetails = () => async (dispatch) => {
     dispatch(setStatus(STATUS.LOADING));
     try {
-        const response = await API.get("/api/song-analytics/totalAnalyticsPerSong"); 
+        const response = await APIAuthenticated.get("/api/song-analytics/totalAnalyticsPerSong"); 
         if (response.status === 200) {
             dispatch(setSongDetails(response.data.data));
             dispatch(setStatus(STATUS.SUCCESS));
@@ -227,7 +227,7 @@ export function fetchArtistSongAnalytics(id){
     return async function fetchArtistSongAnalyticsThunk(dispatch) {
         dispatch(setStatus(STATUS.LOADING));
         try{
-        const response=await API.get(`/api/song-analytics/artistSong/${id}`);
+        const response=await APIAuthenticated.get(`/api/song-analytics/artistSong/${id}`);
         if(response.status===200){
             const {data} =response.data;
             dispatch(setArtistSongAnalytics(data));

@@ -7,17 +7,15 @@ import { fetchSingleSongAnalytics } from "../../store/analyticSlice";
 const SingleSongAnalytics = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
-
-  // Fetch single song analytics data from the store
   const { singleSongAnalytics, status } = useSelector((state) => state.analytics);
 
   useEffect(() => {
     if (id) {
-      dispatch(fetchSingleSongAnalytics(id)); // Fetch song analytics details
+      dispatch(fetchSingleSongAnalytics(id)); 
     }
   }, [dispatch, id]);
 
-  // Handle Loading and Error states based on `status`
+
   if (status === "loading") {
     return (
       <div className="flex justify-center items-center h-screen bg-gradient-to-br from-gray-900 to-black">

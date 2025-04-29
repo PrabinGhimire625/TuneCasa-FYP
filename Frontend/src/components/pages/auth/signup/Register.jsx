@@ -13,7 +13,7 @@ const Register = () => {
 
   // Handle register
   const handleRegister = (data) => {
-    dispatch(register(data)); // Dispatch the register action
+    dispatch(register(data));
   };
 
   useEffect(() => {

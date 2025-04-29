@@ -22,7 +22,6 @@ router.route("/:id").get( errorHandler(fetchSingleSubscription))
 
 router.route("/premium-content")
   .get(isAuthenticated, checkSubscription, (req, res) => {
-      // This route should only be accessible if checkSubscription succeeds
       res.status(200).json({ message: "Premium content access granted!" });
   });
 

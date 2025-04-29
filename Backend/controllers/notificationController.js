@@ -1,14 +1,13 @@
 import notificationModel from "../models/notifiactionModel.js";
 
+//get the notification by the user
 export const getNotificationsByUser = async (req, res) => {
   const userId = req.user.id;
-
   try {
-    // Find the notifications for the user
     const notifications = await notificationModel
       .find({ userId: userId })
       .sort({ createdAt: -1 })
-      .lean(); // plain JS objects
+      .lean();
 
     res.status(200).json({
       message: "Successfully fetched notifications",
@@ -20,29 +19,29 @@ export const getNotificationsByUser = async (req, res) => {
   }
 };
 
-//as read
+//make the notifaction as read
 export const markAllNotificationsAsRead = async (req, res) => {
-    const userId = req.user.id;
-  
-    try {
-      const result = await notificationModel.updateMany(
-        { userId, isRead: false },
-        { $set: { isRead: true } }
-      );
-  
-      res.status(200).json({ message: "All notifications marked as read", result });
-    } catch (error) {
-      console.error("Error marking notifications as read:", error);
-      res.status(500).json({ message: "Server Error" });
-    }
-  };
-  
+  const userId = req.user.id;
+
+  try {
+    const result = await notificationModel.updateMany(
+      { userId, isRead: false },
+      { $set: { isRead: true } }
+    );
+
+    res.status(200).json({ message: "All notifications marked as read", result });
+  } catch (error) {
+    console.error("Error marking notifications as read:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
 //notification to admin
 export const getEventAndMusicNotifications = async (req, res) => {
   try {
     const notifications = await notificationModel.find({
-      type: { $in: ['event', 'music'] }, // fetch only 'event' and 'music' types
-    }).sort({ createdAt: -1 }); // newest first
+      type: { $in: ['event', 'music'] },
+    }).sort({ createdAt: -1 });
 
     res.json({ success: true, data: notifications });
   } catch (err) {
@@ -51,15 +50,15 @@ export const getEventAndMusicNotifications = async (req, res) => {
   }
 };
 
-  // get the artist notifiation
+// get the artist notifiation
 export const getArtistNotifications = async (req, res) => {
   try {
     const userId = req.user.id;
 
     const notifications = await notificationModel.find({ userId })
-      .sort({ createdAt: -1 }); // newest first
+      .sort({ createdAt: -1 });
 
-    res.status(200).json({ data :notifications });
+    res.status(200).json({ data: notifications });
   } catch (error) {
     console.error("Error fetching notifications:", error);
     res.status(500).json({ message: "Server error", error: error.message });

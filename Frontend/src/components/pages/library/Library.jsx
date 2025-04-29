@@ -17,7 +17,6 @@ const Library = () => {
           <p className="text-gray-300 text-sm">Auto playlist</p>
         </div>
       </Link>
-      
 
       {/* Episodes for later Playlist */}
       <Link
@@ -30,9 +29,6 @@ const Library = () => {
           <p className="text-gray-300 text-sm">Song that you save for later</p>
         </div>
       </Link>
-
-
-    
     </div>
   );
 };

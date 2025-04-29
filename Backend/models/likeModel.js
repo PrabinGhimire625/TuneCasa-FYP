@@ -14,7 +14,7 @@ const likeSchema = new mongoose.Schema(
     },
   },
   {
-    timestamps: true, // To automatically create createdAt and updatedAt fields
+    timestamps: true, 
   }
 );
 

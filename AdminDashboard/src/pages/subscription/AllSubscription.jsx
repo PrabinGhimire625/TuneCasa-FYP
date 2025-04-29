@@ -54,7 +54,7 @@ const AllSubscription = () => {
                   </div>
 
                   <div className="flex items-center gap-2 mt-2">
-                   
+
                     <span className="text-sm text-gray-400">
                       NPR {subItem.amount.toFixed(2)}
                     </span>
@@ -75,11 +75,10 @@ const AllSubscription = () => {
                 </Link>
 
                 <span
-                  className={`px-3 py-1 rounded-full text-sm font-bold mt-3 ${
-                    subItem.status === "active"
+                  className={`px-3 py-1 rounded-full text-sm font-bold mt-3 ${subItem.status === "active"
                       ? "bg-green-500 text-white"
                       : "bg-red-500 text-white"
-                  }`}
+                    }`}
                 >
                   {subItem.status.toUpperCase()}
                 </span>

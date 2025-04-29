@@ -9,16 +9,14 @@ const ListSong = () => {
 
   // Search state
   const [searchQuery, setSearchQuery] = useState('');
-  
+
   // Songs data
   const songs = artistSongCount?.songs || [];
 
-  // Filtered songs based on search query
   const filteredSongs = songs.filter((song) =>
     song.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Effect to dispatch action to count artist songs
   useEffect(() => {
     dispatch(countArtistSong());
   }, [dispatch]);
@@ -28,13 +26,13 @@ const ListSong = () => {
       <div className="flex justify-between items-center mb-6">
         <p className='font-bold text-2xl text-white'>All Songs</p>
 
-    {/* Search Bar */}
+        {/* Search Bar */}
         <div className="flex-grow mx-4 max-w-sm">
           <input
             type="text"
             placeholder="Search Songs..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)} // Update search query
+            onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full px-4 py-2 text-black rounded-lg bg-gray-900 border border-gray-600 focus:outline-none focus:bg-gray-700 focus:text-white"
           />
         </div>
@@ -57,7 +55,7 @@ const ListSong = () => {
           {/* Render filtered songs */}
           {filteredSongs.map((song) => (
             <div key={song._id} className="flex items-center bg-gray-900 hover:bg-gray-800 transition-all duration-200 text-white p-4 rounded-xl shadow-lg">
-              
+
               {/* Left side with image, name, album, and analytics button */}
               <div className="flex items-center w-full">
                 {/* Image */}
@@ -74,7 +72,6 @@ const ListSong = () => {
                   </div>
                 </Link>
 
-                {/* Button for analytics (positioned on the left side) */}
                 <Link to="/songAnalytics" className="ml-4">
                   <button className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md">
                     View Analytics

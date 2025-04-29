@@ -13,13 +13,13 @@ const notificationsSlice = createSlice({
   reducers: {
     setNotificationData(state, action) {
       state.notifications = action.payload;
-      state.unreadCount = action.payload.filter(n => !n.isRead).length; // Recalculate unread count
+      state.unreadCount = action.payload.filter(n => !n.isRead).length; 
     },
     setStatus(state, action) {
       state.status = action.payload;
     },
     clearUnreadCount(state) {
-      state.unreadCount = 0; // Reset unread count
+      state.unreadCount = 0; 
     }
   },
 });
@@ -34,7 +34,7 @@ export function getEventAndMusicNotifications() {
     try {
       const response = await API.get("/api/notification/songEvent");
       if (response.status === 200) {
-        dispatch(setNotificationData(response.data.data)); // Update notifications and unread count
+        dispatch(setNotificationData(response.data.data));
         dispatch(setStatus(STATUS.SUCCESS));
       } else {
         dispatch(setStatus(STATUS.ERROR));

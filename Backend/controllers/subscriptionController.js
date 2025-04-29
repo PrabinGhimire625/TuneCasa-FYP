@@ -24,18 +24,20 @@ export const createSubscription = async (req, res) => {
     if (!PLAN_DURATION[planName]) {
       return res.status(400).json({ message: "Invalid subscription plan" });
     }
-
     const now = new Date();
-
-    // 🧠 Find the latest subscription by endDate (not by creation date)
     const latestSub = await Subscription.findOne({
       userId,
     }).sort({ endDate: -1 });
 
+  
+  //  if (latestSub && latestSub.endDate > now) {
+  //   return res.status(400).json({ message: "You already have an active subscription" });
+  // }
+
+
     let startDate = now;
 
     if (latestSub && latestSub.endDate > now) {
-      // Queue the new subscription after the latest one
       startDate = new Date(latestSub.endDate);
     }
 
@@ -43,21 +45,9 @@ export const createSubscription = async (req, res) => {
     endDate.setDate(endDate.getDate() + PLAN_DURATION[planName]);
 
     // 🧾 Create subscription
-    const subscription = await Subscription.create({
-      userId,
-      planName,
-      amount: PLAN_PRICES[planName],
-      status: "pending", // or active if you want to activate immediately
-      startDate,
-      endDate,
-    });
+    const subscription = await Subscription.create({userId,planName, amount: PLAN_PRICES[planName], status: "pending",  startDate,  endDate,});
 
-    const payment = await Payment.create({
-      subscriptionId: subscription._id,
-      totalAmount: PLAN_PRICES[planName],
-      paymentMethod: "khalti",
-      paymentStatus: "unpaid",
-    });
+    const payment = await Payment.create({ subscriptionId: subscription._id,totalAmount: PLAN_PRICES[planName], paymentMethod: "khalti",paymentStatus: "unpaid", });
 
     subscription.payment = payment._id;
     await subscription.save();
@@ -81,22 +71,12 @@ export const createSubscription = async (req, res) => {
     payment.pidx = response.data.pidx;
     await payment.save();
 
-    console.log("✅ Queued subscription with startDate:", startDate);
-
-    res.status(200).json({
-      message: "Subscription initiated successfully",
-      data: {
-        payment,
-        url: response.data.payment_url,
-      },
+    res.status(200).json({message: "Subscription initiated successfully",data: {  payment,url: response.data.payment_url,},
     });
   } catch (error) {
-    console.error("❌ Subscription error:", error);
     res.status(500).json({ message: "Error creating subscription", error: error.message });
   }
 };
-
-
 
 // Khalti payment verification
 export const khaltiVerification = async (req, res) => {
@@ -106,14 +86,11 @@ export const khaltiVerification = async (req, res) => {
     if (!pidx) {
       return res.status(400).json({ message: "Missing pidx" });
     }
-
-    // Find the payment document by pidx
     const payment = await Payment.findOne({ pidx });
     if (!payment) {
       return res.status(404).json({ message: "Payment not found" });
     }
 
-    // Check if the payment is already completed
     if (payment.paymentStatus === "paid") {
       console.log("Payment already verified and status is 'paid'. Skipping notification.");
       return res.status(200).json({ message: "Payment already processed" });
@@ -144,11 +121,8 @@ export const khaltiVerification = async (req, res) => {
     const data = response.data;
 
     if (data.status === "Completed") {
-      // If payment is successful, update payment status
       payment.paymentStatus = "paid";
       await payment.save();
-
-      // Calculate start and end dates
       const startDate = new Date();
       const endDate = new Date(startDate);
       endDate.setDate(startDate.getDate() + durationInDays);
@@ -159,39 +133,36 @@ export const khaltiVerification = async (req, res) => {
         startDate,
         endDate,
       });
+      try {
+        const user = await User.findById(subscription.userId);
+        if (user) {
 
-      // 🔔 Check if a notification for this subscription already exists
-      // 🔔 Check if a notification for this subscription already exists
-try {
-  const user = await User.findById(subscription.userId);
-  if (user) {
-    // Check if the notification already exists
-    const existingNotification = await notifiactionModel.findOne({
-      userId: user._id,
-      type: "subscription",
-      name: `Subscription: ${planName}`, // Name should be unique to the subscription plan
-    });
+          const existingNotification = await notifiactionModel.findOne({
+            userId: user._id,
+            type: "subscription",
+            name: `Subscription: ${planName}`,
+          });
 
-    if (!existingNotification) {
-      console.log("Creating new notification for subscription activation");
+          if (!existingNotification) {
+            console.log("Creating new notification for subscription activation");
 
-      const newNotification = await notifiactionModel.create({
-        userId: user._id,
-        content: `🎉 Your subscription to the ${planName} plan is now active! Enjoy your perks!`,
-        type: "subscription",
-        isRead: false,
-        name: `Subscription: ${planName}`,
-        image: "", // Optional image for the notification
-      });
+            const newNotification = await notifiactionModel.create({
+              userId: user._id,
+              content: `🎉 Your subscription to the ${planName} plan is now active! Enjoy your perks!`,
+              type: "subscription",
+              isRead: false,
+              name: `Subscription: ${planName}`,
+              image: "",
+            });
 
-      console.log("Notification saved:", newNotification);
-    } else {
-      console.log("Notification already exists for this subscription.");
-    }
-  }
-} catch (err) {
-  console.error("Error sending subscription notification:", err);
-}
+            console.log("Notification saved:", newNotification);
+          } else {
+            console.log("Notification already exists for this subscription.");
+          }
+        }
+      } catch (err) {
+        console.error("Error sending subscription notification:", err);
+      }
 
       res.status(200).json({
         message: "Payment successful, subscription activated!",
@@ -227,8 +198,6 @@ try {
 export const checkActiveSubscription = async (req, res) => {
   try {
     const userId = req.user.id;
-
-    // Find the user's active subscription
     const activeSubscription = await Subscription.findOne({
       userId,
       status: "active",
@@ -250,14 +219,14 @@ export const checkActiveSubscription = async (req, res) => {
   }
 };
 
-
+//get the total subscription taken user
 export const getTotalSubscribedUsers = async (req, res) => {
   try {
     const totalSubscribers = await Subscription.countDocuments({ status: "active" });
 
     res.status(200).json({
       message: "Total subscribed users",
-      data:totalSubscribers,
+      data: totalSubscribers,
     });
   } catch (error) {
     console.error("Error fetching total subscribed users:", error);
@@ -279,22 +248,15 @@ export const getAllSubscription = async (req, res) => {
   });
 };
 
-
-
 // Get total subscription amount for the current month
 export const getTotalSubscriptionAmount = async (req, res) => {
-  // Get the start and end of the current month
   const startOfMonth = moment().startOf('month').toDate();
   const endOfMonth = moment().endOf('month').toDate();
-
   try {
-    // Find all active subscriptions with startDate within the current month
     const subscriptions = await Subscription.find({
       status: "active",
       startDate: { $gte: startOfMonth, $lte: endOfMonth }
     });
-
-    // Calculate total amount using reduce on the subscriptions array
     const totalAmount = subscriptions.reduce((acc, sub) => acc + sub.amount, 0);
 
     res.status(200).json({
@@ -312,21 +274,17 @@ export const getTotalSubscriptionAmount = async (req, res) => {
 //fetch single subscription
 export const fetchSingleSubscription = async (req, res) => {
   const id = req.params.id;
-
   try {
-    // Find the subscription by ID and populate the userId field with user details
     const singleSubscription = await Subscription.findById(id).populate('userId', 'username');
 
     if (!singleSubscription) {
       return res.status(404).json({ message: "Subscription not found" });
     }
-
-    // Include the username in the response data
     res.status(200).json({
       message: "Successfully fetched the subscription",
       data: {
         ...singleSubscription.toObject(),
-        username: singleSubscription.userId.username,  // Include username in the response
+        username: singleSubscription.userId.username,
       },
     });
   } catch (error) {
@@ -337,25 +295,21 @@ export const fetchSingleSubscription = async (req, res) => {
   }
 };
 
-
 //delete subscription 
-export const deleteSubscription=async(req, res)=>{
-  const id=req.params.id;
-  const subscription=await Subscription.findByIdAndDelete(id);
-  if(!subscription){
-    return res.status(400).json({message:"Subcription not found"});
+export const deleteSubscription = async (req, res) => {
+  const id = req.params.id;
+  const subscription = await Subscription.findByIdAndDelete(id);
+  if (!subscription) {
+    return res.status(400).json({ message: "Subcription not found" });
   }
-  res.status(200).json(({message: " Subcription deleted successfully"}));
+  res.status(200).json(({ message: " Subcription deleted successfully" }));
 }
 
+
 //user payment history
-
-
 export const getUserPaymentHistory = async (req, res) => {
   try {
     const userId = req.user.id;
-
-    // Step 1: Find all subscriptions for the user
     const subscriptions = await Subscription.find({ userId }).select('_id');
 
     if (!subscriptions || subscriptions.length === 0) {
@@ -363,13 +317,11 @@ export const getUserPaymentHistory = async (req, res) => {
     }
 
     const subscriptionIds = subscriptions.map(sub => sub._id);
-
-    // Step 2: Find all payments for the user's subscriptions
     const payments = await Payment.find({
       subscriptionId: { $in: subscriptionIds }
     })
-    .populate("subscriptionId") // optional: populate subscription details
-    .sort({ createdAt: -1 });
+      .populate("subscriptionId")
+      .sort({ createdAt: -1 });
 
     if (!payments || payments.length === 0) {
       return res.status(404).json({ message: "No payment history found for this user." });

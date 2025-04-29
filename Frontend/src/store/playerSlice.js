@@ -11,9 +11,9 @@ const initialState = {
   currentAd: null,
   isAdPlaying: false,
   adList: [],
-  songCounter: 0, // Track number of songs before showing an ad
-  adWatchTime: 0, // Track current ad watch time
-  totalAdWatchTime: 0, // Accumulate total watch time of ads
+  songCounter: 0, 
+  adWatchTime: 0, 
+  totalAdWatchTime: 0, 
   songAnalytics:null,
   adsAnalytics:null
 };
@@ -64,7 +64,7 @@ const playerSlice = createSlice({
     },
     setAd: (state, action) => {
       state.currentAd = action.payload;
-      state.adWatchTime = 0; // Reset ad watch time on new ad
+      state.adWatchTime = 0; 
     },
     playAd: (state) => {
       state.isAdPlaying = true;
@@ -74,7 +74,7 @@ const playerSlice = createSlice({
       state.isAdPlaying = false;
       state.isPlaying = true;
       state.currentAd = null;
-      state.adWatchTime = 0; // Reset when ad stops
+      state.adWatchTime = 0;
     },
     resetSongCounter: (state) => {
       state.songCounter = 0;
@@ -112,7 +112,7 @@ export const {
 
 export default playerSlice.reducer;
 
-// 🔹 Thunk to Handle Next with Ad Logic
+//handele play and next
 export function handlePlayNext() {
   return async function (dispatch, getState) {
     const { songCounter, isAdPlaying } = getState().player;
@@ -131,7 +131,7 @@ export function handlePlayNext() {
   };
 }
 
-// 🔹 Thunk to Fetch Ads
+// Fetch Ads for the free user
 export function getAdsForFreeUsers() {
   return async function (dispatch) {
     dispatch(setStatus(STATUS.LOADING));
@@ -154,8 +154,7 @@ export function getAdsForFreeUsers() {
   };
 }
 
-//track ads view
-// Track ad watch time and update redux store
+// Track ad watch time
 export function trackAdWatchTime({ id, watchTime }) {
   return async function trackAdWatchTimeThunk(dispatch) {
     dispatch(setStatus(STATUS.LOADING));
@@ -166,7 +165,7 @@ export function trackAdWatchTime({ id, watchTime }) {
       });
 
       if (response.status === 200) {
-        dispatch(setTrackAdWatchTime(response.data)); // Update Redux store
+        dispatch(setTrackAdWatchTime(response.data)); 
         dispatch(setStatus(STATUS.SUCCESS));
       } else {
         dispatch(setStatus(STATUS.ERROR));
@@ -200,7 +199,7 @@ export function trackAdSkip(id) {
 }
 
 
-//track-click
+//track ad click
 export function trackAdClick(id) {
   return async function trackAdClickThunk(dispatch) {
       dispatch(setStatus(STATUS.LOADING));
@@ -224,8 +223,7 @@ export function trackAdClick(id) {
 //track the trackSongAnalytics
 export function trackSongAnalytic({songId, watchTime }) {
   return async function trackSongAnalyticThunk(dispatch) {
-    dispatch(setStatus(STATUS.LOADING));  // Set loading status
-
+    dispatch(setStatus(STATUS.LOADING)); 
     try {
       const response = await APIAuthenticated.post('/api/song-analytics', {
         songId,
@@ -234,8 +232,8 @@ export function trackSongAnalytic({songId, watchTime }) {
       console.log("response on the song analytics", response)
 
       if (response.status === 200) {
-        dispatch(setSongAnalytics(response.data));  // Update Redux store with response data
-        dispatch(setStatus(STATUS.SUCCESS));  // Set success status
+        dispatch(setSongAnalytics(response.data));  
+        dispatch(setStatus(STATUS.SUCCESS));  
       } else {
         dispatch(setStatus(STATUS.ERROR));
       }
@@ -249,14 +247,14 @@ export function trackSongAnalytic({songId, watchTime }) {
 // track song views
 export function trackSongView({songId }) {
   return async function trackSongViewThunk(dispatch) {
-    dispatch(setStatus(STATUS.LOADING));  // Set loading status
+    dispatch(setStatus(STATUS.LOADING));  
 
     try {
       const response = await APIAuthenticated.post('/api/song-analytics/view', {
         songId,
       });
       if (response.status === 200) {
-        dispatch(setStatus(STATUS.SUCCESS));  // Set success status
+        dispatch(setStatus(STATUS.SUCCESS)); 
       } else {
         dispatch(setStatus(STATUS.ERROR));
       }
@@ -267,10 +265,10 @@ export function trackSongView({songId }) {
   };
 }
 
-//track the trackSongAnalytics
+//track the trackAdsAnalytics
 export function trackAdsAnalytic({adId, watchTime }) {
   return async function trackSongAnalyticThunk(dispatch) {
-    dispatch(setStatus(STATUS.LOADING));  // Set loading status
+    dispatch(setStatus(STATUS.LOADING));  
 
     try {
       const response = await API.post('/api/ads-tracking', {
@@ -280,8 +278,8 @@ export function trackAdsAnalytic({adId, watchTime }) {
       console.log("response on the song analytics", response)
 
       if (response.status === 200) {
-        dispatch(setAdsAnalytics(response.data));  // Update Redux store with response data
-        dispatch(setStatus(STATUS.SUCCESS));  // Set success status
+        dispatch(setAdsAnalytics(response.data));  
+        dispatch(setStatus(STATUS.SUCCESS));  
       } else {
         dispatch(setStatus(STATUS.ERROR));
       }
@@ -292,10 +290,10 @@ export function trackAdsAnalytic({adId, watchTime }) {
   };
 }
 
-
+//track adview
 export function trackAdView({ adId }) {
   return async function trackAdViewThunk(dispatch) {
-    dispatch(setStatus(STATUS.LOADING));  // optional: to show loading state
+    dispatch(setStatus(STATUS.LOADING));  
     try {
       const response = await API.post("/api/ads-tracking/view", { adId });
 

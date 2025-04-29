@@ -30,7 +30,6 @@ const authSlice=createSlice({
         setSingleUser(state,action){
             state.singleUser=action.payload
         },
-      // Optimistically delete the user
 setDeleteUser(state, action) {
     const index = state.data.findIndex((user) => user._id === action.payload.id);
     if (index !== -1) {
@@ -109,7 +108,6 @@ export function fetchSingleUser(id){
         }
     }
 }
-
 
 
 //delete user

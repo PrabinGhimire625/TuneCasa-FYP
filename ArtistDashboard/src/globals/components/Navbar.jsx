@@ -12,33 +12,32 @@ const Navbar = () => {
     const dispatch = useDispatch();
     const { token, status, profile } = useSelector((state) => state.auth);
     const [isLoggedIn, setIsloggedIn] = useState(false);
-    
-  const [searchQuery, setSearchQuery] = useState("");
-  const location = useLocation();
 
-  useEffect(() => {
-    const debounce = setTimeout(() => {
-      if (searchQuery.trim()) {
-        const newUrl = `/search?query=${searchQuery.trim()}`;
+    const [searchQuery, setSearchQuery] = useState("");
+    const location = useLocation();
 
-        // ✅ Navigate only if not already on that search URL
-        if (location.pathname !== '/search' || location.search !== `?query=${searchQuery.trim()}`) {
-          navigate(newUrl);
-        }
-      }
-    }, 300); // debounce to reduce spam
+    useEffect(() => {
+        const debounce = setTimeout(() => {
+            if (searchQuery.trim()) {
+                const newUrl = `/search?query=${searchQuery.trim()}`;
 
-    return () => clearTimeout(debounce);
-  }, [searchQuery]);
+                if (location.pathname !== '/search' || location.search !== `?query=${searchQuery.trim()}`) {
+                    navigate(newUrl);
+                }
+            }
+        }, 300);
 
+        return () => clearTimeout(debounce);
+    }, [searchQuery]);
 
 
-    
-  const unreadCount = useSelector((state) => state.notifications.unreadCount);
-  console.log(unreadCount, "unreadCount")
-      useEffect(() => {
+
+
+    const unreadCount = useSelector((state) => state.notifications.unreadCount);
+    console.log(unreadCount, "unreadCount")
+    useEffect(() => {
         dispatch(fetchAllNotificationsOfArtist());
-      }, [dispatch, unreadCount]);
+    }, [dispatch, unreadCount]);
 
 
 
@@ -79,8 +78,6 @@ const Navbar = () => {
                                 className="w-full h-full object-cover"
                             />
                         </div></Link>
-
-
                     </a>
                     <div className="flex flex-wrap w-full items-center">
                         <div className="relative w-full lg:w-96">
@@ -101,23 +98,19 @@ const Navbar = () => {
                             </div>
                         </div>
 
-
                         <div className="ml-auto max-lg:mt-4">
                             <ul className="flex items-center gap-4">
                                 <li className="relative">
                                     <Link to="/notification" className="flex items-center relative mr-5 mt-2">
                                         <Bell className="w-6 h-6 text-white" />
-                                       
-                                     {unreadCount >0 && (
-                                           <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                                          {unreadCount}
-                                       </span>
-                                     )}
 
-
+                                        {unreadCount > 0 && (
+                                            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                                {unreadCount}
+                                            </span>
+                                        )}
                                     </Link>
                                 </li>
-
                                 {!isLoggedIn ? (
                                     <>
                                         <li>
@@ -156,12 +149,7 @@ const Navbar = () => {
                                 )}
                             </ul>
                         </div>
-
-
-
                     </div>
-
-
                 </section>
             </header>
 

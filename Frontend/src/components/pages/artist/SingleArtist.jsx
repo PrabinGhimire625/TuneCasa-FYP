@@ -9,11 +9,10 @@ import LatestArtistSong from '../recommendation/LatestArtistSong';
 import Footer from '../../../globals/components/footer/Footer';
 
 const SingleArtist = () => {
-  const { id } = useParams(); // Artist ID from URL
+  const { id } = useParams();
   const dispatch = useDispatch();
   const { singleUser, profile, status } = useSelector((state) => state.auth);
   const { eventOfArtist } = useSelector((state) => state.event);
-  // Local state for controlling the modal and form fields
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
@@ -29,14 +28,13 @@ const SingleArtist = () => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      dispatch(userProfile()); // Fetch user profile only if the token exists
+      dispatch(userProfile());
     }
   }, [dispatch]);
 
-  // Handle form submission: dispatch sendMessageToArtist and close modal
+  //handle submit
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Dispatch your action with artistId (from URL), message text, phone, and address.
     dispatch(sendMessageToArtist(id, message, phone, address));
     toast.success("Successfully sent the message to the artist");
     setIsModalOpen(false);
@@ -186,23 +184,16 @@ const SingleArtist = () => {
             </div>
           </div>
         )}
-
-
-
       </div>
-        {/* Latest Songs Recommendation */}
-        <div className='latest artist sectiom'>
-          <LatestArtistSong id={id} />
-        </div>
+      {/* Latest Songs Recommendation */}
+      <div className='latest artist sectiom'>
+        <LatestArtistSong id={id} />
+      </div>
 
-           {/*footer */}
-           <div className='latest artist sectiom'>
-          <Footer />
-        </div>
-
-
-
-     
+      {/*footer */}
+      <div className='latest artist sectiom'>
+        <Footer />
+      </div>
     </div>
   );
 };

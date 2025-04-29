@@ -13,7 +13,6 @@ const ListEvent = () => {
         dispatch(listAllEvent());
     }, [dispatch]);
 
-    // Ensure we don't modify the Redux state directly by creating a new sorted array
     const sortedEvents = event ? [...event].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) : [];
 
     return (
@@ -46,8 +45,6 @@ const ListEvent = () => {
                                 <FontAwesomeIcon icon={faPen} className="text-white w-4 h-4" />
                             </Link>
                         </div>
-
-                        
                     </div>
                 ))}
             </div>

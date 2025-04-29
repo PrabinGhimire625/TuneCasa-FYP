@@ -21,7 +21,7 @@ import OptionsMenu from "../singleSong/OptionsMenu";
 import { verifyActiveSubscription } from "../../../store/subscriptionSlice";
 
 import { STATUS } from "../../../globals/components/enumStatus/Status";
-import ShareButton from "../share/ShareButton"; // Ensure this is imported correctly
+import ShareButton from "../share/ShareButton"; 
 
 const SingleAlbum = () => {
   const { name } = useParams();
@@ -79,8 +79,7 @@ const SingleAlbum = () => {
     return `${window.location.origin}/album/${albumName}`;
   };
 
-  const shareUrl = generateShareUrl(singleAlbum?.name);  // Generate shareable URL for the album
-
+  const shareUrl = generateShareUrl(singleAlbum?.name);  
   return (
     <div className="min-h-screen w-full px-4 sm:px-6 md:px-12 lg:px-24 text-white">
       <div className="max-w-screen-xl mx-auto py-10">
@@ -101,7 +100,7 @@ const SingleAlbum = () => {
             </h1>
             <p className="text-gray-400 mt-4 max-w-xl">{singleAlbum?.desc || "No description available"}</p>
           </div>
-          <ShareButton url={shareUrl} />  {/* Pass the generated URL to ShareButton */}
+          <ShareButton url={shareUrl} /> 
         </div>
 
         {/* Table Header */}

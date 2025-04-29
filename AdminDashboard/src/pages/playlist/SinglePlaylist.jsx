@@ -109,16 +109,12 @@ const SinglePlaylist = () => {
     }
   };
 
-  //   const filteredSongs = song.filter((track) =>
-  //   track.title.toLowerCase().includes(searchTerm.toLowerCase())
-  // );
-  // Existing state and imports...
   const [searchQuery, setSearchQuery] = useState("");
-  const [isSearching, setIsSearching] = useState(false); // New state
+  const [isSearching, setIsSearching] = useState(false); 
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
-    setIsSearching(e.target.value !== ""); // Set isSearching to true if search query is non-empty
+    setIsSearching(e.target.value !== ""); 
   };
 
   const filteredSongs = song.filter((item) =>

@@ -13,7 +13,7 @@ const EditAlbum = () => {
   const [albumData, setAlbumData] = useState({
     name: "",
     desc: "",
-    bgColour: "#000000", // Default background color for dark theme
+    bgColour: "#000000", 
     image: null
   });
 
@@ -23,7 +23,6 @@ const EditAlbum = () => {
     }
   }, [id, dispatch]);
 
-  // Pre-populate the form with album data when available
   useEffect(() => {
     if (singleAlbum) {
       setAlbumData({

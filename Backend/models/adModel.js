@@ -6,14 +6,11 @@ const AdSchema = new mongoose.Schema({
   file: { type: String, required: true },
   image: { type: String },
   duration: { type: Number, required: true },
-  // isSkippable: { type: Boolean, default: true },
-  totalViews: { type: Number, default: 0 }, // Ensure this is set as a Number
+  totalViews: { type: Number, default: 0 }, 
   totalPlays: { type: Number, default: 0 },
   totalWatchTime: { type: Number, default: 0 },
   totalAmount: { type: Number, default: 0 },
-  // totalClicks: { type: Number, default: 0 },
-  // totalSkips: { type: Number, default: 0 },
-  status: { type: String, default: 'active' }, // Add status field with default value 'active'
+  status: { type: String, default: 'active' }, 
   createdAt: { type: Date, default: Date.now },
 });
 

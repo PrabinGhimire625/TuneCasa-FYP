@@ -7,14 +7,11 @@ import Checkout from "../models/checkoutModel.js"
 export const trackSongAnalytics = async (req, res) => {
   try {
     const { songId, watchTime } = req.body;
-    const userId=req.user.id;
-
-    // Validate the input
+    const userId = req.user.id;
     if (!songId || !userId || !watchTime) {
       return res.status(400).json({ message: "Song ID, User ID, and Watch Time are required." });
     }
 
-    // Find the song to ensure it exists
     const song = await songModel.findById(songId);
     if (!song) {
       return res.status(404).json({ message: "Song not found." });
@@ -32,7 +29,6 @@ export const trackSongAnalytics = async (req, res) => {
       analytics.watchTime += watchTime;
     }
 
-    // Save the analytics data
     await analytics.save();
 
     return res.status(200).json({ message: "Song analytics updated successfully." });
@@ -42,17 +38,14 @@ export const trackSongAnalytics = async (req, res) => {
   }
 };
 
-// Function to get total views and total watch time for a song (all users)
+
+// fet the total song analytice
 export const getTotalSongAnalytics = async (req, res) => {
   try {
     const { songId } = req.params;
-
-    // Validate the input
     if (!songId) {
       return res.status(400).json({ message: "Song ID is required." });
     }
-
-    // Find the song to ensure it exists
     const song = await songModel.findById(songId);
     if (!song) {
       return res.status(404).json({ message: "Song not found." });
@@ -70,12 +63,10 @@ export const getTotalSongAnalytics = async (req, res) => {
       },
     ]);
 
-    // If there is no analytics data
     if (analytics.length === 0) {
       return res.status(404).json({ message: "No analytics data found for this song." });
     }
 
-    // Return the aggregated data
     return res.status(200).json({
       songId: songId,
       totalViews: analytics[0].totalViews,
@@ -98,7 +89,6 @@ export const trackSongView = async (req, res) => {
       return res.status(400).json({ message: "Song ID and User ID are required." });
     }
 
-    // Check if user has already viewed the song
     let analytics = await songAnalyticsModel.findOne({ songId, userId });
 
     if (!analytics) {
@@ -116,6 +106,7 @@ export const trackSongView = async (req, res) => {
 };
 
 
+//get total song analytics per song
 export const getTotalSongAnalyticsPerSong = async (req, res) => {
   try {
     const songStats = await songAnalyticsModel.aggregate([
@@ -150,7 +141,7 @@ export const getTotalSongAnalyticsPerSong = async (req, res) => {
           totalEarning: 1,
         },
       },
-      { $sort: { totalEarning: -1 } }, // Sort by highest earning first
+      { $sort: { totalEarning: -1 } },
     ]);
 
     res.status(200).json({
@@ -164,10 +155,10 @@ export const getTotalSongAnalyticsPerSong = async (req, res) => {
 };
 
 
-
+//get single total song analytics
 export const getSingleTotalSongAnalyticsById = async (req, res) => {
   try {
-    const { id } = req.params; // Extract `_id` from request parameters
+    const { id } = req.params;
 
     if (!id) {
       return res.status(400).json({ message: "Analytics ID is required" });
@@ -175,7 +166,7 @@ export const getSingleTotalSongAnalyticsById = async (req, res) => {
 
     const songStats = await songAnalyticsModel.aggregate([
       {
-        $match: { _id: new mongoose.Types.ObjectId(id) }, // Match by analytics `_id`
+        $match: { _id: new mongoose.Types.ObjectId(id) },
       },
       {
         $lookup: {
@@ -190,16 +181,16 @@ export const getSingleTotalSongAnalyticsById = async (req, res) => {
       },
       {
         $project: {
-          _id: 1, // Keep analytics `_id`
-          songId: 1, // Keep songId
+          _id: 1,
+          songId: 1,
           songName: { $ifNull: ["$song.name", "Unknown"] },
           album: { $ifNull: ["$song.album", "Unknown"] },
           desc: { $ifNull: ["$song.desc", "Unknown"] },
           image: { $ifNull: ["$song.image", "Unknown"] },
           file: { $ifNull: ["$song.file", "Unknown"] },
-          totalViews: { $ifNull: ["$views", 0] }, // Ensure default 0 if missing
-          totalWatchTime: { $ifNull: ["$watchTime", 0] }, // Ensure default 0 if missing
-          totalEarning: { $ifNull: ["$totalEarning", 0] }, // Ensure default 0 if missing
+          totalViews: { $ifNull: ["$views", 0] },
+          totalWatchTime: { $ifNull: ["$watchTime", 0] },
+          totalEarning: { $ifNull: ["$totalEarning", 0] },
         },
       },
     ]);
@@ -216,32 +207,28 @@ export const getSingleTotalSongAnalyticsById = async (req, res) => {
 };
 
 
+//fetch artist song analytic
 export const fetchArtistSongAnalytics = async (req, res) => {
   try {
     const { userId } = req.params;
-
-    // Validate ObjectId format for userId
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({ message: "Invalid artist ID format." });
     }
 
-    // Find all songs created by the given artist (userId)
     const artistSongs = await songModel.find(
-      { userId: new mongoose.Types.ObjectId(userId) }, 
-      { _id: 1 } // Only fetch the _id (songId)
+      { userId: new mongoose.Types.ObjectId(userId) },
+      { _id: 1 }
     );
 
     if (!artistSongs.length) {
       return res.status(404).json({ message: "No songs found for this artist." });
     }
 
-    const songIds = artistSongs.map(song => song._id); // Extract song IDs
-
-    // Fetch analytics for these songs
+    const songIds = artistSongs.map(song => song._id);
     const artistSongStats = await songAnalyticsModel.aggregate([
       {
-        $match: { 
-          songId: { $in: songIds.map(id => new mongoose.Types.ObjectId(id)) } // Cast songId to ObjectId
+        $match: {
+          songId: { $in: songIds.map(id => new mongoose.Types.ObjectId(id)) }
         }
       },
       {
@@ -254,7 +241,7 @@ export const fetchArtistSongAnalytics = async (req, res) => {
       },
       {
         $lookup: {
-          from: "songs", // Join with the songs collection
+          from: "songs",
           localField: "_id.songId",
           foreignField: "_id",
           as: "song"
@@ -294,68 +281,14 @@ export const fetchArtistSongAnalytics = async (req, res) => {
   }
 };
 
-//calculate throught the userid passed from the req.params
+//calculate the artist monthly earning 
 export const fetchMonthlyArtistEarnings = async (req, res) => {
   try {
     const { userId } = req.params;
-
-    // Validate ObjectId format for userId
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({ message: "Invalid artist ID format." });
     }
 
-    // Find all songs created by the given artist (userId)
-    const artistSongs = await songModel.find(
-      { userId: new mongoose.Types.ObjectId(userId) },
-      { _id: 1 } // Only fetch the _id (songId)
-    );
-
-    if (!artistSongs.length) {
-      return res.status(404).json({ message: "No songs found for this artist." });
-    }
-
-    const songIds = artistSongs.map(song => song._id); // Extract song IDs
-
-    // Fetch total earnings for these songs (sum all earnings)
-    const totalEarnings = await songAnalyticsModel.aggregate([
-      {
-        $match: {
-          songId: { $in: songIds.map(id => new mongoose.Types.ObjectId(id)) } // Match songId
-        }
-      },
-      {
-        $group: {
-          _id: null, // No grouping by song, just sum all earnings
-          totalEarnings: { $sum: "$totalEarning" } // Sum all totalEarnings
-        }
-      }
-    ]);
-
-    const total = totalEarnings.length ? totalEarnings[0].totalEarnings : 0;
-
-    res.status(200).json({
-      message: "Total earnings for the artist fetched successfully",
-     data:{ userId,
-      totalEarnings: total}
-    });
-  } catch (error) {
-    console.error("Error fetching total earnings for the artist:", error);
-    res.status(500).json({ message: "Server error", error: error.message });
-  }
-};
-
-
-//fetcht the song 
-export const fetchArtist = async (req, res) => {
-  try {
-    const userId = req.user.id;
-
-    // Validate ObjectId format for userId
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(400).json({ message: "Invalid artist ID format." });
-    }
-
-    // Find all songs created by the given artist (userId)
     const artistSongs = await songModel.find(
       { userId: new mongoose.Types.ObjectId(userId) },
       { _id: 1 }
@@ -367,7 +300,54 @@ export const fetchArtist = async (req, res) => {
 
     const songIds = artistSongs.map(song => song._id);
 
-    // Fetch analytics for these songs
+    const totalEarnings = await songAnalyticsModel.aggregate([
+      {
+        $match: {
+          songId: { $in: songIds.map(id => new mongoose.Types.ObjectId(id)) }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalEarnings: { $sum: "$totalEarning" }
+        }
+      }
+    ]);
+
+    const total = totalEarnings.length ? totalEarnings[0].totalEarnings : 0;
+
+    res.status(200).json({
+      message: "Total earnings for the artist fetched successfully",
+      data: {
+        userId,
+        totalEarnings: total
+      }
+    });
+  } catch (error) {
+    console.error("Error fetching total earnings for the artist:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+
+//fetcht the  artist song 
+export const fetchArtist = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "Invalid artist ID format." });
+    }
+    const artistSongs = await songModel.find(
+      { userId: new mongoose.Types.ObjectId(userId) },
+      { _id: 1 }
+    );
+
+    if (!artistSongs.length) {
+      return res.status(404).json({ message: "No songs found for this artist." });
+    }
+
+    const songIds = artistSongs.map(song => song._id);
+
     const artistSongStats = await songAnalyticsModel.aggregate([
       {
         $match: {
@@ -425,33 +405,27 @@ export const fetchArtist = async (req, res) => {
 };
 
 
-//fetch artist song analytics
+//fetch artist top view song
 export const fetchArtistTrendingSong = async (req, res) => {
   try {
-    const userId = req.user.id; // Use the authenticated user's ID
-
-    // Validate ObjectId format for userId
+    const userId = req.user.id;
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({ message: "Invalid artist ID format." });
     }
-
-    // Find all songs created by the given artist (userId)
     const artistSongs = await songModel.find(
-      { userId: new mongoose.Types.ObjectId(userId) }, 
-      { _id: 1 } // Only fetch the _id (songId)
+      { userId: new mongoose.Types.ObjectId(userId) },
+      { _id: 1 }
     );
 
     if (!artistSongs.length) {
       return res.status(404).json({ message: "No songs found for this artist." });
     }
 
-    const songIds = artistSongs.map(song => song._id); // Extract song IDs
-
-    // Fetch top 5 songs based on total views
+    const songIds = artistSongs.map(song => song._id);
     const topSongs = await songAnalyticsModel.aggregate([
       {
-        $match: { 
-          songId: { $in: songIds.map(id => new mongoose.Types.ObjectId(id)) } // Filter by artist's songs
+        $match: {
+          songId: { $in: songIds.map(id => new mongoose.Types.ObjectId(id)) }
         }
       },
       {
@@ -461,14 +435,14 @@ export const fetchArtistTrendingSong = async (req, res) => {
         }
       },
       {
-        $sort: { totalViews: -1 } // Sort by total views in descending order
+        $sort: { totalViews: -1 }
       },
       {
-        $limit: 5 // Limit to the top 5 songs
+        $limit: 5
       },
       {
         $lookup: {
-          from: "songs", // Join with the songs collection
+          from: "songs",
           localField: "_id",
           foreignField: "_id",
           as: "song"
@@ -503,24 +477,23 @@ export const fetchArtistTrendingSong = async (req, res) => {
 };
 
 
-//recommend the user best on their song listening history
+//recommend the user best on their must played song 
 export const getRecommendedSongsForUser = async (req, res) => {
   try {
     const userId = req.user.id;
 
     const analytics = await songAnalyticsModel.find({ userId })
-      .sort({ views: -1 }) // Or watchTime
+      .sort({ views: -1 })
       .limit(6)
       .populate("songId");
 
-    // Map to include both song info and view count
     const topSongs = analytics.map((item) => ({
       song: item.songId,
       views: item.views,
       watchTime: item.watchTime,
     }));
 
-    res.json({ data : topSongs });
+    res.json({ data: topSongs });
   } catch (error) {
     console.error("Recommended songs error:", error);
     res.status(500).json({ message: "Server error" });
@@ -528,88 +501,23 @@ export const getRecommendedSongsForUser = async (req, res) => {
 };
 
 
-
-//checkout artist earning
-// export const artistCheckout = async (req, res) => {
-//   try {
-//     const userId = req.user.id;
-
-//     // 1. Validate artist ID
-//     if (!mongoose.Types.ObjectId.isValid(userId)) {
-//       return res.status(400).json({ message: "Invalid artist ID." });
-//     }
-
-//     // 2. Get all songs by the artist
-//     const songs = await songModel.find({ userId }, { _id: 1 });
-//     if (!songs.length) {
-//       return res.status(404).json({ message: "No songs found for this artist." });
-//     }
-//     const songIds = songs.map(song => song._id);
-
-//     // 3. Calculate total earnings
-//     const earnings = await songAnalyticsModel.aggregate([
-//       { $match: { songId: { $in: songIds } } },
-//       {
-//         $group: {
-//           _id: null,
-//           totalEarnings: { $sum: "$totalEarning" }
-//         }
-//       }
-//     ]);
-//     const totalEarnings = earnings.length ? earnings[0].totalEarnings : 0;
-
-//     if (totalEarnings < 1000) {
-//       return res.status(400).json({ message: "Minimum earnings of NPR 1000 not reached." });
-//     }
-
-//     // ✅ 4. Save checkout history
-//     // await new Checkout({
-//     //   userId,
-//     //   amount: totalEarnings,
-//     //   status:"pending"
-//     // }).save();
-
-//     // ✅ 5. Reset totalEarning for each song
-//     await songAnalyticsModel.updateMany(
-//       { songId: { $in: songIds } },
-//       { $set: { totalEarning: 0 } }
-//     );
-
-//     return res.status(200).json({
-//       message: "Checkout successful. Earnings reset to 0.",
-//       totalPayout: totalEarnings
-//     });
-
-//   } catch (error) {
-//     console.error("Artist checkout error:", error);
-//     res.status(500).json({ message: "Server error", error: error.message });
-//   }
-// };
-
-
-//direct calculate by the userid 
+//fetch monthly earning of the artist
 export const fetchMonthlyEarning = async (req, res) => {
   try {
     const userId = req.user.id;
-
-    // Validate ObjectId format for userId
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({ message: "Invalid artist ID format." });
     }
-
-    // Find all songs created by the given artist (userId)
     const artistSongs = await songModel.find(
       { userId: new mongoose.Types.ObjectId(userId) },
-      { _id: 1 } // Only fetch the _id (songId)
+      { _id: 1 }
     );
 
     if (!artistSongs.length) {
       return res.status(404).json({ message: "No songs found for this artist." });
     }
 
-    const songIds = artistSongs.map(song => song._id); // Extract song IDs
-
-    // Fetch total earnings for these songs (all time)
+    const songIds = artistSongs.map(song => song._id);
     const totalEarnings = await songAnalyticsModel.aggregate([
       {
         $match: {

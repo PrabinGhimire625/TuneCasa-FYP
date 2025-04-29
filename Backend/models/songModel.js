@@ -12,6 +12,5 @@ const songSchema = new mongoose.Schema({
 }, { timestamps: true }
 );
 
-//check and create if "song" model is not created
 const songModel=mongoose.models.song || mongoose.model("song",songSchema);
 export default songModel

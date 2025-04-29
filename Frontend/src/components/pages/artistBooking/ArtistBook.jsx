@@ -29,7 +29,6 @@ const ArtistBook = () => {
         Reserve your favorite artist for an unforgettable event!
       </p>
 
-      {/* Button with Glow Effect */}
       <Link to="/displayArtist" className="block w-full">
         <button className="mt-4 md:mt-6 px-4 md:px-6 py-2 md:py-3 w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white text-sm md:text-base font-bold rounded-lg shadow-md transform transition hover:scale-105 hover:shadow-xl active:scale-95">
           🎤 Book Now

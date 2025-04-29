@@ -129,6 +129,7 @@ export function deleteAds(id){
     }
 }
 
+//update ads
 export function updateAds({id, adsData}){
     return async function updateAdsThunk(dispatch) {
         dispatch(setStatus(STATUS.LOADING));

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { updateArtistProfile, artistProfile, resetStatus } from "../../../store/authSlice"; 
+import { updateArtistProfile, artistProfile, resetStatus } from "../../../store/authSlice";
 import { useParams, useNavigate } from "react-router-dom";
 import { STATUS } from "../../../globals/components/Status";
 import { toast } from "react-toastify";
@@ -29,12 +29,12 @@ const EditProfile = () => {
         if (profile) {
             setUserData({
                 username: profile.username || "",
-                image: null, 
+                image: null,
             });
         }
     }, [profile]);
 
-   
+
     const handleChange = (e) => {
         const { name, files, value } = e.target;
         setUserData({
@@ -43,26 +43,26 @@ const EditProfile = () => {
         });
     };
 
-   const handleSubmit = async (e) => {
-    e.preventDefault();
-    const formData = new FormData(); //FormData allows sending text and file in the same request.
-    formData.append("username", userData.username);
-    if (userData.image) formData.append("image", userData.image);
-  
-    dispatch(updateArtistProfile({ id, userData: formData })).then(() => {
-      if (status === STATUS.SUCCESS) {
-       toast.success("User edited");
-        navigate("/profile");
-      } else {
-        toast.error("Something went wrong");
-      }
-    });
-  };
-  
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const formData = new FormData();
+        formData.append("username", userData.username);
+        if (userData.image) formData.append("image", userData.image);
+
+        dispatch(updateArtistProfile({ id, userData: formData })).then(() => {
+            if (status === STATUS.SUCCESS) {
+                toast.success("User edited");
+                navigate("/profile");
+            } else {
+                toast.error("Something went wrong");
+            }
+        });
+    };
+
     return (
-      <>
-        <div className=" ">
-           
+        <>
+            <div className=" ">
+
                 <div className="flex items-start justify-center flex-1 bg-gray-900">
                     <form
                         className="w-full flex items-start  px-12 py-12 rounded-lg shadow-lg mt-2 mx-5 relative"
@@ -127,16 +127,9 @@ const EditProfile = () => {
                         )}
                     </form>
                 </div>
-                   
-                
-      
-            <TrendingSong/>
-         
-       
-      
-        </div>
-       
-      </>
+                <TrendingSong />
+            </div>
+        </>
     );
 };
 

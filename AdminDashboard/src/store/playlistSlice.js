@@ -35,9 +35,6 @@ const playlistSlice = createSlice({
           state.playlist.splice(index, 1); 
       }
   }
-    
-    
-
   },
 });
 
@@ -70,11 +67,7 @@ export function AddSongOnPlaylist(songId, playlistId) {
   return async function AddSongOnPlaylistThunk(dispatch) {
     dispatch(setStatus(STATUS.LOADING));
     try {
-      // Make an API call to add the song to the playlist
       const response = await APIAuthenticated.post(`/api/playlist/add-song/${playlistId}`, { songId });
-
-      console.log(response);
-
       if (response.status === 200) {
         dispatch(setStatus(STATUS.SUCCESS));
       } else {

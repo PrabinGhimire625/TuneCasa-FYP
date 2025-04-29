@@ -111,7 +111,7 @@ const EditSong = () => {
             />
           </div>
 
-          {/* Audio File Upload - Display Only */}
+          {/* Audio File Upload */}
           <div className="flex flex-col">
             <label className="text-gray-400 text-sm mb-1">Upload New Audio File</label>
             <input

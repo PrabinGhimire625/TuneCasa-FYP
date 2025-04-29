@@ -47,8 +47,6 @@ const Following = () => {
           )}
         </div>
       </main>
-
-      {/* Footer stays at the bottom */}
       <Footer />
     </div>
   );

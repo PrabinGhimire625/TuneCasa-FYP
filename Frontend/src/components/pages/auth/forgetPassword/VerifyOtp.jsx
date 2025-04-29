@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Mail, Key } from 'lucide-react'; // Optional: For icons
+import { Mail, Key } from 'lucide-react'; 
 import { toast } from 'react-toastify';
 
 const VerifyOtp = () => {

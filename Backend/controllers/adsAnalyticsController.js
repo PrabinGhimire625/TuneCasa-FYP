@@ -1,6 +1,6 @@
 import AdTracking from "../models/AdTrackingModel.js"; // Analytics model
 
-// 🔹 1. Track Watch Time (after ad is played or skipped)
+// track adAnalytics
 export const trackAdAnalytics = async (req, res) => {
   const { adId, watchTime = 0 } = req.body;
 
@@ -31,7 +31,7 @@ export const trackAdAnalytics = async (req, res) => {
   }
 };
 
-// 🔹 2. Track Views (immediately when ad starts playing)
+// track ad view
 export const trackAdView = async (req, res) => {
   const { adId } = req.body;
 

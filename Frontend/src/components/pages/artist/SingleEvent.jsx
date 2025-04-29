@@ -70,7 +70,6 @@ const SingleEvent = () => {
                             </div>
                         </div>
                     </div>
-
                     <h2 className="text-3xl font-bold text-blue-400 mb-4 my-5">Event Description </h2>
                     <div className="p-6  rounded-lg shadow-lg">
                     <p className="text-lg text-gray-400 mb-6">{singleEvent.description}</p>

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAllPendingArtists, approveArtistHandler, rejectArtistHandler } from "../../store/dataSlice"; // Import updated thunks
+import { fetchAllPendingArtists, approveArtistHandler, rejectArtistHandler } from "../../store/dataSlice"; 
 import { STATUS } from "../../globals/enumStatus/Status";
 
 const ArtistRequest = () => {
@@ -11,12 +11,12 @@ const ArtistRequest = () => {
     dispatch(fetchAllPendingArtists()); 
   }, [dispatch]);
 
-  // Approve artist function (using Redux action)
+  // Approve artist 
   const approveArtistHandlerClick = (artistId) => {
     dispatch(approveArtistHandler(artistId)); 
   };
 
-  // Reject artist function (using Redux action)
+  // Reject artist
   const rejectArtistHandlerClick = (artistId) => {
     dispatch(rejectArtistHandler(artistId)); 
   };

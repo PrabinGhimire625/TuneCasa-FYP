@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 const AddEvent = () => {
   const { status } = useSelector((state) => state.event);
   const dispatch = useDispatch();
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   console.log(status)
 
   const [eventData, setEventData] = useState({
@@ -51,7 +51,7 @@ const AddEvent = () => {
     <div className="max-w-4xl mx-auto bg-gray-800 p-8 rounded-lg shadow-lg">
       <form onSubmit={handleSubmit} className="flex flex-col gap-6 text-gray-300">
         <h2 className="text-2xl font-semibold text-center text-white">Add Event</h2>
-        
+
         <div className="flex justify-center gap-8">
           {/* Upload image */}
           <div className="flex flex-col items-center gap-4">

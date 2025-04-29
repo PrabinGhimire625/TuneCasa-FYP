@@ -108,28 +108,6 @@ export function login(data){
     }
 }
 
-// export function googleLogin(code) {
-//     return async function googleLoginThunk(dispatch) {
-//       dispatch(setStatus(STATUS.LOADING));
-//       try {
-//         const response = await API.get(`api/auth/google?code=${code}`);
-//         if (response.status === 200) {
-//             console.log(data)
-//             console.log(token)
-//           const { data, token } = response.data;
-//             dispatch(setProfile(data));
-//             dispatch(setStatus(STATUS.SUCCESS));
-//             dispatch(setToken(token));
-//             localStorage.setItem('token',token);
-//         } else {
-//           dispatch(setStatus(STATUS.ERROR));
-//         }
-//       } catch (err) {
-//         dispatch(setStatus(STATUS.ERROR));
-//       }
-//     };
-//   }
-
 //user profile
 export function userProfile(){
     return async function userProfileThunk(dispatch) {
@@ -205,7 +183,7 @@ export function sendMessageToArtist(artistId, message, phone, address) {
       try {
         const response = await APIAuthenticated.post(`/api/messages/send-message-to-artist`, {
           artistId,
-          message,  // Direct message string
+          message,  
           phone,
           address
         });
@@ -213,7 +191,6 @@ export function sendMessageToArtist(artistId, message, phone, address) {
         if (response.status === 200) {
           const { data } = response.data;
           dispatch(setStatus(STATUS.SUCCESS));
-          // Optionally, you can dispatch additional actions here to store the response data if needed
         } else {
           dispatch(setStatus(STATUS.ERROR));
         }
@@ -246,7 +223,7 @@ export function followArtist(id){
 
 
 
-  //follow artist
+  //unfollow artist
   export function UnfollowArtist(id){
     return async function UnfollowArtistThunk(dispatch) {
         dispatch(setStatus(STATUS.LOADING));
@@ -271,7 +248,7 @@ export function getArtistFollowersCount(id) {
       try {
         const response = await APIAuthenticated.get(`/api/followers/${id}`);
         if (response.status === 200) {
-          const { totalFollowers, followers } = response.data; // Destructure data from response
+          const { totalFollowers, followers } = response.data; 
           console.log("Response from the baceked",totalFollowers)
           dispatch(setFollowersCount(totalFollowers)); 
           dispatch(setFollowersList(followers)); 
@@ -289,12 +266,12 @@ export function getArtistFollowersCount(id) {
   
 export function getArtistsUserIsFollowing() {
   return async function getArtistsUserIsFollowingThunk(dispatch) {
-    dispatch(setStatus(STATUS.LOADING)); // Set loading state
+    dispatch(setStatus(STATUS.LOADING)); 
     try {
       const response = await APIAuthenticated.get('/api/suggested-artists');
       if (response.status === 200) {
-        dispatch(setArtistOfUserFollow(response.data.data)); // Updated to set artistOfUserFollow
-        dispatch(setFollowingCount(response.data.count)); // Updated to set artistOfUserFollow
+        dispatch(setArtistOfUserFollow(response.data.data)); 
+        dispatch(setFollowingCount(response.data.count)); 
         console.log(response.data.count)
         dispatch(setStatus(STATUS.SUCCESS));
       } else {

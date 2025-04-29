@@ -19,16 +19,16 @@ const SingleCheckout = () => {
 
   const handleCompleteCheckout = async () => {
     setCompleting(true);
-  
+
     const resultAction = await dispatch(completeCheckout(id));
-  
-    if (status===STATUS.SUCCESS) {
+
+    if (status === STATUS.SUCCESS) {
       toast.success('Checkout completed successfully!');
     } else {
       toast.error('Failed to complete checkout.');
     }
-  
-    await dispatch(fetchSingleCheckout(id)); // Refresh the data after completion
+
+    await dispatch(fetchSingleCheckout(id));
     setCompleting(false);
   };
 
@@ -47,11 +47,10 @@ const SingleCheckout = () => {
 
           <div className="flex justify-between">
             <span className="text-gray-400">Status:</span>
-            <span className={`px-3 py-1 rounded-full font-semibold text-sm ${
-              singleCheckout.status === "requested" ? "bg-yellow-600 text-white" :
-              singleCheckout.status === "approved" ? "bg-green-600 text-white" :
-              "bg-red-600 text-white"
-            }`}>
+            <span className={`px-3 py-1 rounded-full font-semibold text-sm ${singleCheckout.status === "requested" ? "bg-yellow-600 text-white" :
+                singleCheckout.status === "approved" ? "bg-green-600 text-white" :
+                  "bg-red-600 text-white"
+              }`}>
               {singleCheckout.status}
             </span>
           </div>

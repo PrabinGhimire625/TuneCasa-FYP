@@ -20,7 +20,6 @@ const DisplayArtist = () => {
         return <div>Loading artists...</div>;
     }
 
-    // If no artists are available, show a message
     if (!data || data.length === 0) {
         return <div>No artists available</div>;
     }
@@ -38,7 +37,6 @@ const DisplayArtist = () => {
                             {/* Circular Image */}
                             <Link to={`/singleArtist/${item._id}`}>
                                 <div className="w-48 h-48 rounded-full overflow-hidden bg-gray-700">
-                                    {/* Use a fallback image if no image exists */}
                                     <img
                                         src={item.image || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9nFbCnqa-fAIyStp-cQG9M-LezEqxUz0HYg&s'}
                                         alt={`Artist ${item.username}`}
@@ -46,7 +44,6 @@ const DisplayArtist = () => {
                                     />
                                 </div>
                             </Link>
-                            {/* Artist Name */}
                             <h3 className="text-lg font-medium text-center">{item.username}</h3>
                         </div>
                     ))}

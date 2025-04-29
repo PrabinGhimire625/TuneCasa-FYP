@@ -14,12 +14,11 @@ const searchSlice = createSlice({
     initialState,
     reducers: {
         setSearchData(state, action) {
-            // Ensure to log the correct data structure you're dispatching.
             console.log("Data in setSearchData", action.payload);
-            state.songs = action.payload.data.songs || [];  // Default to empty array if undefined
+            state.songs = action.payload.data.songs || [];  
            
-            state.albums = action.payload.data.albums || [];  // Default to empty array if undefined
-            state.artists = action.payload.data.artists || [];  // Default to empty array if undefined
+            state.albums = action.payload.data.albums || [];  
+            state.artists = action.payload.data.artists || [];  
         },
         setStatus(state, action) {
             state.status = action.payload;
@@ -30,16 +29,14 @@ const searchSlice = createSlice({
 export const { setSearchData, setStatus } = searchSlice.actions;
 export default searchSlice.reducer;
 
-// Thunk function to fetch search results
+// search the song, album and artist
 export function searchSongAlbumArtist(query) {
     return async function search(dispatch) {
         dispatch(setStatus(STATUS.LOADING));
         try {
             const response = await APIAuthenticated.get(`/api/search?query=${query}`);
-            console.log("response from the search", response);  // Log the full response for debugging
-
+            console.log("response from the search", response);  
             if (response.status === 200) {
-                // Assuming response.data contains songs, albums, and artists directly
                 dispatch(setSearchData(response.data));
                 dispatch(setStatus(STATUS.SUCCESS));
             } else {

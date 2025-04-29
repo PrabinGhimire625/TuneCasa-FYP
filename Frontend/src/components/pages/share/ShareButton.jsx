@@ -17,7 +17,7 @@ const ShareButton = ({ url }) => {
   const handleShareClick = () => {
     // Copy the URL to the clipboard
     navigator.clipboard.writeText(url).then(() => {
-      toast.success("link copied to clipboard!"); // Notify the user that the link has been copied
+      toast.success("link copied to clipboard!"); 
     }).catch(() => {
       toast.error("Failed to copy the link.");
     });

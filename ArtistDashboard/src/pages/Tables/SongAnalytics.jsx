@@ -10,9 +10,9 @@ import { STATUS } from '../../globals/components/Status';
 
 const SongAnalytics = () => {
   const dispatch = useDispatch();
-  const { artistSongAnalytics, artistMonthlyEarning ,status } = useSelector((state) => state.analytics);
+  const { artistSongAnalytics, artistMonthlyEarning, status } = useSelector((state) => state.analytics);
   const [searchQuery, setSearchQuery] = useState('');
-  const [submitted, setSubmitted] = useState(false); // Declare the state for tracking form submission
+  const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
     dispatch(fetchArtistSongAnalytics());
@@ -28,62 +28,58 @@ const SongAnalytics = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitted(true);
-    
+
     // Inside your component or function
-if (artistMonthlyEarning?.totalEarnings >= 1000) {
-  dispatch(requestCheckout(artistMonthlyEarning.totalEarnings))
-    .then((res) => {
-      if (status===STATUS.SUCCESS) {
-        toast.success('Checkout request submitted successfully!');
-      } else {
-        toast.error('Failed to submit checkout request.');
-      }
-    })
-    .catch(() => {
-      toast.error('An error occurred during checkout request.');
-    });
-} else {
-  toast.info('You need at least Rs. 1000 to request a checkout.');
-}
-  
-   
+    if (artistMonthlyEarning?.totalEarnings >= 1000) {
+      dispatch(requestCheckout(artistMonthlyEarning.totalEarnings))
+        .then((res) => {
+          if (status === STATUS.SUCCESS) {
+            toast.success('Checkout request submitted successfully!');
+          } else {
+            toast.error('Failed to submit checkout request.');
+          }
+        })
+        .catch(() => {
+          toast.error('An error occurred during checkout request.');
+        });
+    } else {
+      toast.info('You need at least Rs. 1000 to request a checkout.');
+    }
   };
-  
+
 
   return (
     <div className="w-full min-h-screen bg-gray-900 text-white px-4 md:px-10 py-10">
-      {/* Header and Earnings Overview */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-10 gap-6">
-  <div className="w-full bg-gray-800 px-6 py-6 rounded-2xl shadow-lg flex flex-col">
-    <h3 className="text-2xl font-bold mb-2">Monthly Earnings</h3>
-    <p className="text-4xl font-extrabold text-green-400 tracking-wider">
-      NPR {artistMonthlyEarning?.totalEarnings?.toFixed(2) || '0.00'}
-    </p>
+        <div className="w-full bg-gray-800 px-6 py-6 rounded-2xl shadow-lg flex flex-col">
+          <h3 className="text-2xl font-bold mb-2">Monthly Earnings</h3>
+          <p className="text-4xl font-extrabold text-green-400 tracking-wider">
+            NPR {artistMonthlyEarning?.totalEarnings?.toFixed(2) || '0.00'}
+          </p>
 
-    {/* Buttons Row */}
-    <div className="mt-4 flex flex-col sm:flex-row justify-between items-center gap-4">
-      {artistMonthlyEarning?.totalEarnings >= 1000 && (
-        <form onSubmit={handleSubmit}>
-          <button
-            type="submit"
-            className="bg-green-600 hover:bg-green-700 transition text-white font-semibold px-5 py-2 rounded-lg"
-          >
-            Request for checkout
-          </button>
-        </form>
-      )}
+          {/* Buttons Row */}
+          <div className="mt-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            {artistMonthlyEarning?.totalEarnings >= 1000 && (
+              <form onSubmit={handleSubmit}>
+                <button
+                  type="submit"
+                  className="bg-green-600 hover:bg-green-700 transition text-white font-semibold px-5 py-2 rounded-lg"
+                >
+                  Request for checkout
+                </button>
+              </form>
+            )}
 
-     <Link to="/checkoutHistory">
-     <button
-        className="bg-white hover:bg-white transition text-black font-semibold px-5 py-2 rounded-lg sm:ml-auto"
-      >
-        View checkout history
-      </button>
-     </Link>
-    </div>
-  </div>
-</div>
-
+            <Link to="/checkoutHistory">
+              <button
+                className="bg-white hover:bg-white transition text-black font-semibold px-5 py-2 rounded-lg sm:ml-auto"
+              >
+                View checkout history
+              </button>
+            </Link>
+          </div>
+        </div>
+      </div>
 
       {/* Title */}
       <h2 className="text-3xl font-bold mb-6 border-b border-gray-700 pb-2">Your Song Analytics</h2>
@@ -132,8 +128,6 @@ if (artistMonthlyEarning?.totalEarnings >= 1000) {
           <p className="text-center text-gray-400">No songs found</p>
         )}
       </div>
-
-    
     </div>
   );
 };

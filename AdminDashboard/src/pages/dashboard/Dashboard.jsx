@@ -21,7 +21,6 @@ const data = [
   { month: "Nov", listeners: 13000 },
   { month: "Dec", listeners: 14500 },
 ];
-// Generate Y-axis ticks dynamically from 0 to max
 const maxListeners = Math.max(...data.map((d) => d.listeners));
 const yAxisTicks = Array.from(
   { length: Math.ceil(maxListeners / 1000) + 1 },
@@ -70,41 +69,41 @@ export default function Dashboard() {
         <h3 className="text-lg font-semibold flex items-center gap-2">
           <FaChartLine className="text-green-400" /> Monthly Listener Growth
         </h3>
-         <ResponsiveContainer width="100%" height={300}>
-                  <LineChart>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#444" />
-                    <XAxis dataKey="month" tick={{ fill: "white" }} />
-                    <YAxis
-                      tick={{ fill: "white" }}
-                      ticks={yAxisTicks}
-                      domain={[0, "dataMax"]}
-                    />
-                    <Tooltip />
-                    <Legend />
-        
-                    {/* Green line: Jan to Apr */}
-                    <Line
-                      type="monotone"
-                      dataKey="listeners"
-                      data={data.slice(0, 4)} // Jan to Apr
-                      stroke="#4CAF50"
-                      strokeWidth={2}
-                      dot={{ fill: "#4CAF50" }}
-                      name="Real (Listener)"
-                    />
-        
-                    {/* Blue line: Apr to Dec (for continuity, start from Apr) */}
-                    <Line
-                      type="monotone"
-                      dataKey="listeners"
-                      data={data.slice(3)} // Apr to Dec
-                      stroke="#3B82F6"
-                      strokeWidth={2}
-                      dot={{ fill: "#3B82F6" }}
-                      name="Projected (Listener)"
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
+        <ResponsiveContainer width="100%" height={300}>
+          <LineChart>
+            <CartesianGrid strokeDasharray="3 3" stroke="#444" />
+            <XAxis dataKey="month" tick={{ fill: "white" }} />
+            <YAxis
+              tick={{ fill: "white" }}
+              ticks={yAxisTicks}
+              domain={[0, "dataMax"]}
+            />
+            <Tooltip />
+            <Legend />
+
+            {/* Green line: Jan to Apr */}
+            <Line
+              type="monotone"
+              dataKey="listeners"
+              data={data.slice(0, 4)} // Jan to Apr
+              stroke="#4CAF50"
+              strokeWidth={2}
+              dot={{ fill: "#4CAF50" }}
+              name="Real (Listener)"
+            />
+
+            {/* Blue line: Apr to Dec (for continuity, start from Apr) */}
+            <Line
+              type="monotone"
+              dataKey="listeners"
+              data={data.slice(3)} // Apr to Dec
+              stroke="#3B82F6"
+              strokeWidth={2}
+              dot={{ fill: "#3B82F6" }}
+              name="Projected (Listener)"
+            />
+          </LineChart>
+        </ResponsiveContainer>
 
       </div>
 

@@ -52,9 +52,9 @@ export function addGenre(genreData) {
         dispatch(setStatus(STATUS.LOADING));
         try {
             const response = await APIAuthenticated.post("/api/genre", genreData);
-            if (response.status === 201) {  // Changed from 200 to 201 (Created)
+            if (response.status === 201) {  
                 dispatch(setStatus(STATUS.SUCCESS));
-                dispatch(listAllGenre());  // Refresh genre list
+                dispatch(listAllGenre());  
             } else {
                 dispatch(setStatus(STATUS.ERROR));
             }
@@ -158,6 +158,7 @@ export function fetchAlbumByGenre(genre) {
     }
 }
 
+//fetch song by genre
 export function fetchSongByGenre(genre) {  
     return async function fetchSongByGenreThunk(dispatch) {
         dispatch(setStatus(STATUS.LOADING));

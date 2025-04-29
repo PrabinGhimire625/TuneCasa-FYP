@@ -16,7 +16,7 @@ const transporter = nodemailer.createTransport({
 
 //send email to the admin
 export const sendEmailToAdmin = (artist) => {
-  const { username, email } = artist.userId; // Extract username and email from populated userId
+  const { username, email } = artist.userId; 
 
   const mailOptions = {
     from: process.env.EMAIL_USER,
@@ -69,7 +69,6 @@ export const sendEmailToAdmin = (artist) => {
 // Send email to Artist with registration status (approved or rejected)
 export const sendEmailToArtist = async (artist, status) => {
     try {
-      // Ensure userId is populated before accessing email
       await artist.populate('userId', 'email username'); 
   
       const { username, email } = artist.userId; 
@@ -103,13 +102,13 @@ export const sendEmailToArtist = async (artist, status) => {
   // Function to send email to the artist
   export const sendMessageToArtistEmail = async (user, artist, message) => {
     try {
-      const { username, email } = user; // User's details (sender)
-      const artistEmail = artist.userId.email; // Artist's email from populated userId
+      const { username, email } = user; 
+      const artistEmail = artist.userId.email; 
 
-      // Email content with improved styling
+
       const mailOptions = {
         from: process.env.EMAIL_USER,
-        to: artistEmail, // Dynamic artist's email
+        to: artistEmail,
         subject: `🎵 New Message from ${username} - TuneCasa`,
         html: `
           <div style="font-family: 'Arial', sans-serif; background-color: #f4f4f4; padding: 20px;">

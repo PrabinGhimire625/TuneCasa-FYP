@@ -18,10 +18,7 @@ const GenreDetails = () => {
 
     return (
         <div className="text-white p-4 md:p-6 min-h-screen">
-            {/* Genre Title */}
             <h1 className="text-2xl md:text-3xl font-bold capitalize mb-6">{genre} </h1>
-
-            {/* Album Grid */}
             <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 ">
                 {albumByGenre && albumByGenre.length > 0 ? (
                     albumByGenre.map((item) => (
@@ -43,10 +40,8 @@ const GenreDetails = () => {
                     <p className="text-gray-300">No albums available</p>
                 )}
             </div>
-
             {/* Divider */}
             <div className="my-10 border-t border-stone-700" />
-
             {/* Genre Songs Section */}
             <div>
                 <h2 className="text-xl font-bold">Popular {genre} Songs</h2>

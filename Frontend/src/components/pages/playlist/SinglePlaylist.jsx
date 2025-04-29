@@ -85,7 +85,7 @@ const SinglePlaylist = () => {
 
   const handleCloseEditForm = () => setShowEditForm(false);
 
-  //set the singleplaylist?.songs int he songlistfor easily do the next and prev button smoother
+
   useEffect(() => {
     if (singleplaylist?.songs && singleplaylist?.songs.length > 0) {
       dispatch(setSongList(singleplaylist?.songs));
@@ -116,16 +116,12 @@ const SinglePlaylist = () => {
     }
   };
 
-  //   const filteredSongs = song.filter((track) =>
-  //   track.title.toLowerCase().includes(searchTerm.toLowerCase())
-  // );
-
   const [searchQuery, setSearchQuery] = useState("");
-  const [isSearching, setIsSearching] = useState(false); // New state
+  const [isSearching, setIsSearching] = useState(false); 
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
-    setIsSearching(e.target.value !== ""); // Set isSearching to true if search query is non-empty
+    setIsSearching(e.target.value !== ""); 
   };
 
   const filteredSongs = song.filter((item) =>
@@ -141,7 +137,6 @@ const SinglePlaylist = () => {
 
   return (
     <div className="text-white min-h-screen p-6 flex gap-10">
-      {/* Left Section: Fixed Width */}
       <div className="flex-none w-[500px] mt-5">
         <div className="flex flex-col items-center gap-6">
           <div className="bg-gray-800 w-80 h-80 flex items-center justify-center rounded-lg shadow-lg">

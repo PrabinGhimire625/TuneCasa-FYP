@@ -23,12 +23,11 @@ const Navbar = () => {
             if (searchQuery.trim()) {
                 const newUrl = `/search?query=${searchQuery.trim()}`;
 
-                // ✅ Navigate only if not already on that search URL
                 if (location.pathname !== '/search' || location.search !== `?query=${searchQuery.trim()}`) {
                     navigate(newUrl);
                 }
             }
-        }, 300); // debounce to reduce spam
+        }, 300);
 
         return () => clearTimeout(debounce);
     }, [searchQuery]);
